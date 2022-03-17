@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1643463068 source:c:\users\saha2\desktop\code samples\c++\iasfs\main.cpp
+	<iostream>
+	<vector>
+	<set>
+

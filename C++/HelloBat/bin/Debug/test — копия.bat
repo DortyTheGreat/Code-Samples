@@ -1,0 +1,1 @@
+solver.exe < ut.txt > checker.exe

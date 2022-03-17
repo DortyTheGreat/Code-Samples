@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1647356687 source:c:\users\saha2\desktop\code samples\c++\snake_netbook\main.cpp
+	<iostream>
+	<deque>
+	<queue>
+	<utility>
+	<algorithm>
+	"../BasicWindowsLib.h"
+	<conio.h>
+	<thread>
+
+1647356590 c:\users\saha2\desktop\code samples\c++\basicwindowslib.h
+	<windows.h>
+

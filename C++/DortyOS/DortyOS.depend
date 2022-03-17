@@ -1,0 +1,15 @@
+# depslib dependency file v1.0
+1644659715 source:c:\users\saha2\desktop\code samples\c++\dortyos\main.cpp
+	<fstream>
+	<iostream>
+	<filesystem>
+	<vector>
+	<windows.h>
+	<sstream>
+	<iostream>
+	<stdio.h>
+	<stdlib.h>
+	<io.h>
+	<fcntl.h>
+	<conio.h>
+

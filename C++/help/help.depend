@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1644756900 source:c:\users\saha2\desktop\code samples\c++\help\main.cpp
+	<iostream>
+	<iomanip>
+

@@ -1,0 +1,12 @@
+# depslib dependency file v1.0
+1647356503 source:c:\users\saha2\desktop\code samples\c++\snakecoolbfs\main.cpp
+	<cmath>
+	<iostream>
+	<windows.h>
+	<unistd.h>
+	<chrono>
+	<ctime>
+	<thread>
+	<iomanip>
+	<queue>
+

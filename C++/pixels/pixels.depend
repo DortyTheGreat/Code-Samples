@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1644144673 source:c:\users\saha2\desktop\code samples\c++\pixels\main.cpp
+	<windows.h>
+	<iostream>
+	<cmath>
+

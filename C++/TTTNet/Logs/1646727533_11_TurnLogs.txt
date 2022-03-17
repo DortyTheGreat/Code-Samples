@@ -1,0 +1,6 @@
+DortyLogs Has started working, logs made at   Tue Mar 08 11:18:53 2022
+Nolik Made a turn, algoritmName: TotallyRandomGosunov, placed at (4, 14 )
+Krestik Made a turn, algoritmName: AlwaysPlaceIn(1;1), placed at (1, 1 )
+Nolik Made a turn, algoritmName: TotallyRandomGosunov, placed at (8, 0 )
+Nolik Win. Turn: 4, Reason: Auto Loss Due to illegal placement
+Krestik Made a turn, algoritmName: AlwaysPlaceIn(1;1), placed at (1, 1 )

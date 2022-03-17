@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1643017176 source:c:\users\saha2\desktop\code samples\c++\bistro\main.cpp
+	<iostream>
+	<fstream>
+	<map>
+
