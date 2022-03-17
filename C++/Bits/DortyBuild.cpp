@@ -18,7 +18,8 @@ int main()
 
     BigInt a,b;
 
-    cin >> a;
+    cin >> a >> b;
+    a -= b;
 
     cout << a << endl;
 
@@ -346,9 +347,27 @@ private:
     void _remove_leading_zeros();
     bool _is_negative = false;
 
+
+
 public:
+    /// 1234 === [4,3,2,1]
     vector<int> data;
     int Base = 10;
+
+    const int zero = 0;
+
+    BigInt(){data = {0};}
+
+    BigInt(long long num, int Base_){
+        while(num != 0){
+            data.push_back(num % Base_);
+            num /= Base;
+        }
+
+        if (data.size() == 0){
+
+        }
+    }
 
     istream& input(int  Base_,istream& in){
         Base = Base_;
@@ -360,7 +379,7 @@ public:
         data.resize(sz);
 
         for(int i = 0;i<sz;i++){
-            data[i] = FromCharToInt(stream_[i]);
+            data[sz - i - 1] = FromCharToInt(stream_[i]);
         }
 
         _remove_leading_zeros();
@@ -368,6 +387,84 @@ public:
         return in;
 
 
+    }
+
+    /// Обработка сравнения двух положительных чисел (0 => второе больше, 1 => равны, 2 => наше больше)
+    short compare(BigInt &another){
+        if (another.data.size() != data.size()){
+            return (data.size() > another.data.size()) << 1;
+        }
+
+        int sz = data.size();
+
+        for (int i = 0;i<sz;i++){
+            int p = sz - i - 1;
+            if (data[p] != another.data[p]){
+                return (data[p] > another.data[p]) << 1;
+            }
+        }
+
+        return 1;
+    }
+
+    /// Обработка сложения двух положительных чисел
+    void operator+=(BigInt &another){
+
+        size_t extra_size = 1;
+
+        size_t an_sz = another.data.size();
+
+        if (an_sz > data.size()){
+            extra_size = an_sz - data.size() + 1;
+        }
+
+        for(int i = 0;i < extra_size; i++){
+            data.push_back(zero);
+        }
+        /// Заполняем контейнер нулями, чтобы было место под новые возможные числа(aka разряды)
+
+        for(size_t i = 0; i < an_sz;i++){
+            data[i] += another.data[i];
+            if (data[i] >= Base){
+                data[i] -= Base;
+                data[i+1]++;
+            }
+        }
+
+        while(data[an_sz] >= Base){
+            data[an_sz] -= Base;
+            an_sz++;
+            data[an_sz]++;
+        }
+
+
+
+        _remove_leading_zeros();
+    }
+
+
+    /// Обработка вычитания двух положительных чисел (работает, если второе меньше первого)
+    void operator-=(BigInt &another){
+
+        size_t an_sz = another.data.size();
+
+        for(size_t i = 0; i < an_sz;i++){
+            data[i] -= another.data[i];
+            if (data[i] < zero){
+                data[i] += Base;
+                data[i+1]--;
+            }
+        }
+
+        while(data[an_sz] < 0){
+            data[an_sz] += Base;
+            an_sz++;
+            data[an_sz]--;
+        }
+
+
+
+        _remove_leading_zeros();
     }
 
     friend istream& operator>>(istream& in, BigInt &bi) {
@@ -380,7 +477,7 @@ public:
         int sz = bi.data.size();
 
         for(int i = 0;i<sz;i++){
-            in << FromIntToChar(bi.data[i]);
+            in << FromIntToChar(bi.data[sz - i - 1]);
         }
 
         return in;
@@ -403,8 +500,8 @@ public:
 
 
 void BigInt::_remove_leading_zeros() {
-	while (this->data.size() > 1 && this->data.front() == 0) {
-		this->data.erase(data.begin());
+	while (this->data.size() > 1 && this->data.back() == 0) {
+		this->data.pop_back();
 	}
 
 	if (this->data.size() == 1 && this->data[0] == 0) this->_is_negative = false;
@@ -420,7 +517,8 @@ int main()
 
     BigInt a,b;
 
-    cin >> a;
+    cin >> a >> b;
+    a -= b;
 
     cout << a << endl;
 

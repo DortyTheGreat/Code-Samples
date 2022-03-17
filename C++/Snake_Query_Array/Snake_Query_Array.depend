@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1647520285 source:c:\users\thegreatone\desktop\nbook\c++\snake_query_array\main.cpp
+	<iostream>
+	<queue>
+	<utility>
+	<algorithm>
+	"../BasicWindowsLib.h"
+	<conio.h>
+	<thread>
+
+1647249365 c:\users\thegreatone\desktop\nbook\c++\basicwindowslib.h
+	<windows.h>
+

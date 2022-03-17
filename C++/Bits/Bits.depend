@@ -1,82 +1,29 @@
 # depslib dependency file v1.0
-1647111335 source:c:\users\saha2\desktop\code samples\c++\bits\main.cpp
+1647150746 source:c:\users\thegreatone\desktop\nbook\c++\bits\main.cpp
 	"DortyLibs/BITS.h"
 	<algorithm>
 	"DortyLibs/DortyBigInt.h"
 
-1647100788 c:\users\saha2\desktop\code samples\c++\bits\dortylibs\dortybuild.h
-	<fstream>
-	<string>
-	<iostream>
-
-1646408540 c:\users\saha2\desktop\code samples\c++\bits\dortylibs\dortymath.h
-	<cmath>
-	<vector>
-
-1647103142 c:\users\saha2\desktop\code samples\c++\bits\dortylibs\dortystring.h
-	<sstream>
-
-1646408224 c:\users\saha2\desktop\code samples\c++\bits\dortylibs\dortygeometry.h
-	"DortyGeometryLib/Polygon.h"
-	"DortyGeometryLib/DAngle.h"
-	"DortyGeometryLib/Algorithms.h"
-
-1646416352 c:\users\saha2\desktop\code samples\c++\bits\dortylibs\dortygeometrylib\polygon.h
-	"Circle.h"
-
-1640005486 c:\users\saha2\desktop\code samples\c++\bits\dortylibs\dortygeometrylib\circle.h
-	"Triangle.h"
-
-1646484448 c:\users\saha2\desktop\code samples\c++\bits\dortylibs\dortygeometrylib\triangle.h
-	"Segment.h"
-
-1646484442 c:\users\saha2\desktop\code samples\c++\bits\dortylibs\dortygeometrylib\segment.h
-	"Line.h"
-
-1646484419 c:\users\saha2\desktop\code samples\c++\bits\dortylibs\dortygeometrylib\line.h
-	"Point.h"
-
-1646484425 c:\users\saha2\desktop\code samples\c++\bits\dortylibs\dortygeometrylib\point.h
-	"Angle.h"
-
-1646484332 c:\users\saha2\desktop\code samples\c++\bits\dortylibs\dortygeometrylib\angle.h
-	"GeometryBasics.h"
-
-1646484414 c:\users\saha2\desktop\code samples\c++\bits\dortylibs\dortygeometrylib\geometrybasics.h
-	<cmath>
-
-1647101857 c:\users\saha2\desktop\code samples\c++\bits\dortylibs\cython.h
-	<vector>
-
-1646484355 c:\users\saha2\desktop\code samples\c++\bits\dortylibs\dortygeometrylib\dangle.h
-
-1646417860 c:\users\saha2\desktop\code samples\c++\bits\dortylibs\dortygeometrylib\algorithms.h
-	<cassert>
-
-1647102948 c:\users\saha2\desktop\code samples\c++\bits\dortylibs\bits.h
+1647147749 c:\users\thegreatone\desktop\nbook\c++\bits\dortylibs\bits.h
 	<iostream>
 	"DortyBuild.h"
 	"BetterVector.h"
 	"Cython.h"
 	"DortyString.h"
 
-1647102096 c:\users\saha2\desktop\code samples\c++\bits\dortylibs\bettervector.h
-	<vector>
-
-1647111011 c:\users\saha2\desktop\code samples\c++\bits\dortylibs\bigint.h
-	<iostream>
-	<string>
-	<cmath>
+1647147749 c:\users\thegreatone\desktop\nbook\c++\bits\dortylibs\dortybuild.h
 	<fstream>
-	<iomanip>
-	<vector>
-	<iomanip>
-	<algorithm>
-	<ctime>
-	<set>
-	<sstream>
-	<ostream>
-	<list>
+	<string>
+	<iostream>
 
-1647114803 c:\users\saha2\desktop\code samples\c++\bits\dortylibs\dortybigint.h
+1647147749 c:\users\thegreatone\desktop\nbook\c++\bits\dortylibs\bettervector.h
+	<vector>
+
+1647147749 c:\users\thegreatone\desktop\nbook\c++\bits\dortylibs\cython.h
+	<vector>
+
+1647147749 c:\users\thegreatone\desktop\nbook\c++\bits\dortylibs\dortystring.h
+	<sstream>
+
+1647151790 c:\users\thegreatone\desktop\nbook\c++\bits\dortylibs\dortybigint.h
 

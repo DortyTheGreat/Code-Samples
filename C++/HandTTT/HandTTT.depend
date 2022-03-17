@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1647324364 source:c:\users\thegreatone\desktop\nbook\c++\handttt\main.cpp
+	<iostream>
+	"BasicWindowsLib.h"
+	<conio.h>
+	<utility>
+
+1647249365 c:\users\thegreatone\desktop\nbook\c++\handttt\basicwindowslib.h
+	<windows.h>
+

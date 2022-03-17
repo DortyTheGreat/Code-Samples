@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1647257689 source:c:\users\thegreatone\desktop\nbook\c++\deriv\main.cpp
+	<iostream>
+	<cmath>
+

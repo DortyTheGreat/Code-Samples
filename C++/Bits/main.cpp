@@ -11,7 +11,8 @@ int main()
 
     BigInt a,b;
 
-    cin >> a;
+    cin >> a >> b;
+    a -= b;
 
     cout << a << endl;
 
