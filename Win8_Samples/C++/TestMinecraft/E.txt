@@ -1,0 +1,17 @@
+send /login pohui22
+wait 20
+useitem
+wait 20
+useitem
+wait 20
+useitem
+respawn
+wait 30
+send Thanks for using Dorty&Gosunov Technologies!
+wait 30
+send if You need help ask Gosunov#0613 (Discord) or Minerica#5765 (Discord)
+wait 30
+send Debug - [Command 1]
+wait 30
+
+exit
