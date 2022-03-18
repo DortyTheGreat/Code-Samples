@@ -1,0 +1,4 @@
+DortyLogs Has started working, logs made at   Wed Sep 22 22:04:35 2021
+Nolik Winned the game. By the end of turn: 1, Reason: NormalWin
+Nolik Winned the game. By the end of turn: 1, Reason: NormalWin
+Nolik Made a turn, algoritmName: PLACEHOLDER, placed at (11, 2 )

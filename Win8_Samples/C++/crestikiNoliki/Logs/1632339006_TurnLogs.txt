@@ -1,0 +1,2 @@
+DortyLogs Has started working, logs made at   Wed Sep 22 22:30:06 2021
+Nolik Winned the game. By the end of turn: 109, Reason: NormalWin2: 6 - 3

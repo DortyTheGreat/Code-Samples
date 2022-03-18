@@ -1,0 +1,251 @@
+#include <iostream>
+#include <windows.h>
+#include <utility>
+#include <sstream>
+#include <string>       // std::string
+
+#include "KulAi.h"
+#include "LexaAi.h"
+#include "DortyLogs.h"
+
+using namespace std;
+
+
+/// 0 - nichego, 1 - crestik, 2 - nolik
+
+
+string GameId;
+const int W = 15;
+const int connect_to_win = 5; /// Сколько в ряд клеточек, чтобы победить
+
+
+template <typename T>
+  std::string NumberToString ( T Number )
+  {
+     std::ostringstream ss;
+     ss << Number;
+     return ss.str();
+  }
+
+void gotoxy(int xpos, int ypos)
+{
+  COORD scrn;
+  HANDLE hOuput = GetStdHandle(STD_OUTPUT_HANDLE);
+  scrn.X = xpos; scrn.Y = ypos;
+  SetConsoleCursorPosition(hOuput,scrn);
+}
+
+void CLS(){
+    gotoxy(0,0);
+}
+
+string fromIntToString(int type){
+    switch (type){
+    case 0: return "Empty";
+    case 1: return "Krestik";
+    case 2: return "Nolik";
+    default: return "ERROR";
+    }
+}
+
+char fromIntToChar(int type){
+    switch (type){
+    case 0: return '.';
+    case 1: return 'X';
+    case 2: return '0';
+    default: return '?';
+    }
+}
+class TicTacToe{
+
+public:
+
+    int GameFinishedState = 0;
+    int turns = 0;
+    /// 0 - игра в процессе, 1 - победа крестиков, 2 - победа ноликов
+
+    int Field[W][W];
+
+    void initField(){
+        for(int y=  0;y<W;y++){
+            for(int x = 0;x<W;x++){
+                Field[y][x] = 0;
+            }
+
+        }
+    }
+
+    void drawField(){
+        CLS();
+        for(int y=  0;y<W;y++){
+            for(int x = 0;x<W;x++){
+                cout << fromIntToChar(Field[y][x]);
+            }
+            cout << endl;
+        }
+
+        ///LogString("Logs\\" + GameId + "_FrameLogs.txt",FieldToStr());
+    }
+
+
+
+    void WinGame(int WinnerType, string Reason, int turn){
+
+        GameFinishedState = WinnerType;
+
+        string EndText = fromIntToString(WinnerType) + " Winned the game. By the end of turn: " + NumberToString(turn) + ", Reason: " + Reason;
+        cout << EndText;
+        LogString("Logs\\" + GameId + "_TurnLogs.txt",EndText);
+    }
+
+    void LoseGame(int LoserType, string Reason, int turn){
+        WinGame(!(LoserType-1) + 1,  Reason,  turn);
+
+    }
+
+    void CheckGameState(){
+
+
+        ///Чеккер ВертиКАЛЬных полосок
+        for(int y=  0;y<W-connect_to_win+1;y++){
+            for(int x = 0;x<W;x++){
+                    initField();
+                    Sleep(50);
+                    for(int Y_ = 0; Y_ < connect_to_win;Y_++){
+                        Field[y+Y_][x] = 1;
+                    }
+                    drawField();
+
+
+            }
+
+        }
+
+        ///Чеккер Горизонтальных полосок
+        for(int y=  0;y<W;y++){
+            for(int x = 0;x<W-connect_to_win+1;x++){
+                    initField();
+                    Sleep(50);
+                    for(int X_ = 0; X_ < connect_to_win;X_++){
+                        Field[y][x+X_] = 1;
+                    }
+                    drawField();
+
+
+            }
+
+        }
+
+        ///Чеккер Диаг (\) полосок
+        for(int y=  0;y<W-connect_to_win+1;y++){
+            for(int x = 0;x<W-connect_to_win+1;x++){
+                    initField();
+                    Sleep(50);
+                    for(int X_Y = 0; X_Y < connect_to_win;X_Y++){
+                        Field[y+X_Y][x+X_Y] = 1;
+                    }
+                    drawField();
+
+
+            }
+
+        }
+
+        ///Чеккер Диаг (/) полосок
+        for(int y=  0;y<W-connect_to_win+1;y++){
+            for(int x = connect_to_win-1;x<W;x++){
+                    initField();
+                    Sleep(50);
+                    for(int X_Y = 0; X_Y < connect_to_win;X_Y++){
+                        Field[y+X_Y][x-X_Y] = 1;
+                    }
+                    drawField();
+
+
+            }
+
+        }
+
+        ///Чек на норм победу.
+
+    }
+
+
+    void place(int type, pair<int,int> location){
+        if (Field[location.second][location.first] == 0){
+            Field[location.second][location.first] = type;
+            ///Чек на победу (5 в ряд)
+        }else{
+            ///cout << "INVALID TURN MADE BY: " << fromIntToString(type) << "     ";
+            LoseGame(type,"Auto Loss Due to illegal placement",turns);
+
+        }
+    }
+
+
+
+    string FieldToStr(){
+        string str;
+        for(int y=  0;y<W;y++){
+            for(int x = 0;x<W;x++){
+                str+= fromIntToChar(Field[y][x]);
+            }
+
+        }
+
+        return str;
+
+    }
+
+    void SimulateAiEnviroment(){
+
+        while( !GameFinishedState ){
+            turns++;
+            drawField();
+
+            pair<int,int> testPair;
+
+            if (turns%2){
+                /// первый ходит Кул временно, потом починим
+                testPair = KulAi(FieldToStr(),W);
+            }else{
+                ///временно Лёша ходит вторым
+                testPair = LexaAi(FieldToStr(),W);
+            }
+            place (turns%2 + 1,testPair);
+            Sleep(50);
+            LogString("Logs\\" + GameId + "_FrameLogs.txt",FieldToStr());
+
+            string algoritmName = "PLACEHOLDER";
+
+            string TurnStr = fromIntToString(turns%2 + 1) + " Made a turn, algoritmName: " + algoritmName + ", placed at (" + NumberToString(testPair.first) + ", " + NumberToString(testPair.second)  + " )";
+
+            LogString("Logs\\" + GameId + "_TurnLogs.txt",TurnStr);
+
+        }
+    }
+};
+
+
+
+
+
+
+
+
+
+int main()
+{
+    GameId = NumberToString(std::time(0));
+
+
+    StartLogging("Logs\\" + GameId + "_FrameLogs.txt");
+    StartLogging("Logs\\" + GameId + "_TurnLogs.txt");
+
+    TicTacToe TTT;
+    TTT.initField();
+
+    TTT.CheckGameState();
+
+    TTT.SimulateAiEnviroment();
+}

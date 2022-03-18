@@ -1,0 +1,130 @@
+#include <iostream>
+#include <windows.h>
+#include <utility>
+#include <sstream>
+#include <string>       // std::string
+
+#include "KulAi.h"
+#include "LexaAi.h"
+#include "DortyLogs.h"
+
+using namespace std;
+
+int Field[100][100];
+int W = 15;
+/// 0 - nichego, 1 - crestik, 2 - nolik
+
+
+string GameId;
+
+template <typename T>
+  std::string NumberToString ( T Number )
+  {
+     std::ostringstream ss;
+     ss << Number;
+     return ss.str();
+  }
+
+void gotoxy(int xpos, int ypos)
+{
+  COORD scrn;
+  HANDLE hOuput = GetStdHandle(STD_OUTPUT_HANDLE);
+  scrn.X = xpos; scrn.Y = ypos;
+  SetConsoleCursorPosition(hOuput,scrn);
+}
+
+void CLS(){
+    gotoxy(0,0);
+}
+
+string fromIntToString(int type){
+    switch (type){
+    case 0: return "Empty";
+    case 1: return "Krestik";
+    case 2: return "Nolik";
+    default: return "ERROR";
+    }
+}
+
+char fromIntToChar(int type){
+    switch (type){
+    case 0: return '.';
+    case 1: return 'X';
+    case 2: return '0';
+    default: return '?';
+    }
+}
+class TicTacToe{
+
+};
+void place(int type, pair<int,int> location){
+    if (Field[location.second][location.first] == 0){
+        Field[location.second][location.first] = type;
+    }else{
+        cout << "INVALID TURN MADE BY: " << fromIntToString(type) << "     ";
+    }
+}
+
+void drawField(){
+    for(int y=  0;y<W;y++){
+        for(int x = 0;x<W;x++){
+            cout << fromIntToChar(Field[y][x]);
+        }
+        cout << endl;
+    }
+}
+
+string FieldToStr(){
+    string str;
+    for(int y=  0;y<W;y++){
+        for(int x = 0;x<W;x++){
+            str+= fromIntToChar(Field[y][x]);
+        }
+
+    }
+
+    return str;
+
+}
+
+void SimulateAiEnviroment(){
+    int turnCounter = 0;
+    while(1){
+        turnCounter++;
+        CLS();
+        drawField();
+
+        pair<int,int> testPair;
+
+        if (turnCounter%2){
+            /// первый ходит временно, потом починим
+            testPair = KulAi(FieldToStr(),W);
+        }else{
+            ///временно Лёша ходит вторым
+            testPair = LexaAi(FieldToStr(),W);
+        }
+        place (turnCounter%2 + 1,testPair);
+        Sleep(300);
+        LogString("Logs\\" + GameId + "_FrameLogs.txt",FieldToStr());
+
+        string algoritmName = "PLACEHOLDER";
+
+        string TurnStr = fromIntToString(turnCounter%2 + 1) + " Made a turn, algoritmName: " + algoritmName + ", placed at (" + NumberToString(testPair.first) + ", " + NumberToString(testPair.second)  + " )";
+
+        LogString("Logs\\" + GameId + "_TurnLogs.txt",TurnStr);
+
+    }
+}
+
+
+int main()
+{
+    GameId = NumberToString(std::time(0));
+
+
+    StartLogging("Logs\\" + GameId + "_FrameLogs.txt");
+    StartLogging("Logs\\" + GameId + "_TurnLogs.txt");
+
+
+    SimulateAiEnviroment();
+}

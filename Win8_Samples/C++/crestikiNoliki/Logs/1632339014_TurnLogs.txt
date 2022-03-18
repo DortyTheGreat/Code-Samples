@@ -1,0 +1,2 @@
+DortyLogs Has started working, logs made at   Wed Sep 22 22:30:14 2021
+Krestik Winned the game. By the end of turn: 46, Reason: NormalWin4: 13 - 8
