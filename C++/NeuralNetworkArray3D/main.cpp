@@ -27,7 +27,7 @@ void gen_edges(){
     }
 }
 
-int* get_result(int input[H]){
+double* get_result(int input[H]){
     double ret[H];
 }
 
