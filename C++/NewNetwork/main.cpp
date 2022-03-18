@@ -27,14 +27,24 @@ void gen_edges(){
     }
 }
 
-int* get_result(int input[H]){
+double* get_result(int input[H]){
     double ret[H];
+}
+
+int* to_bin(long long  number){
+    int ret[H];
+    for(int i = 0;i<H;i++){
+        ret[i] = number%2;
+        ret /= 2;
+    }
+    return ret;
 }
 
 int main()
 {
 
-
+    int number = 123;
+    print(to_bin(number),H);
 
 
 
