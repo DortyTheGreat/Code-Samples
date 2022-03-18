@@ -1,0 +1,86 @@
+#include <cmath>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <utility>
+ 
+using namespace std;
+int getLongestCommonSubsequence(const string& a, const string& b) {
+    vector<vector<int> > max_len;
+    max_len.resize(a.size() + 1);
+    for (int i = 0; i <= static_cast<int>(a.size()); i++)
+        max_len[i].resize(b.size() + 1);
+    for (int i = static_cast<int>(a.size()) - 1; i >= 0; i--) {
+        for (int j = static_cast<int>(b.size()) - 1; j >= 0; j--) {
+            if (a[i] == b[j]) {
+                max_len[i][j] = 1 + max_len[i + 1][j + 1];
+            } else {
+                max_len[i][j] = max(max_len[i + 1][j], max_len[i][j + 1]);
+            }
+        }
+    }
+    string res;
+    for (int i = 0, j = 0; max_len[i][j] != 0 && i < static_cast<int>(a.size()) && j < static_cast<int>(b.size());) {
+        if (a[i] == b[j]) {
+            res.push_back(a[i]);
+            i++;
+            j++;
+        } else {
+            if (max_len[i][j] == max_len[i + 1][j])
+                i++;
+            else
+                j++;
+        }
+    }
+    return res.size();
+}
+ 
+void solve() {
+    string s;
+    cin >> s;
+    int n = s.size();
+    int ans = 1e9;
+ 
+    for (long long i = 1; i <= (1LL << 55); i *= 2) {
+        string s1 = to_string(i);
+        int n1 = s1.size();
+        int k = 0;
+        int p = 0;
+        int j;
+        for (j = 0; j < n1; ++j) {
+            if (p >= n) {
+                k += 1;
+                continue;
+            }
+            while (s[p] != s1[j] && p < n) {
+                p += 1;
+                k += 1;
+            }
+            if (p == n && s[p] == s1[j]) {
+                continue;
+            }
+            if (p == n) {
+                k += 1;
+                continue;
+            }
+            p += 1;
+        }
+        k += n - p;
+        ans = min(k, ans);
+    }
+    cout << ans << '\n';
+}
+ 
+signed main() {
+#ifdef gosunov_local
+    freopen("input.txt", "r", stdin);
+#endif
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+    int t = 1;
+    cin >> t;
+    while (t--) {
+        solve();
+    }
+}
