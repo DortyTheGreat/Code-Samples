@@ -4,3 +4,5 @@
 *.o
 *.depend
 *.layout
+*.xml
+*.iml
