@@ -58,7 +58,7 @@ double deriv_activ_func(double x){
 
 #endif
 
-const int H = 64; /// aka выстота aka количество входных нейронов aka количество выходных нейронов
+const int H = 512; /// aka выстота aka количество входных нейронов aka количество выходных нейронов
 const int W = 3; /// aka ширина aka количество СЛОЁВ скрытого слоя
 
 double Edges[H][W][H]; /// aka Рёбра [ПОЗИЦИЯ_ПО_ВЫСОТЕ][ПОЗИЦИЯ_ПО_ШИРИНЕ][ВЕРШИНА_В_КОТОРУЮ_ПРОИСХОДИТ_ПЕРЕХОД]
@@ -147,6 +147,8 @@ void print(T* array_, int N){
 
 
 int itterations = 0;
+const int ticks = 500;
+const double training_constant = 0.1;
 
 void fix_mistakes(long long number){
     int *num = to_bin(number);
@@ -183,7 +185,7 @@ void fix_mistakes(long long number){
 
 
 
-    const double training_constant = 0.1;
+
 
     for(int k = 1; k< W; ++k){
         for(int i = 0;i<H;++i){
@@ -209,7 +211,7 @@ void fix_mistakes(long long number){
     avg_deltas /= H;
 
     itterations++;
-    const int ticks = 40000;
+
     if (itterations % ticks == 0){
         print(num,H);
         print(result,H);
@@ -228,7 +230,7 @@ int main()
     const int ms = 5;
 
     while(1){
-        number = rand() % 100000;
+        number = rand() * 100 + rand();
         fix_mistakes(number);
         ///this_thread::sleep_for(chrono::milliseconds(ms));
 
