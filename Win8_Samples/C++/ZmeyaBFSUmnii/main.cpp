@@ -1,6 +1,6 @@
 #include <cmath>
 #include <iostream>
-#include <windows.h>
+
 #include <unistd.h>
 
 #include <chrono>
@@ -30,14 +30,6 @@ const string NewLineSeparator = "";
 
 
 int apples = 0;
-
-void gotoxy(int xpos, int ypos)
-{
-  COORD scrn;
-  HANDLE hOuput = GetStdHandle(STD_OUTPUT_HANDLE);
-  scrn.X = xpos; scrn.Y = ypos;
-  SetConsoleCursorPosition(hOuput,scrn);
-}
 
 int GetNextSeed(int seed) {
     return (seed + 1); ///% (width * width + 100);
@@ -219,7 +211,7 @@ class ZmeikaGame {
         ///this_thread::sleep_for(chrono::milliseconds(500));
         ///system("cls");
 
-        gotoxy(0,0);
+        ///gotoxy(0,0);
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < width; j++) {
@@ -252,7 +244,7 @@ class ZmeikaGame {
     }
 
     void DebugRender(int turns, int msBeetweenFrames){
-        Sleep(msBeetweenFrames);
+        ///Sleep(msBeetweenFrames);
         render();
 
         cout << "IsAlive: " << Alive << '\n';

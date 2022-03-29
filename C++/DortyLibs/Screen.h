@@ -45,7 +45,7 @@ public:
 
 
     void draw(int x, int y, char symbol){
-        gotoxy(x+1, y+1);
+        gotoxy({x,y} + start_pos);
         std::cout << symbol;
     }
 

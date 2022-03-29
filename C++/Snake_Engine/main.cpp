@@ -4,8 +4,13 @@
 
 #include <utility>
 
+#include <bits/stdc++.h>
+
 
 using namespace std;
+
+__gcd(10,10);
+
 
 template <typename A, typename B>
 pair<A,B> operator+(pair<A,B> &a, pair<A,B> &b){return {a.first+b.first,a.second+b.second};}
