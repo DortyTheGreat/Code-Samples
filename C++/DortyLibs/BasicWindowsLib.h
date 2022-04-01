@@ -1,3 +1,5 @@
+#pragma once
+
 #include <windows.h>
 
 HANDLE STD_HANDLE = GetStdHandle(STD_OUTPUT_HANDLE);
