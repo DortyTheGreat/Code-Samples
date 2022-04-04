@@ -32,6 +32,10 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Linker>
+			<Add library="xcb" />
+			<Add library="pthread" />
+		</Linker>
 		<Unit filename="main.cpp" />
 		<Extensions />
 	</Project>
