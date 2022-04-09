@@ -48,6 +48,7 @@ int main()
     return 0;
 }
 
+
 */
 #include <iostream>
 #include <iostream>
@@ -1097,7 +1098,10 @@ vector<T> NVP(vector<T> A){
 #include <iostream>
 using namespace std;
 
-#define VI vector<long long>
+#define VI vector<__int128>
+#define int __int128
+#define double long double
+
 double PI = acos(0) * 2;
 
 class complex
@@ -1224,7 +1228,9 @@ public:
 
 #define debug_delenie false
 
-#define int long long
+#define int __int128
+
+#define char_zero '0'
 
 int intlog(double base, double x) {
     return (int)(log(x) / log(base));
@@ -1232,6 +1238,10 @@ int intlog(double base, double x) {
 /// 9 223 372 036 854 775 807
 /// 2147483647
 const int INT_MAXI = 9223372036854775807;
+
+int inline intSqrt(int arg){
+    return (int)(sqrt(arg));
+}
 
 char FromIntToChar(int a){
 
@@ -1258,6 +1268,12 @@ const int zero = 0;
 
 #define default_base 10
 
+#define container_stack 6
+
+#define total_base 1000000
+
+#define sqrt_of_total_base 1000
+
 /// –еализаци€ класса больших чисел, через массив нестабильных битов.
 class BigInt{
 private:
@@ -1271,14 +1287,16 @@ public:
     vector<int> data;
     int Base = -1;
 
+    int rsz = -1;
+
     void operator=(BigInt another){
         data = another.data;
         Base = another.Base;
     }
 
-    BigInt(){data = {0};Base = default_base;}
+    BigInt(){data = {0};Base = total_base;}
 
-    BigInt(long long num, int Base_ = default_base){
+    BigInt(long long num, int Base_ = total_base){
         Base = Base_;
         while(num != 0){
             data.push_back(num % Base_);
@@ -1523,11 +1541,11 @@ public:
         ///cout << "TestPut " << write_to << endl;
 
         // Do the interation to fullfil the precision
-        int end{ (int)(std::log2(precision)) + 3 };
+        int end{ (int)(std::log2(precision)) + 4 };
         for (int i = 0; i < end; i++)
         {
             write_to.Interate(*this, precision);
-            //cout << "InCycle " << write_to << endl;
+            ///cout << "InCycle " << write_to << endl;
         }
     }
 
@@ -1559,32 +1577,44 @@ public:
         rem_write_to._subtract(minus_);
     }
 
-
+    /// ¬ некоторых случа€х, если число - это на 1 меньше, чем полный квадрат, то ответом будет число на один больше
+    /// Ќапример 24 -> 5, 48 -> 7, 35 -> 6
+    /// safe_sqrt избегает этого
     void inline _sqrt()
     {
+        if (data.size() == 1){*this = (intSqrt(data[0])); return;}
         BigInt copy_ = (*this);
-        copy_._appendZeros(2);
-        int sz = data.size();
+        ///copy_._appendZeros();
         // x(i+1) = ( x(i) + a / x(i) ) / 2
 
+
+        int sz = data.size();
+        int rsz = (sz-1)*container_stack + intlog(default_base,data[sz - 1]) + 1;
+        //cout << sz <<" rsz : " << rsz << endl;
         data.clear();
 
-        data.push_back ((sz % 2) ? (Base/4) : (Base*3/4) );
 
-        _appendZeros((sz - 1) / 2 + 2);
+
+        data.push_back (intSqrt(data[sz-1]) * ((sz%2) ? 1 : sqrt_of_total_base) );
+
+        _appendZeros((sz - 1) / 2 );
 
         ///cout << *this << endl;
 
         // Do the interation to fullfil the precision
-        int end{  log2(sz) + 5 };
+        int end{  log2(sz) + 6 };
+
+        //cout << *this << endl;
 
         BigInt smth;
         BigInt tmp;
+
         for (int i = 0; i < end; i++)
         {
 
             // x(i) * 10^precision + a * 10^(2*precision) / x(i)
             copy_._DivInt(*this, smth); /// double the precision here (of normal)
+
 
             _add(smth);
             tmp = *this;
@@ -1592,9 +1622,28 @@ public:
             ///cout << "Cycle "<< i << " " << (*this) << endl;
         }
 
-        _ShiftR(1);
 
 
+
+
+        ///_ShiftR(1);
+
+
+    }
+
+
+
+    void inline safe_sqrt(){
+
+        BigInt orig = *this;
+
+        _sqrt();
+
+        BigInt cp = *this;
+        cp._mult(cp);
+        if ( cp.compare(orig) == 2){
+            _subtract(BigInt(1));
+        }
     }
 
 
@@ -1653,19 +1702,33 @@ public:
 
     friend istream& operator>>(istream& in, BigInt &bi) {
 
+
+
         if (bi.Base == -1){
-            bi.Base = 10;
+            bi.Base = total_base;
         }
 
         string stream_;
         in >> stream_;
 
         int sz = stream_.size();
-
+        bi.rsz = sz;
+        sz = (sz+container_stack-1)/container_stack; /// /= по ceil
         bi.data.resize(sz);
 
-        for(int i = 0;i<sz;i++){
-            bi.data[sz - i - 1] = FromCharToInt(stream_[i]);
+        int Carret;
+
+        for(int i = 0;i<sz;++i){
+            Carret = 0;
+            for(int j = 0; j < container_stack;++j){
+                int index = bi.rsz - (i+1)*container_stack + j;
+                if (index > -1){
+                    Carret *= default_base;
+                    Carret += FromCharToInt(stream_[index]);
+                }
+            }
+
+            bi.data[i] = Carret;
         }
 
         bi._remove_leading_zeros();
@@ -1676,12 +1739,31 @@ public:
 
     friend ostream& operator<<(ostream &in, const BigInt &bi) {
 
-        int sz = bi.data.size();
-        if (bi._is_negative){in << '-';}
-        for(int i = 0;i<sz;i++){
-            in << FromIntToChar(bi.data[sz - i - 1]);
+        if ( (bi.data.size() == 1) && (bi.data[0] == 0)){
+            in << FromIntToChar(0);
+            return in;
         }
 
+        int sz = bi.data.size();
+        if (bi._is_negative){in << '-';}
+        int Carret;
+        string buff = "";
+        for(int i = 0;i<sz;++i){
+            Carret = bi.data[i];
+            for(int j = 0; j < container_stack;++j){
+                buff += FromIntToChar(Carret % default_base);
+                Carret /= default_base;
+            }
+
+        }
+
+        while(buff.back() == char_zero){
+            buff.pop_back();
+        }
+
+        reverse(buff.begin(),buff.end());
+
+        in << buff;
         return in;
     }
 
@@ -1847,4 +1929,5 @@ int main()
     ///cout << counter << endl;
     return 0;
 }
+
 

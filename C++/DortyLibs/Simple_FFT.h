@@ -11,6 +11,9 @@
 using namespace std;
 
 #define VI vector<long long>
+#define int long long
+#define double long double
+
 double PI = acos(0) * 2;
 
 class complex
