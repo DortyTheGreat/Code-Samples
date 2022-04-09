@@ -1,0 +1,2 @@
+gcd for big nums https://codility.com/media/train/10-Gcd.pdf
+O(n^2)

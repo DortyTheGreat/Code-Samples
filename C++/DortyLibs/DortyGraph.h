@@ -55,6 +55,7 @@ public:
     }
 
 };
+
 /// Сортирует арки по значениям, а не направлению (нужно, например для непересек. множетсв)
 class Arc_Sorted{
     public:
@@ -71,12 +72,14 @@ class Arc_Sorted{
     bool operator<(const Arc_Sorted& other) const {
 
 
-        if (value == other.value)
-            if (origin == other.origin)
-                return direction < other.direction;
-            else
-                return origin < other.origin;
-        return value < other.value;
+        if (value != other.value)
+            return value < other.value;
+
+        if (origin == other.origin)
+            return direction < other.direction;
+
+        return origin < other.origin;
+
     }
 };
 
@@ -123,13 +126,10 @@ public:
         Arcs[start_point].insert(A1);
     }
 
-    void ReadAsSquareMatrix(){
+    void ReadAsSquareMatrix(int sz){
         /// Читает Граф, как двумерную матрицу. Читает n, затем n^2 чисел - матрица смежности. Если 0 - нет соединеня, если не 0 - даёт расстояние {INPUT} в Арку
 
-
-        cin >> Size;
-
-        init(Size);
+        init(sz);
 
         long long req; // 1 - есть вход, 0 - нет
         for(long long i = 0; i < Size; i++){
@@ -139,6 +139,40 @@ public:
                     InsertNewArc(i,req,j);
                 }
             }
+        }
+    }
+
+    void ReadAsSquareMatrix(){
+        /// Читает Граф, как двумерную матрицу. Читает n, затем n^2 чисел - матрица смежности. Если 0 - нет соединеня, если не 0 - даёт расстояние {INPUT} в Арку
+
+
+        cin >> Size;
+
+        ReadAsSquareMatrix(Size);
+    }
+
+    void ReadAsODArcList(bool directed, int format){
+        /// Читает Граф, как ... One Distanced(длина=1) Arc List (a -> b, если directed==1, a <-> b, если directed==0)
+        /// format = 1, если граф задаётся рёбрами, как 1 .. n, а не 0 .. n-1
+
+        cin >> Size;
+
+        init(Size);
+        int m;
+        cin >> m;
+
+        int from, to;
+
+        for(long long counter = 0; counter < m; counter++){
+
+                cin >> from >> to;
+                from -= format;
+                to -= format;
+                InsertNewArc(from,1,to);
+                if(!directed){
+                    InsertNewArc(to,1,from);
+                }
+
         }
     }
 
@@ -156,6 +190,26 @@ public:
     bool IsThereArc(long long start_point, long long direction){
         /// Возвращает true или false в зависимости от того, существует ли Арка от start_point до direction
         return GetThisArcIterator(start_point,direction) != Arcs[start_point].end();
+    }
+
+    bool isOriented(){
+        /// Узнаёт ориентирован ли граф
+
+        for(long long cou = 0; cou < Size; cou++){
+            for (Arc i : Arcs[cou]){
+                if (!IsThereArc(i.direction,cou)){
+                    return 1;
+                }
+            }
+        }
+        return 0;
+    }
+
+    bool DoesContainLoop(){
+        for(long long cou = 0; cou < Size; cou++){
+            if (IsThereArc(cou,cou)){return 1;}
+        }
+        return 0;
     }
 
     void DisorientGraph(){
