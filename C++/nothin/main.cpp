@@ -19,6 +19,7 @@ int main()
 
 
     fin >> a;
+
     b = a;
     a._sqrt();
 

@@ -26,6 +26,7 @@ int main()
 
 
     fin >> a;
+
     b = a;
     a._sqrt();
 
@@ -1096,7 +1097,7 @@ vector<T> NVP(vector<T> A){
 #include <iostream>
 using namespace std;
 
-#define VI vector<int>
+#define VI vector<long long>
 double PI = acos(0) * 2;
 
 class complex
@@ -1179,8 +1180,8 @@ public:
 				data[i].b /= n;
 			}
 	}
-
-	static VI convolution(VI &a, VI &b)
+    template <typename T>
+	static VI convolution(const vector<T> &a, const vector<T> &b)
 	{
 		int alen = a.size(), blen = b.size();
 		int resn = alen + blen - 1;	// size of the resulting array
@@ -1223,12 +1224,14 @@ public:
 
 #define debug_delenie false
 
+#define int long long
 
 int intlog(double base, double x) {
     return (int)(log(x) / log(base));
 }
-
-const int INT_MAXI = 2147483647;
+/// 9 223 372 036 854 775 807
+/// 2147483647
+const int INT_MAXI = 9223372036854775807;
 
 char FromIntToChar(int a){
 
@@ -1290,7 +1293,7 @@ public:
 
 
     /// Обработка сравнения двух положительных чисел (0 => второе больше, 1 => равны, 2 => наше больше)
-    short compare(BigInt &another){
+    short inline compare(const BigInt &another){
         if (another.data.size() != data.size()){
             return (data.size() > another.data.size()) << 1;
         }
@@ -1308,7 +1311,7 @@ public:
     }
 
     /// Обработка сложения двух положительных чисел
-    void _add(BigInt &another){
+    void inline _add(const BigInt &another){
 
         size_t extra_size = 1;
 
@@ -1344,7 +1347,7 @@ public:
 
 
     /// Обработка вычитания двух положительных чисел (работает, если второе меньше первого)
-    void _subtract(BigInt &another){
+    void _subtract(const BigInt &another){
 
         size_t an_sz = another.data.size();
 
@@ -1368,7 +1371,7 @@ public:
     }
 
     /// Обработка умножения числа на маленькое( такое, что (Base-1)*number < INT_MAX )
-    void _mult(int number){
+    void inline _mult(const int number){
 
         if (number == 0){data = {0}; return;}
 
@@ -1391,7 +1394,7 @@ public:
     }
 
     /// Обработка умножения числа на БОЛЬШОЕ( О УЖАС! )
-    void _mult(BigInt &number){
+    void inline _mult(const BigInt &number){
         data = FFT::convolution(data, number.data);
 
 
@@ -1411,7 +1414,7 @@ public:
     }
 
     /// Возводит число в натуральную степень
-    void _pow(int pow_){
+    void inline _pow(int pow_){
 
         BigInt cp = (*this);
 
@@ -1426,7 +1429,7 @@ public:
     }
 
     /// Возводит число в натуральную степень, оставляя лишь
-    void _pow(int pow_, int truncated_digits){
+    void inline _pow(int pow_, int truncated_digits){
 
         BigInt cp = (*this);
 
@@ -1444,7 +1447,7 @@ public:
     }
 
     /// Делит число на короткое
-    int _divide(int digit_, BigInt &to_write){
+    int inline _divide(int digit_, BigInt &to_write){
         to_write.data = {};
         to_write.Base = Base;
         int Carret = 0;
@@ -1466,7 +1469,7 @@ public:
 
     }
 
-    void Interate(BigInt &b, int precision)
+    void inline Interate(BigInt &b, int precision)
     {
 
         // 2 * X(i)
@@ -1486,7 +1489,7 @@ public:
     /// То сколько можно взять в int чисел из контейнеров
 
 
-    void Reciprocal(int precision, BigInt &write_to)
+    void inline Reciprocal(int precision, BigInt &write_to)
     {
         int mx_sz = intlog(Base, INT_MAXI);
         int sz = data.size();
@@ -1520,7 +1523,7 @@ public:
         ///cout << "TestPut " << write_to << endl;
 
         // Do the interation to fullfil the precision
-        int end{ int(std::log2(precision)) + 3 };
+        int end{ (int)(std::log2(precision)) + 3 };
         for (int i = 0; i < end; i++)
         {
             write_to.Interate(*this, precision);
@@ -1528,14 +1531,14 @@ public:
         }
     }
 
-    void _DivUnrefined(BigInt &divisor, size_t precision, BigInt &write_to)
+    void inline _DivUnrefined( BigInt &divisor, size_t precision, BigInt &write_to)
     {
 
         divisor.Reciprocal(precision,write_to);
         write_to._mult(*this);
     }
 
-    void _DivInt(BigInt &divisor, BigInt &write_to)
+    void inline _DivInt( BigInt &divisor, BigInt &write_to)
     {
 
         if ( (data[data.size() - 1] == 0) || (divisor.data.size() > data.size()) ){write_to = 0; return;}
@@ -1547,7 +1550,7 @@ public:
         }
     }
 
-    void _DivIntRem(BigInt &divisor, BigInt &write_to, BigInt &rem_write_to)
+    void inline _DivIntRem( BigInt &divisor, BigInt &write_to, BigInt &rem_write_to)
     {
         _DivInt(divisor,write_to);
         rem_write_to = *this;
@@ -1557,7 +1560,7 @@ public:
     }
 
 
-    void _sqrt()
+    void inline _sqrt()
     {
         BigInt copy_ = (*this);
         copy_._appendZeros(2);
@@ -1610,7 +1613,7 @@ public:
 
     /// Убирает с конца числа length цифр
     /// [5,4,3,2,1](12345) (length=3)-> [2,1](12)
-    void _ShiftR(int length){
+    void inline _ShiftR(int length){
 
         data.erase(data.begin(), data.begin() + length);
 
@@ -1618,7 +1621,7 @@ public:
 
     /// [5,4,3,2,1](12345) (length=3)-> [0,0,0,5,4,3,2,1](12345000)
     /// Следует Улучшить. Ужасно плохо реализованно
-    void _appendZeros(int length){
+    void inline _appendZeros(int length){
         vector<int> v1(length);
         vector<int> tmp = data;
         data.clear();
@@ -1691,16 +1694,6 @@ public:
     */
 
 };
-
-
-/// [l,r]
-void fill_as_factorial(int l, int r, BigInt &to_write){
-    to_write.Base = 10;
-}
-
-int int_sqrt(int n){
-    return 1;
-}
 /*
 void get_sqrt(BigInt &take_from, BigInt &to_write){
     BigInt ost;
@@ -1816,6 +1809,8 @@ void BigInt::_remove_leading_zeros() {
 }
 
 
+#undef int
+
 
 #include <fstream>
 using namespace std;
@@ -1831,6 +1826,7 @@ int main()
 
 
     fin >> a;
+
     b = a;
     a._sqrt();
 

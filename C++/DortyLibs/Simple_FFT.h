@@ -10,7 +10,7 @@
 #include <iostream>
 using namespace std;
 
-#define VI vector<int>
+#define VI vector<long long>
 double PI = acos(0) * 2;
 
 class complex
@@ -93,8 +93,8 @@ public:
 				data[i].b /= n;
 			}
 	}
-
-	static VI convolution(VI &a, VI &b)
+    template <typename T>
+	static VI convolution(const vector<T> &a, const vector<T> &b)
 	{
 		int alen = a.size(), blen = b.size();
 		int resn = alen + blen - 1;	// size of the resulting array
