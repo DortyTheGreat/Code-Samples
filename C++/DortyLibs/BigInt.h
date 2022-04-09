@@ -4,6 +4,11 @@
 #define debug_delenie false
 
 
+int intlog(double base, double x) {
+    return (int)(log(x) / log(base));
+}
+
+const int INT_MAXI = 2147483647;
 
 char FromIntToChar(int a){
 
@@ -27,6 +32,9 @@ int FromCharToInt(char a){
 }
 
 const int zero = 0;
+
+#define default_base 10
+
 /// –еализаци€ класса больших чисел, через массив нестабильных битов.
 class BigInt{
 private:
@@ -45,9 +53,9 @@ public:
         Base = another.Base;
     }
 
-    BigInt(){data = {0};Base = 10;}
+    BigInt(){data = {0};Base = default_base;}
 
-    BigInt(long long num, int Base_ = 10){
+    BigInt(long long num, int Base_ = default_base){
         Base = Base_;
         while(num != 0){
             data.push_back(num % Base_);
@@ -256,10 +264,11 @@ public:
     }
 
     /// “о сколько можно вз€ть в int чисел из контейнеров
-    const int mx_sz = 8;
+
 
     void Reciprocal(int precision, BigInt &write_to)
     {
+        int mx_sz = intlog(Base, INT_MAXI);
         int sz = data.size();
         size_t len{ (sz > (mx_sz - 1)) ? (mx_sz) : sz };
 
