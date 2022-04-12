@@ -64,7 +64,7 @@ public:
 
     int rsz = -1;
 
-    void operator=(BigInt another){
+    void operator=(const BigInt &another){
         data = another.data;
         Base = another.Base;
     }
@@ -83,8 +83,6 @@ public:
         }
     }
 
-
-
     /// Обработка сравнения двух положительных чисел (0 => второе больше, 1 => равны, 2 => наше больше)
     short inline compare(const BigInt &another){
         if (another.data.size() != data.size()){
@@ -102,6 +100,13 @@ public:
 
         return 1;
     }
+
+    friend bool operator <(const BigInt&, const BigInt&);
+    friend bool operator ==(const BigInt&, const BigInt&);
+	friend bool operator !=(const BigInt&, const BigInt&);
+	friend bool operator <=(const BigInt&, const BigInt&);
+	friend bool operator >(const BigInt&, const BigInt&);
+	friend bool operator >=(const BigInt&, const BigInt&);
 
     /// Обработка сложения двух положительных чисел
     void inline _add(const BigInt &another){
@@ -137,6 +142,39 @@ public:
 
         _remove_leading_zeros();
     }
+
+    void operator +=(const BigInt& right) {
+        if (_is_negative == right._is_negative){
+            _add(right);
+        }else{
+            _is_negative = !_is_negative;
+            *this -= right;
+        }
+    }
+
+    const BigInt operator +() const;
+    const BigInt operator -() const;
+
+
+    /// Верный оператор (с учётом знаков и прочего)
+    void operator-=(BigInt another){
+        short comp_ = !(compare(another));
+        if ( comp_){
+            swap(another,*this);
+            _is_negative = !_is_negative;
+        }
+
+
+        if ( (_is_negative == another._is_negative) ^ (comp_) ) {
+            // Одинаковы по знаку
+            _subtract(another);
+        }else{
+            // Разные по знаку.
+            _add(another);
+        }
+
+    }
+
 
 
     /// Обработка вычитания двух положительных чисел (работает, если второе меньше первого)
@@ -186,25 +224,15 @@ public:
 
     }
 
-    /// Обработка умножения числа на БОЛЬШОЕ( О УЖАС! )
-    void inline _mult(const BigInt &number, BigInt &write_to){
-        write_to.data = FFT::convolution(data, number.data);
+    void operator *=(int);
+    void operator /=(int);
+    friend const BigInt operator *(const BigInt&, const BigInt&);
+    friend const BigInt operator *(BigInt, int);
+    friend const BigInt operator /(BigInt, BigInt);
+    const BigInt operator /(int);
+    void operator *=(const BigInt&);
 
-
-        size_t sz = write_to.data.size() - 1;
-        for(size_t i = 0;i < sz; ++i ){
-            write_to.data[i + 1] += write_to.data[i] / Base;
-            write_to.data[i] %= Base;
-        }
-
-
-        while (write_to.data[sz] >= Base){
-            write_to.data.push_back(write_to.data[sz] / Base);
-            write_to.data[sz] %= Base;
-            ++sz;
-        }
-
-    }
+    //BigInt& operator *=(const big_integer&);
 
     BigInt reqKar(int l, int r, BigInt& another){
         /*
@@ -246,15 +274,14 @@ public:
     }
 
     /// Возводит число в натуральную степень
-    void inline _pow(int pow_, BigInt &write_to){
+    void inline _pow(int pow_){
 
         BigInt cp = (*this);
-        write_to = cp;
         data = {1};
         for (; pow_; pow_ >>= 1) {
             if (pow_ & 1)
-                _mult(cp,write_to);
-            cp._mult(cp,cp);
+                (*this) *= cp;
+            cp *= cp;
         }
 
 
@@ -264,12 +291,12 @@ public:
     void inline _pow(int pow_,BigInt &write_to, int truncated_digits){
 
         BigInt cp = (*this);
-        write_to = cp;
         data = {1};
         for (; pow_; pow_ >>= 1) {
             if (pow_ & 1)
-                _mult(cp,write_to);
-            cp._mult(cp,cp);
+                (*this) *= cp;
+            cp *= cp;
+
 
 
             if (cp.data.size() > truncated_digits){cp.data.resize(truncated_digits);cp._remove_leading_zeros();}
@@ -307,8 +334,8 @@ public:
 
         // 2 * X(i)
         BigInt minus_ = *this;
-        minus_._mult(minus_, minus_);
-        minus_._mult(b, minus_);
+        minus_ *= minus_;
+        minus_ *= b;
 
         minus_._ShiftR(precision);
 
@@ -322,53 +349,12 @@ public:
     /// То сколько можно взять в int чисел из контейнеров
 
 
-    void inline Reciprocal(int precision, BigInt &write_to)
-    {
-        int mx_sz = intlog(Base, INT_MAXI);
-        int sz = data.size();
-        size_t len{ (sz > (mx_sz - 1)) ? (mx_sz) : sz };
-
-        int divisor = 0;
-
-
-
-
-
-        for(int i = 0;i<len;i++){
-            divisor *= write_to.Base;
-            divisor += data[sz - i - 1];
-        }
-
-        int dividend = 1;
-        for(int i = 0;i<len;++i){
-            dividend *= Base;
-        }
-
-
-        ///cout << dividend << endl << divisor << endl;
-        // Extra condition for initial guess is: x(i) < 2R/b
-        write_to = dividend / divisor;
-
-
-
-        write_to._appendZeros(precision - sz);
-
-        ///cout << "TestPut " << write_to << endl;
-
-        // Do the interation to fullfil the precision
-        int end{ (int)(std::log2(precision)) + 4 };
-        for (int i = 0; i < end; i++)
-        {
-            write_to.Interate(*this, precision);
-            ///cout << "InCycle " << write_to << endl;
-        }
-    }
+    const BigInt Reciprocal(int precision);
 
     void inline _DivUnrefined( BigInt &divisor, size_t precision, BigInt &write_to)
     {
 
-        divisor.Reciprocal(precision,write_to);
-        write_to._mult(*this, write_to);
+        write_to = divisor.Reciprocal(precision) * (*this);
     }
 
     void inline _DivInt( BigInt &divisor, BigInt &write_to)
@@ -388,7 +374,7 @@ public:
         _DivInt(divisor,write_to);
         rem_write_to = *this;
         BigInt minus_ = write_to;
-        minus_._mult(divisor,minus_);
+        minus_ *= divisor;
         rem_write_to._subtract(minus_);
     }
 
@@ -399,8 +385,7 @@ public:
     {
         if (data.size() == 1){*this = (intSqrt(data[0])); return;}
         BigInt copy_ = (*this);
-        ///copy_._appendZeros();
-        // x(i+1) = ( x(i) + a / x(i) ) / 2
+
 
 
         int sz = data.size();
@@ -455,9 +440,9 @@ public:
         _sqrt();
 
         BigInt cp = *this;
-        cp._mult(cp,cp);
-        if ( cp.compare(orig) == 2){
-            _subtract(BigInt(1));
+        cp *= cp;
+        if ( orig < cp){
+            *this -= 1;
         }
     }
 
@@ -493,27 +478,7 @@ public:
     }
 
 
-    /// Верный оператор (с учётом знаков и прочего)
-    void operator-=(BigInt another){
-        short comp_ = compare(another);
-        if ( !comp_){
-            swap(another,*this);
-        }
 
-
-        if (_is_negative == another._is_negative){
-            // Одинаковы по знаку
-            _subtract(another);
-        }else{
-            // Разные по знаку.
-            _add(another);
-        }
-
-        if ( !comp_){
-            _is_negative = !_is_negative;
-        }
-
-    }
 
     friend istream& operator>>(istream& in, BigInt &bi) {
 
@@ -639,75 +604,202 @@ void get_sqrt(BigInt &take_from, BigInt &to_write){
 }
 
 
+///
 
+const BigInt operator +(BigInt left, const BigInt& right) {
+    left += right;
+    return left;
+}
 
-/*
-void SqrtRem(BigInt &take_from, BigInt &s, BigInt &r){
+const BigInt operator -(BigInt left, const BigInt& right) {
+    left -= right;
+    return left;
+}
 
-    BigInt s_, r_;
+void BigInt::operator *=(int number) {
+    if (number == 0){data = {0}; return;}
+    if (number < 0){_is_negative = !_is_negative; number = abs(number);}
+    size_t sz = data.size();
+    for(size_t i = 0;i < sz; ++i ){
+        data[i] *= number;
+    }
+    --sz;
+    for(size_t i = 0;i < sz; ++i){
+        data[i+1] += data[i] / Base;
+        data[i] %= Base;
+    }
 
-    if (take_from.data.size() < 4){
-        /// == 2
-    }else{
-        SqrtRem(take_from)
+    while (data[sz] >= Base){
+        data.push_back(data[sz] / Base);
+        data[sz] %= Base;
+        ++sz;
     }
 }
-*/
+
+const BigInt BigInt::operator / (int number) {
+    BigInt write_to;
+    write_to.data = {};
+    write_to.Base = Base;
+    int Carret = 0;
+    int sz = data.size() - 1;
+    for(int i = sz;i > -1; --i){
+        Carret *= Base;
+        Carret += data[i];
+        write_to.data.push_back(Carret / number);
+        Carret %= number;
+    }
 
 
 
+    reverse(write_to.data.begin(),write_to.data.end());
+
+    write_to._remove_leading_zeros();
+
+    return write_to;
+
+    ///
+    /// Остаток <- return Carret;
+}
+
+const BigInt operator *(const BigInt& left, const BigInt& right) {
+    BigInt ret;
+    ret._is_negative = left._is_negative != right._is_negative;
+    ret.Base = left.Base;
+    ret.data = FFT::convolution(left.data, right.data);
 
 
+    size_t sz = ret.data.size() - 1;
+    for(size_t i = 0;i < sz; ++i ){
+        ret.data[i + 1] += ret.data[i] / ret.Base;
+        ret.data[i] %= ret.Base;
+    }
 
 
+    while (ret.data[sz] >= ret.Base){
+        ret.data.push_back(ret.data[sz] / ret.Base);
+        ret.data[sz] %= ret.Base;
+        ++sz;
+    }
 
+    return ret;
+}
 
+// домножает текущее число на указанное
+void BigInt::operator *=(const BigInt& value) {
+    *this = (*this * value);
+}
 
-
-
-
-
-/*
-void Karatsuba_Sqrt(BigInt &num, int precision, BigInt &write_to)
+const BigInt operator /(BigInt left, BigInt right)
 {
-    // x(i+1) = ( x(i) + a / x(i) ) / 2
 
-    // Initial guess
-    BigInt x0;
-    if (num.data.size() == 1)
-    {
-        num._divide(2,x0); /// x0 = num / 2
-        ///x0.append(precision, '0');  MK_IN_FUTURE
+    if ( (left.data[left.data.size() - 1] == 0) || (right.data.size() > left.data.size()) ){return 0;}
+    size_t precision = left.data.size() + 4;
+    left._DivUnrefined(right,precision,left);
+    left._ShiftR(precision);
+    if (left.data.size() == 0){
+        left.data.push_back(0);
     }
-    else
-    {
-        //std::string x0{ std::to_string(atoi(num.c_str()) / 2) };
+    return left;
+}
 
-        for(int i = 0;i < (num.data.size() - 1) / 2; ++i ){
-            x0.data.push_back(zero);
-        }
 
-        x0.data.push_back( (num.data.size() % 2) ? (num.Base/4) : (num.Base*3/4));
+
+
+const BigInt BigInt::Reciprocal(int precision)
+{
+    BigInt write_to;
+
+    int mx_sz = intlog(Base, INT_MAXI);
+    int sz = data.size();
+    size_t len{ (sz > (mx_sz - 1)) ? (mx_sz) : sz };
+
+    int divisor = 0;
+
+
+
+
+
+    for(int i = 0;i<len;i++){
+        divisor *= write_to.Base;
+        divisor += data[sz - i - 1];
+    }
+
+    int dividend = 1;
+    for(int i = 0;i<len;++i){
+        dividend *= Base;
     }
 
 
-    Division div{};
-    Karatsuba kar{};
+    ///cout << dividend << endl << divisor << endl;
+    // Extra condition for initial guess is: x(i) < 2R/b
+    write_to = dividend / divisor;
+
+
+
+    write_to._appendZeros(precision - sz);
+
+    ///cout << "TestPut " << write_to << endl;
 
     // Do the interation to fullfil the precision
-    int end{ int(std::log2(precision)) + 1 };
+    int end{ (int)(std::log2(precision)) + 4 };
     for (int i = 0; i < end; i++)
     {
-        // x(i) * 10^precision + a * 10^(2*precision) / x(i)
-        std::string v{ div.DivInt(num, x0, 2 * precision) };
-        x0 = div.Div(kar.Add(x0, v), "2", precision);
-        PrintDetails(i + 1, x0);
+        write_to.Interate(*this, precision);
+        ///cout << "InCycle " << write_to << endl;
     }
 
-    size_t i_cnt{ x0.length() - precision };
-    return x0.substr(0, i_cnt) + '.' + x0.substr(i_cnt, precision - i_cnt);
+    return write_to;
 }
-*/
+
+
+// проверяет, является ли левый операнд меньше правого
+bool operator <(const BigInt& left, const BigInt& right) {
+
+    if (left._is_negative != right._is_negative){
+        return left._is_negative;
+    }
+
+	if (left.data.size() != right.data.size()){
+        return (left.data.size() < right.data.size()) ^ (left._is_negative);
+    }
+
+    int sz = left.data.size();
+
+    for (int i = 0;i<sz;i++){
+        int p = sz - i - 1;
+        if (left.data[p] != right.data[p]){
+            return (left.data[p] < right.data[p]) ^ (left._is_negative);
+        }
+    }
+
+    // Числа равны
+    return 0;
+}
+
+// проверяет, является ли левый операнд меньше правого
+bool operator !=(const BigInt& left, const BigInt& right) {
+
+    if (left._is_negative != right._is_negative){
+        return 1;
+    }
+
+	if (left.data.size() != right.data.size()){
+        return 1;
+    }
+
+    int sz = left.data.size();
+
+    for (int i = 0;i<sz;i++){
+        int p = sz - i - 1;
+        if (left.data[p] != right.data[p]){
+            return 1;
+        }
+    }
+
+    // Числа равны
+    return 0;
+}
+
 
 void BigInt::_remove_leading_zeros() {
 	while (this->data.size() > 1 && this->data.back() == 0) {

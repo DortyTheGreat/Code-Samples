@@ -4,8 +4,9 @@
 #include "../DortyLibs/BetterVector.h"
 #include "../DortyLibs/Cython.h"
 #include "../DortyLibs/algo.h"
-#include "../DortyLibs/BigInt.h"
+#include "../DortyLibs/OperatorBigInt.h"
 #include <fstream>
+#include "../DortyLibs/NewtonsSQRT.h"
 using namespace std;
 
 int main()
@@ -18,18 +19,18 @@ int main()
     BigInt c,d;
 
 
-    fin >> a;
+    cin >> a;
 
     b = a;
-    a._sqrt();
+    //a._sqrt();
+    a = sqrt(a);
 
 
+    cout << a; //endl << d;
 
-    fout << a; //endl << d;
-
-    a._mult(a);
+    a *= a;
     b._subtract(a);
-    fout << endl << b;
+    cout << endl << b;
 
 
     ///cout << a << endl;
