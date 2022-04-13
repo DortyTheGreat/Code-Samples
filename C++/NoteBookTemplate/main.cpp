@@ -18,39 +18,15 @@ using namespace std;
 
 int main()
 {
-    BigInt a,b,c;
-    cin >> a >> b;
-    c = a * b;
-    cout << c << endl;
-    /*
     ifstream fin("input.txt");
     ofstream fout("output.txt");
     AppBuild();
-    BigInt a = 1000;
-    BigInt b = 999;
-    BigInt c,d;
+
+    BigInt a,b,c;
+    fin >> a >> b;
+    c = a * b;
+    fout << c << endl;
 
 
-    fin >> a;
-
-    b = a;
-    a._sqrt();
-
-
-
-    fout << a; //endl << d;
-
-    a._mult(a);
-    b._subtract(a);
-    fout << endl << b;
-
-
-    ///cout << a << endl;
-
-    //cout << r << endl;
-
-
-    ///cout << counter << endl;
     return 0;
-    */
 }
