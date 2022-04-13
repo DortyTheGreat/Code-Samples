@@ -406,32 +406,16 @@ const BigInt BigInt::pow(BigInt n) const {
 
 // печатает число в поток вывода
 std::ostream& operator <<(std::ostream& os, const BigInt& bi) {
-	if ( (bi._digits.size() == 1) && (bi._digits[0] == 0)){
-        os << FromIntToChar(0);
-        return os;
-    }
+	if (bi._digits.empty()) os << 0;
+	else {
+		if (bi._is_negative) os << '-';
+		os << bi._digits.back();
+		char old_fill = os.fill('0');
+		for (long long i = static_cast<long long>(bi._digits.size()) - 2; i >= 0; --i) os << std::setw(9) << bi._digits[i];
+		os.fill(old_fill);
+	}
 
-    int sz = bi._digits.size();
-    if (bi._is_negative){os << '-';}
-    int Carret;
-    std::string buff = "";
-    for(int i = 0;i<sz;++i){
-        Carret = bi._digits[i];
-        for(int j = 0; j < container_stack;++j){
-            buff += FromIntToChar(Carret % default_base);
-            Carret /= default_base;
-        }
-
-    }
-
-    while(buff.back() == '0'){
-        buff.pop_back();
-    }
-
-    reverse(buff.begin(),buff.end());
-
-    os << buff;
-    return os;
+	return os;
 }
 
 std::istream& operator>>(std::istream& in, BigInt &bi) {
@@ -494,7 +478,7 @@ BigInt sqrt(BigInt n) {
 
     BigInt x;
     int rsz = n.get_real_size();
-    /*
+    int sz = n.
     //cout << sz <<" rsz : " << rsz << endl;
     x._digits.clear();
 

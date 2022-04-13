@@ -60,21 +60,22 @@ private:
 public:
     /// 1234 === [4,3,2,1]
     vector<int> data;
-    int Base = -1;
+    const static int Base = total_base;
 
     int rsz = -1;
 
     void operator=(BigInt another){
         data = another.data;
-        Base = another.Base;
+        ///Base = another.Base;
     }
 
-    BigInt(){data = {0};Base = total_base;}
+    BigInt(){data = {0};
+    //Base = total_base;
+    }
 
-    BigInt(long long num, int Base_ = total_base){
-        Base = Base_;
+    BigInt(long long num){
         while(num != 0){
-            data.push_back(num % Base_);
+            data.push_back(num % Base);
             num /= Base;
         }
 
@@ -282,7 +283,7 @@ public:
     /// Делит число на короткое
     int inline _divide(int digit_, BigInt &to_write){
         to_write.data = {};
-        to_write.Base = Base;
+
         int Carret = 0;
         int sz = data.size() - 1;
         for(int i = sz;i > -1; --i){
@@ -517,11 +518,6 @@ public:
 
     friend istream& operator>>(istream& in, BigInt &bi) {
 
-
-
-        if (bi.Base == -1){
-            bi.Base = total_base;
-        }
 
         string stream_;
         in >> stream_;

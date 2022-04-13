@@ -23,13 +23,13 @@ class BigInt {
 
 	void _remove_leading_zeros();
 	void _shift_right();
-
+    static const int BASE = 1000000000;
 public:
 
 
 
     // основание системы счисления (1 000 000 000)
-	int BASE = total_base;
+
 
 
 	// класс-исключение, бросаемое при делении на ноль

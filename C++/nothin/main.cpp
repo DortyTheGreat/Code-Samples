@@ -1,3 +1,4 @@
+
 #include <iostream>
 
 #include "../DortyLibs/BigIntLib.h"
@@ -13,6 +14,7 @@ int main()
     ifstream fin;
 	ofstream fout;
 	fin.open("input.txt");
+	string a;
 	getline(fin, a);
 	fin.close();
 
@@ -25,4 +27,6 @@ int main()
   fout << ans << endl << n1 - ans * ans;
   return 0;
 }
+
+
 
