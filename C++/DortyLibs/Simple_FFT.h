@@ -29,7 +29,7 @@ public:
 	const complex operator*(const complex &c) const
 		{return complex(a*c.a - b*c.b, a*c.b + b*c.a);}
 	double magnitude() {return sqrt(a*a+b*b);}
-	void print() {printf("(%.3f %.3f)\n", a, b);}
+	//void print() {printf("(%.3f %.3f)\n", a, b);}
 };
 
 class FFT

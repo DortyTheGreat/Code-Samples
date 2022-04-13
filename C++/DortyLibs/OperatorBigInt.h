@@ -1,9 +1,11 @@
 #include <vector>
-#include "Simple_FFT.h"
+//#include "Simple_FFT.h"
 
 #define debug_delenie false
 
-#define int long long
+#include <cmath>
+
+//#define int long long
 
 #define char_zero '0'
 
@@ -11,8 +13,8 @@ int intlog(double base, double x) {
     return (int)(log(x) / log(base));
 }
 /// 9 223 372 036 854 775 807
-/// 2147483647
-const int INT_MAXI = 9223372036854775807;
+/// 2 147 483 647
+const int INT_MAXI = 2147483647;
 
 int inline intSqrt(int arg){
     return (int)(sqrt(arg));
@@ -43,11 +45,11 @@ const int zero = 0;
 
 #define default_base 10
 
-#define container_stack 6 /// 6
+#define container_stack 1 /// 6
 
-#define total_base 1000000 /// 1000000
+#define total_base 10 /// 1000000
 
-#define sqrt_of_total_base 1000 /// 1000
+#define sqrt_of_total_base 3 /// 1000
 
 /// –еализаци€ класса больших чисел, через массив нестабильных битов.
 class BigInt{
@@ -226,7 +228,8 @@ public:
 
     void operator *=(int);
     void operator /=(int);
-    friend const BigInt operator *(const BigInt&, const BigInt&);
+    /// FFT <- friend const BigInt operator *(const BigInt&, const BigInt&);
+    friend const BigInt operator *(BigInt, BigInt);
     friend const BigInt operator *(BigInt, int);
     friend const BigInt operator /(BigInt, BigInt);
     const BigInt operator /(int);
@@ -288,7 +291,7 @@ public:
     }
 
     /// ¬озводит число в натуральную степень, оставл€€ лишь
-    void inline _pow(int pow_,BigInt &write_to, int truncated_digits){
+    void inline _pow(int pow_,BigInt &write_to, size_t truncated_digits){
 
         BigInt cp = (*this);
         data = {1};
@@ -389,7 +392,7 @@ public:
 
 
         int sz = data.size();
-        int rsz = (sz-1)*container_stack + intlog(default_base,data[sz - 1]) + 1;
+        ///int rsz = (sz-1)*container_stack + intlog(default_base,data[sz - 1]) + 1;
         //cout << sz <<" rsz : " << rsz << endl;
         data.clear();
 
@@ -402,7 +405,7 @@ public:
         ///cout << *this << endl;
 
         // Do the interation to fullfil the precision
-        int end{  log2(sz) + 6 };
+        int end{  (int)(log2(sz)) + 6 };
 
         //cout << *this << endl;
 
@@ -661,6 +664,8 @@ const BigInt BigInt::operator / (int number) {
     /// ќстаток <- return Carret;
 }
 
+
+/** FFT
 const BigInt operator *(const BigInt& left, const BigInt& right) {
     BigInt ret;
     ret._is_negative = left._is_negative != right._is_negative;
@@ -682,6 +687,136 @@ const BigInt operator *(const BigInt& left, const BigInt& right) {
     }
 
     return ret;
+}
+
+*/
+
+/// Karatsuba, пока не делает ничего со знаком
+const BigInt operator *(BigInt left, BigInt right) {
+
+    if (right.data.size() > left.data.size()){
+        swap(right,left); /// left > right (as size)
+    }
+
+
+    int n = left.data.size(); /// size of biggest num
+
+    if (n == 1){
+
+            cout << "RSZ : " <<right.data.size() << endl;
+
+            return BigInt(left.data[0] * right.data[0]);
+
+
+    }
+    int fh = (n+1) / 2;   // First half Data (take more)
+    int sh = (n - fh); // Second half of Data
+
+    // Find the first half and second half of first string.
+
+    BigInt L0,L1;
+    L0.data.resize(fh);
+    L1.data.resize(sh);
+
+    for(int i = 0;i<fh;++i){
+        L0.data[i] = left.data[i];
+    }
+
+    for(int i = 0;i<sh;++i){
+        L1.data[i] = left.data[fh + i];
+    }
+
+    cout << "L0 " << L0 << endl; // low half
+    cout << "L1 " << L1 << endl; // high half
+
+    BigInt R0;
+    int s_sz = right.data.size();
+
+    int _0_sz = min(s_sz, fh);
+
+    R0.data.resize(_0_sz);
+
+    for(int i = 0;i<_0_sz;++i){
+        R0.data[i] = right.data[i];
+    }
+
+    cout << "R0 " << R0 << endl; // low half
+
+    BigInt Z0 = L0 * R0;
+    BigInt Z1;
+    cout << "Z0 " << Z0 << endl;
+
+    int _1_sz = s_sz - _0_sz;
+    if (_1_sz == 0){
+        cout << "R1 = 0 SPECIAL CASE " << endl;
+        /// Z2 = 0
+        Z1 = L1 * R0; /// no swap
+
+        cout << sh << endl;
+
+        Z1._appendZeros(fh);
+
+        cout << "Z1 " << Z1 << endl;
+
+        return Z1 + Z0;
+    }else{
+        BigInt R1;
+        R1.data.resize(_1_sz);
+
+        cout << "C0" << endl;
+
+        ///cout << R1.data.size() << endl;
+
+
+
+        for(int i = 0;i<_1_sz;++i){
+            R1.data[i] = right.data[fh + i];
+        }
+
+        cout << "R1 " << R1 << endl; // high half
+
+        BigInt Z2 = L1 * R1; /// no swap
+        cout << L0 << " " << L1 << " " << R0 << " " << R1 << " " << Z2 << " " << Z0 << endl;
+        cout << left << " " << right << endl;
+        Z1 = (L0+L1) * (R0+R1) - (Z2 + Z0);
+
+        if ( !(Z1.size() == 1 && Z1.data[0] == 0) )
+            Z1._appendZeros(fh);
+
+        cout << Z1.data.size() << endl;
+
+        for(int i = 0;i<Z1.data.size();++i){
+            cout << Z1.data[i] << endl;
+        }
+
+        cout << "Z1 " << Z1 << endl;
+        ///Z2._ShiftR(sh*2);
+        if ( !(Z2.size() == 1 && Z2.data[0] == 0) )
+            Z2._appendZeros(fh * 2);
+
+        //cout << "Z2 " << Z2 << endl;
+        return Z2 + Z1 + Z0;
+    }
+
+
+
+
+    /*
+    // Recursively calculate the three products of inputs of size n/2
+
+    // Z2 = X1 * Y1
+    std::string Z2 = MultiplyRecur(X1, Y1);
+    // Z1 = (X0 + X1)(Y0 + Y1) - Z0 - Z2
+    std::string Z1 = MultiplyRecur(Add(X0, X1), Add(Y0, Y1));
+    Z1 = Subtraction(Z1, Add(Z0, Z2));
+
+    // return added string version
+    // Z = Z2 * (10^(low half digits * 2)) + Z1 * (10^(low half digit)) + Z0
+    return Add(Add(Shift(Z2, sh*2), Z0), Shift(Z1, sh));
+
+
+    return BigInt(12);
+    */
 }
 
 // домножает текущее число на указанное
@@ -711,7 +846,7 @@ const BigInt BigInt::Reciprocal(int precision)
 
     int mx_sz = intlog(Base, INT_MAXI);
     int sz = data.size();
-    size_t len{ (sz > (mx_sz - 1)) ? (mx_sz) : sz };
+    int len{ (sz > (mx_sz - 1)) ? (mx_sz) : sz };
 
     int divisor = 0;
 
