@@ -17,21 +17,24 @@ using namespace std;
 
 int main()
 {
+
+
     AppBuild();
-    ifstream fin;
-	ofstream fout;
-	fin.open("input.txt");
-	string a;
-	getline(fin, a);
-	fin.close();
+    ifstream fin("input.txt");
+	ofstream fout("output.txt");
 
-	BigInt n1(a);
 
-	fout.open("output.txt");
+
+
+	BigInt n1;
+	fin >> n1;
+
+
 
   BigInt ans = sqrt(n1);
   cout << "CALCULATED" << endl;
   fout << ans << endl << n1 - ans * ans;
+
   return 0;
 }
 
@@ -54,7 +57,7 @@ int main()
 
 #define total_base 1000000000 /// 1000000
 
-#define sqrt_of_total_base 10000 /// 1000
+#define sqrt_of_total_base 31622 /// 1000
 
 class BigInt {
 
@@ -67,7 +70,7 @@ class BigInt {
 
 	void _remove_leading_zeros();
 	void _shift_right();
-    static const int BASE = 1000000000;
+    static const int BASE = total_base;
 public:
 
     std::vector<int> _digits;
@@ -114,7 +117,10 @@ public:
 	BigInt& operator -=(const BigInt&);
 	friend const BigInt operator *(const BigInt&, const BigInt&);
 	BigInt& operator *=(const BigInt&);
+	friend const BigInt operator /(const BigInt&, const int);
 	friend const BigInt operator /(const BigInt&, const BigInt&);
+
+
 	BigInt& operator /=(const BigInt&);
 	friend const BigInt operator %(const BigInt&, const BigInt&);
 	BigInt& operator %=(const BigInt&);
@@ -465,21 +471,106 @@ void BigInt::_shift_right() {
 	this->_digits[0] = 0;
 }
 
+const BigInt operator /(const BigInt& left, const int digit_){
+
+    BigInt ret;
+    ret._digits.clear();
+
+    long long Carret = 0;
+    int sz = left._digits.size() - 1;
+    for(int i = sz;i > -1; --i){
+        Carret *= left.BASE;
+        Carret +=  left._digits[i];
+        ret._digits.push_back(Carret / digit_);
+        Carret %= digit_;
+    }
+
+
+
+    reverse(ret._digits.begin(),ret._digits.end());
+
+    ret._remove_leading_zeros();
+
+    return ret;
+}
+
 // делит два числа
 const BigInt operator /(const BigInt& left, const BigInt& right) {
+    ///std::cout << "Called div" << std::endl;
 	if (right == 0) throw BigInt::divide_by_zero();
+	int b_sz = right._digits.size();
+    if (b_sz == 1){return left / right._digits[0];}
+
 	BigInt b = right;
+
+
 	b._is_negative = false;
 	BigInt result, current;
 	result._digits.resize(left._digits.size());
+
+	int x;
+
 	for (long long i = static_cast<long long>(left._digits.size()) - 1; i >= 0; --i) {
 		current._shift_right();
 		current._digits[0] = left._digits[i];
 		current._remove_leading_zeros();
-		int x = 0, l = 0, r = left.BASE;
+
+        int curr_sz = current._digits.size();
+
+        if (curr_sz < b_sz){
+            /// x = 0 -> current = current - b * x; -> current -= 0 -> current не меняется
+            ///std::cout << "free itteration : " << std::endl;
+            result._digits[i] = 0;
+            continue;
+        }
+
+        /// curr.size >= b.size
+        /// b_sz != 1 (т.к. выше было это исключено)
+
+
+        /// current = 123456, two_from_current = 12
+		long long two_from_current = current._digits.back();
+		two_from_current *= left.BASE;
+		two_from_current += current._digits[curr_sz - 2];
+
+
+        /// b = 45678, two_from_b = 45
+		long long two_from_b = b._digits.back();
+		two_from_b *= left.BASE;
+		two_from_b += b._digits[b_sz - 2];
+
+
+        //cout << two_from_current << endl << two_from_b;
+
+
+		if (curr_sz == b_sz){
+            /// check x, x-1, x+1
+            x = (two_from_current/two_from_b);
+		}else{
+            /// тут надо применить хитрость, ибо в таком случае надо делить
+            /// (два_числа_из_куррент*Base) / два_числа_из_б
+            /// однако три числа не поменщаются в long long, при максимальном пакинге...
+            /// приходится "хитрить" и делать "псевдо-длинку" на лишние биты
+            long double d = two_from_current;
+            d *= left.BASE;
+            d /= two_from_b;
+            x = d;
+		}
+
+
+
+        ///std::cout << current <<" : " << b << std::endl;
+        ///std::cout << "X found " << x << std::endl;
+
+		int l = x - 1, r = x + 1;
+		int itteration = 0;
 		while (l <= r) {
+            ++itteration;
 			int m = (l + r) / 2;
 			BigInt t = b * m;
+
+			///std::cout << t <<" " << current <<" " << m << " " << b << std::endl;
+
 			if (t <= current) {
 				x = m;
 				l = m + 1;
@@ -487,8 +578,13 @@ const BigInt operator /(const BigInt& left, const BigInt& right) {
 			else r = m - 1;
 		}
 
-		result._digits[i] = x;
-		current = current - b * x;
+		///std::cout << "X after " << x << std::endl;
+
+		///std::cout << "IT : " << itteration << std::endl;
+        result._digits[i] = x;
+        current = current - b * x;
+
+
 	}
 
 	result._is_negative = left._is_negative != right._is_negative;
@@ -538,15 +634,30 @@ const BigInt BigInt::pow(BigInt n) const {
 
 // печатает число в поток вывода
 std::ostream& operator <<(std::ostream& os, const BigInt& bi) {
-	if (bi._digits.empty()) os << 0;
-	else {
-		if (bi._is_negative) os << '-';
-		os << bi._digits.back();
-		char old_fill = os.fill('0');
-		for (long long i = static_cast<long long>(bi._digits.size()) - 2; i >= 0; --i) os << std::setw(9) << bi._digits[i];
-		os.fill(old_fill);
-	}
+	if ( (bi._digits.size() == 1) && (bi._digits[0] == 0)){
+        os << FromIntToChar(0);
+        return os;
+    }
 
+    int sz = bi._digits.size();
+    if (bi._is_negative){os << '-';}
+    int Carret;
+    std::string buff = "";
+    for(int i = 0;i<sz;++i){
+        Carret = bi._digits[i];
+        for(int j = 0; j < container_stack;++j){
+            buff += FromIntToChar(Carret % default_base);
+            Carret /= default_base;
+        }
+
+    }
+
+    while(buff.back() == '0'){
+        buff.pop_back();
+    }
+
+    reverse(buff.begin(),buff.end());
+    os << buff;
 	return os;
 }
 
@@ -628,8 +739,11 @@ BigInt sqrt(BigInt n) {
 
   while (last != x) {
     last = x;
+
+    ///cout << endl<<n << " " << x << " "<<n/x << endl;
+
     x = (x + n / x) / 2;
-    //cout << last << endl << x << endl << endl;
+    ///cout << last << endl << x << endl << endl;
     ++iter;
   }
   cout << iter << endl;
@@ -666,21 +780,24 @@ using namespace std;
 
 int main()
 {
+
+
      
-    ifstream fin;
-	ofstream fout;
-	fin.open("input.txt");
-	string a;
-	getline(fin, a);
-	fin.close();
+    ifstream fin("input.txt");
+	ofstream fout("output.txt");
 
-	BigInt n1(a);
 
-	fout.open("output.txt");
+
+
+	BigInt n1;
+	fin >> n1;
+
+
 
   BigInt ans = sqrt(n1);
   cout << "CALCULATED" << endl;
   fout << ans << endl << n1 - ans * ans;
+
   return 0;
 }
 

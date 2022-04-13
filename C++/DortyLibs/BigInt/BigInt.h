@@ -10,7 +10,7 @@
 
 #define total_base 1000000000 /// 1000000
 
-#define sqrt_of_total_base 10000 /// 1000
+#define sqrt_of_total_base 31622 /// 1000
 
 class BigInt {
 
@@ -23,7 +23,7 @@ class BigInt {
 
 	void _remove_leading_zeros();
 	void _shift_right();
-    static const int BASE = 1000000000;
+    static const int BASE = total_base;
 public:
 
     std::vector<int> _digits;
@@ -70,7 +70,10 @@ public:
 	BigInt& operator -=(const BigInt&);
 	friend const BigInt operator *(const BigInt&, const BigInt&);
 	BigInt& operator *=(const BigInt&);
+	friend const BigInt operator /(const BigInt&, const int);
 	friend const BigInt operator /(const BigInt&, const BigInt&);
+
+
 	BigInt& operator /=(const BigInt&);
 	friend const BigInt operator %(const BigInt&, const BigInt&);
 	BigInt& operator %=(const BigInt&);
