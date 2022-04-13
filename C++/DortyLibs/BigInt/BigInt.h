@@ -17,7 +17,7 @@ class BigInt {
 
 	// внутреннее хранилище числа
 
-    std::vector<int> _digits;
+
 	// знак числа
 	bool _is_negative;
 
@@ -26,6 +26,7 @@ class BigInt {
     static const int BASE = 1000000000;
 public:
 
+    std::vector<int> _digits;
 
 
     // основание системы счисления (1 000 000 000)

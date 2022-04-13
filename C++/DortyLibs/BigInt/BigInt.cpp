@@ -478,7 +478,7 @@ BigInt sqrt(BigInt n) {
 
     BigInt x;
     int rsz = n.get_real_size();
-    int sz = n.
+    int sz = n._digits.size();
     //cout << sz <<" rsz : " << rsz << endl;
     x._digits.clear();
 
@@ -486,9 +486,9 @@ BigInt sqrt(BigInt n) {
 
 
     x._appendZeros((sz - 1) / 2 );
-    */
-    x = 10;
-    x = x.pow(rsz / 2 + 1);
+
+    //x = 10;
+    //x = x.pow(rsz / 2 + 1);
   BigInt last = 0;
   int iter = 0;
 
