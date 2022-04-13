@@ -229,7 +229,7 @@ public:
     void operator *=(int);
     void operator /=(int);
     /// FFT <- friend const BigInt operator *(const BigInt&, const BigInt&);
-    friend const BigInt operator *(BigInt, BigInt);
+    friend const BigInt operator *(const BigInt&,const BigInt&);
     friend const BigInt operator *(BigInt, int);
     friend const BigInt operator /(BigInt, BigInt);
     const BigInt operator /(int);
@@ -291,7 +291,7 @@ public:
     }
 
     /// Возводит число в натуральную степень, оставляя лишь
-    void inline _pow(int pow_,BigInt &write_to, size_t truncated_digits){
+    void inline _pow(int pow_,BigInt &write_to, size_t truncateddata){
 
         BigInt cp = (*this);
         data = {1};
@@ -302,8 +302,8 @@ public:
 
 
 
-            if (cp.data.size() > truncated_digits){cp.data.resize(truncated_digits);cp._remove_leading_zeros();}
-            if (data.size() > truncated_digits){data.resize(truncated_digits);_remove_leading_zeros();}
+            if (cp.data.size() > truncateddata){cp.data.resize(truncateddata);cp._remove_leading_zeros();}
+            if (data.size() > truncateddata){data.resize(truncateddata);_remove_leading_zeros();}
         }
 
 
@@ -691,23 +691,15 @@ const BigInt operator *(const BigInt& left, const BigInt& right) {
 
 */
 
+
 /// Karatsuba, пока не делает ничего со знаком
-const BigInt operator *(BigInt left, BigInt right) {
-
-    if (right.data.size() > left.data.size()){
-        swap(right,left); /// left > right (as size)
-    }
+const BigInt operator *(const BigInt& left, const BigInt& right) {
+    bool flag = (right.data.size() > left.data.size());
 
 
-    int n = left.data.size(); /// size of biggest num
+    int n = flag ? right.data.size() : left.data.size(); /// size of biggest num
 
-    if (n == 1){
-
-
-            return BigInt(left.data[0] * right.data[0]);
-
-
-    }
+    if (n == 1){return BigInt(left.data[0] * right.data[0]);}
     int fh = (n+1) / 2;   // First half Data (take more)
     int sh = (n - fh); // Second half of Data
 
@@ -717,36 +709,66 @@ const BigInt operator *(BigInt left, BigInt right) {
     L0.data.resize(fh);
     L1.data.resize(sh);
 
-    for(int i = 0;i<fh;++i){
-        L0.data[i] = left.data[i];
-    }
-
-    for(int i = 0;i<sh;++i){
-        L1.data[i] = left.data[fh + i];
-    }
-
     BigInt R0;
-    int s_sz = right.data.size();
-
-    int _0_sz = min(s_sz, fh);
-
-    R0.data.resize(_0_sz);
-
-    for(int i = 0;i<_0_sz;++i){
-        R0.data[i] = right.data[i];
-    }
-
-
-    BigInt Z0 = L0 * R0;
+    BigInt Z0;
     BigInt Z1;
 
+
+    int _0_sz;
+    int s_sz;
+
+    if (!flag){
+        for(int i = 0;i<fh;++i){
+            L0.data[i] = left.data[i];
+        }
+
+        for(int i = 0;i<sh;++i){
+            L1.data[i] = left.data[fh + i];
+        }
+
+
+        s_sz = right.data.size();
+
+        _0_sz = min(s_sz, fh);
+
+        R0.data.resize(_0_sz);
+
+        for(int i = 0;i<_0_sz;++i){
+            R0.data[i] = right.data[i];
+        }
+
+    }else{
+
+        for(int i = 0;i<fh;++i){
+            L0.data[i] = right.data[i];
+        }
+
+        for(int i = 0;i<sh;++i){
+            L1.data[i] = right.data[fh + i];
+        }
+
+
+        s_sz = left.data.size();
+
+        _0_sz = min(s_sz, fh);
+
+        R0.data.resize(_0_sz);
+
+        for(int i = 0;i<_0_sz;++i){
+            R0.data[i] = left.data[i];
+        }
+    }
+
+
+    Z0 = L0 * R0;
     int _1_sz = s_sz - _0_sz;
     if (_1_sz == 0){
         /// Z2 = 0
         Z1 = L1 * R0; /// no swap
 
-        Z1._appendZeros(fh);
+        ///Z1._appendZeros(fh);
 
+        Z0
 
 
         return Z1 + Z0;
@@ -755,47 +777,51 @@ const BigInt operator *(BigInt left, BigInt right) {
         R1.data.resize(_1_sz);
 
 
-        ///cout << R1.data.size() << endl;
-
-
-
-        for(int i = 0;i<_1_sz;++i){
-            R1.data[i] = right.data[fh + i];
+        if (!flag){
+            for(int i = 0;i<_1_sz;++i){
+                R1.data[i] = right.data[fh + i];
+            }
+        }else{
+            for(int i = 0;i<_1_sz;++i){
+                R1.data[i] = left.data[fh + i];
+            }
         }
         BigInt Z2 = L1 * R1; /// no swap
 
         Z1 = (L0+L1) * (R0+R1) - (Z2 + Z0);
 
-        if ( !(Z1.data.size() == 1 && Z1.data[0] == 0) )
-            Z1._appendZeros(fh);
+        ///if ( !(Z1.data.size() == 1 && Z1.data[0] == 0) )
+            ///Z1._appendZeros(fh);
 
-        if ( !(Z2.data.size() == 1 && Z2.data[0] == 0) )
-            Z2._appendZeros(fh * 2);
+        ///if ( !(Z2.data.size() == 1 && Z2.data[0] == 0) )
+            ///Z2._appendZeros(fh * 2);
 
         return Z2 + Z1 + Z0;
     }
 
-
-
-
-    /*
-    // Recursively calculate the three products of inputs of size n/2
-
-    // Z2 = X1 * Y1
-    std::string Z2 = MultiplyRecur(X1, Y1);
-    // Z1 = (X0 + X1)(Y0 + Y1) - Z0 - Z2
-    std::string Z1 = MultiplyRecur(Add(X0, X1), Add(Y0, Y1));
-    Z1 = Subtraction(Z1, Add(Z0, Z2));
-
-    // return added string version
-    // Z = Z2 * (10^(low half digits * 2)) + Z1 * (10^(low half digit)) + Z0
-    return Add(Add(Shift(Z2, sh*2), Z0), Shift(Z1, sh));
-
-
-    return BigInt(12);
-    */
 }
 
+
+
+/*
+const BigInt operator *(const BigInt& left, const BigInt& right) {
+	BigInt result;
+	result.data.resize(left.data.size() + right.data.size());
+	for (size_t i = 0; i < left.data.size(); ++i) {
+		int carry = 0;
+		for (size_t j = 0; j < right.data.size() || carry != 0; ++j) {
+			long long cur = result.data[i + j] +
+				left.data[i] * 1LL * (j < right.data.size() ? right.data[j] : 0) + carry;
+			result.data[i + j] = static_cast<int>(cur % left.Base);
+			carry = static_cast<int>(cur / left.Base);
+		}
+	}
+
+	result._is_negative = left._is_negative != right._is_negative;
+	result._remove_leading_zeros();
+	return result;
+}
+*/
 // домножает текущее число на указанное
 void BigInt::operator *=(const BigInt& value) {
     *this = (*this * value);
