@@ -6,1243 +6,126 @@ Discord: Тесла#9030
 ---Original---Code---
 
 #include <iostream>
-#include "../DortyLibs/DortyGraph.h"
+
+#include "../DortyLibs/BigIntLib.h"
+
 #include "../DortyLibs/DortyBuild.h"
-#include "../DortyLibs/BetterVector.h"
-#include "../DortyLibs/Cython.h"
-#include "../DortyLibs/algo.h"
-#include "../DortyLibs/OperatorBigInt.h"
 #include <fstream>
-#include "../DortyLibs/NewtonsSQRT.h"
+
 using namespace std;
 
 int main()
 {
-    ifstream fin("input.txt");
-    ofstream fout("output.txt");
     AppBuild();
-    BigInt a = 1000;
-    BigInt b = 999;
-    BigInt c,d;
+    ifstream fin;
+	ofstream fout;
+	fin.open("input.txt");
+	getline(fin, a);
+	fin.close();
 
+	BigInt n1(a);
 
-    cin >> a;
+	fout.open("output.txt");
 
-    b = a;
-    //a._sqrt();
-    a = sqrt(a);
-
-
-    cout << a; //endl << d;
-
-    a *= a;
-    b._subtract(a);
-    cout << endl << b;
-
-
-    ///cout << a << endl;
-
-    //cout << r << endl;
-
-
-    ///cout << counter << endl;
-    return 0;
+  BigInt ans = sqrt(n1);
+  cout << "CALCULATED" << endl;
+  fout << ans << endl << n1 - ans * ans;
+  return 0;
 }
 
 
 */
 #include <iostream>
-#include <iostream>
-#include <set>
-#include <vector>
-#include <algorithm>
 
-using namespace std;
+#pragma GCC target ("avx2")
+#pragma GCC optimization ("O3")
+#pragma GCC optimization ("unroll-loops")
+
+#include <bits/stdc++.h>
+
+#define default_base 10
+
+#define container_stack 9 /// 6
+
+#define total_base 1000000000 /// 1000000
+
+#define sqrt_of_total_base 10000 /// 1000
+
+class BigInt {
 
 
+	// внутреннее хранилище числа
 
-///==========
-///Р РµР°Р»РёР·Р°С†РёСЏ "РРґРµР°Р»СЊРЅРѕРіРѕ" Р“СЂР°С„Р° С‡РµСЂРµР· РѕРїСЂРµРґРµР»РµРЅРёРµ "Р”СѓРі", РєР°Рє РґРёРЅР°РјРёС‡РµСЃРєРёР№ РјР°СЃСЃРёРІ РЎРµС‚РѕРІ. Р РµР°Р»РёР·Р°С†РёСЏ РјРѕР¶РµС‚ Р±С‹С‚СЊ РјРµРґР»РµРЅРЅРѕР№, РїСЂРё РћР“Р РћРњРќРћРњ РєРѕР»РёС‡РµСЃС‚РІРµ С‚РѕС‡РµРє (1 РјРёР»Р»РёРѕРЅ+)
-///РђРІС‚РѕСЂ: РђР»РµРєСЃР°РЅРґСЂ РљСѓР»РµС€РѕРІ (aka Dorty_Schmorty aka DortyTheGreat aka РўРµСЃР»Р°).
-///РќР°С‡Р°Р»Рѕ СЃРѕР·РґР°РЅРёСЏ: 04.09.2021, РїРѕСЃР»РµРґРЅРµРµ РёР·РјРµРЅРµРЅРёРµ Р±С‹Р»Рѕ СЃРґРµР»Р°РЅРѕ РІ 29.09.2021
-///==========
+    std::vector<int> _digits;
+	// знак числа
+	bool _is_negative;
 
-class Node{
+	void _remove_leading_zeros();
+	void _shift_right();
+
 public:
-    /// Р—РЅР°С‡РµРЅРёРµ Р’РµСЂС‰РёРЅС‹ (РЅР°РїСЂРёРјРµСЂ, С†РµРЅР° Р·Р° РїРѕСЃРµС‰РµРЅРёРµ РІРµСЂС€РёРЅС‹)
-    long long value;
-    /// РџСЂРё Р’С‹Р·РѕРІРµ РїРѕРёСЃРєРѕРІ РїРѕ РіСЂР°С„Сѓ РІ СЌС‚Сѓ РїРµСЂРµРјРµРЅРЅСѓСЋ Р·Р°РЅРѕСЃРёРј СЂР°СЃС‚РѕСЏРЅРёРµ РѕС‚ СЃС‚Р°СЂС‚РѕРІРѕР№ С‚РѕС‡РєРё РґРѕ СЌС‚РѕР№.
-    long long SearchedDistance;
 
-    /// РќСѓР¶РЅР° РґР»СЏ РІРѕСЃС‚Р°РЅРѕРІР»РµРЅРёСЏ РїСѓС‚Рё. РР»Рё РґР»СЏ РїРѕРёСЃРєР° РЅРµРїРµСЂРµСЃРµРєР°СЋС‰РёС…СЃСЏ РІРµСЂС€РёРЅ РІ РіСЂР°С„Рµ (aka РџРѕРёСЃРє РєРѕР»РёС‡РµСЃС‚РІР° РєРѕРјРїРѕРЅРµРЅС‚ СЃРІСЏР·РЅРѕСЃС‚Рё)
-    /// 0 - РІРµСЂС€РёРЅСѓ РЅРµ РїРѕСЃРµС‰Р°Р»Рё РїСЂРё РїРѕРёСЃРєРµ
-    /// 1 - Р’РµСЂС€РёРЅР° РµСЃС‚СЊ РёСЃС‚РѕС‡РЅРёРє РїРѕРёСЃРєР° (РёР· РЅРµС‘ РёСЃРєР°Р»Рё)
-    /// 2 - Р’РµСЂС€РёРЅР° РµСЃС‚СЊ Р±Р»РёР·Р»РёР·Р¶Р°Р№С‰РёР№ СЃРѕСЃРµРґ Рє РёСЃС‚РѕС‡РЅРёРєСѓ
-    /// 3 - Р’РµСЂС€РёРЅР° РµСЃС‚СЊ Р±Р»РёР·Р»РёР·Р¶Р°Р№С‰РёР№ СЃРѕСЃРµРґ С‡РµСЂРµР· РµС‰С‘ РѕРґРЅСѓ РІРµСЂС€РёРЅСѓ (Р—РђРњР•РўР¬РўР•, С‡С‚Рѕ С…РѕС‚СЊ Рё РІРµСЂС€РёРЅР° РјРѕР¶РµС‚ Р±С‹С‚СЊ СЃРѕСЃРµРґРѕРј СЃ РёСЃС‚РѕС‡РЅРёРєРѕРј, РЅРѕ РјРѕР¶РµС‚ РёРјРµС‚СЊ Р·РЅР°С‡РµРЅРёРµ 3,
-    /// РµСЃР»Рё РїСѓС‚СЊ РІ РёСЃС‚РѕС‡РЅРёРє РґР»РёРЅРЅРµРµ, С‡РµРј РїСѓС‚СЊ РІ РґСЂСѓРіРѕРіРѕ СЃРѕСЃРµРґР°, Р° РїРѕС‚РѕРј РёСЃС‚РѕС‡РЅРёРє (aka distance(THIS-> 2 -> 1) < distance(THIS -> 1) ))
-    /// 4 - Р’РµСЂС€РёРЅР° РµСЃС‚СЊ Р±Р»РёР·Р»РёР·Р¶Р°Р№С‰РёР№ СЃРѕСЃРµРґ С‡РµСЂРµР· РµС‰С‘ 2 РІРµСЂС€РёРЅС‹
-    /// 5 - Р’РµСЂС€РёРЅР° РµСЃС‚СЊ Р±Р»РёР·Р»РёР·Р¶Р°Р№С‰РёР№ СЃРѕСЃРµРґ С‡РµСЂРµР· РµС‰С‘ 3 РІРµСЂС€РёРЅС‹, 6 С‡РµСЂРµР· 4, 7 С‡РµСЂРµР· 5, 8 С‡РµСЂРµР· 6 ... Рё С‚.Рґ.
-    long long used;
 
-    /// Р”РѕРї. Р—РЅР°С‡РµРЅРёРµ
-    long long custom_data;
 
-
-};
-
-class Arc{
-public:
-    /// Р—РЅР°С‡РµРЅРёРµ РґСѓРіРё (РЅР°РїСЂРёРјРµСЂ, СЂР°СЃСЃС‚РѕСЏРЅРёРµ)
-    long long value;
-
-    /// С‚.Рє. РѕСЂРёРіРёРЅР°Р»СЊРЅРѕ Р”СѓРіР° С…СЂР°РЅРёС‚СЊСЃСЏ РІ РјР°СЃСЃРёРІРµ РёР· СЃСЌС‚РѕРІ "Arcs", С‚Рѕ
-    /// Arcs[0] = [(311, 5),(43, 4)] - Р”СѓРіР° РёР· С‚РѕС‡РєРё "0" РІ С‚РѕС‡РєСѓ "5". Р”Р»РёРЅР° РґСѓРіРё = 311, Р”СѓРіР° РёР· С‚РѕС‡РєРё "0" РІ С‚РѕС‡РєСѓ "4". Р”Р»РёРЅР° РґСѓРіРё = 43
-    /// РњРµСЃС‚Рѕ РЅР°Р·РЅР°С‡РµРЅРёСЏ СЌС‚РѕР№ РґСѓРіРё
-    long long direction;
-
-
-    bool operator<(const Arc& other) const {
-        return (direction < other.direction);
-
-
-
-    }
-
-};
-
-/// РЎРѕСЂС‚РёСЂСѓРµС‚ Р°СЂРєРё РїРѕ Р·РЅР°С‡РµРЅРёСЏРј, Р° РЅРµ РЅР°РїСЂР°РІР»РµРЅРёСЋ (РЅСѓР¶РЅРѕ, РЅР°РїСЂРёРјРµСЂ РґР»СЏ РЅРµРїРµСЂРµСЃРµРє. РјРЅРѕР¶РµС‚СЃРІ)
-class Arc_Sorted{
-    public:
-
-    /// РћС‚РєСѓРґР°
-    long long origin;
-    /// Р—РЅР°С‡РµРЅРёРµ РґСѓРіРё (РЅР°РїСЂРёРјРµСЂ, СЂР°СЃСЃС‚РѕСЏРЅРёРµ)
-    long long value;
-    /// РњРµСЃС‚Рѕ РЅР°Р·РЅР°С‡РµРЅРёСЏ СЌС‚РѕР№ РґСѓРіРё
-    /// С‚.Рє. РѕСЂРёРіРёРЅР°Р»СЊРЅРѕ Р”СѓРіР° С…СЂР°РЅРёС‚СЊСЃСЏ РІ РјР°СЃСЃРёРІРµ РёР· СЃСЌС‚РѕРІ "Arcs", С‚Рѕ
-    /// Arcs[0] = [(311, 5),(43, 4)] - Р”СѓРіР° РёР· С‚РѕС‡РєРё "0" РІ С‚РѕС‡РєСѓ "5". Р”Р»РёРЅР° РґСѓРіРё = 311, Р”СѓРіР° РёР· С‚РѕС‡РєРё "0" РІ С‚РѕС‡РєСѓ "4". Р”Р»РёРЅР° РґСѓРіРё = 43
-    /// РњРµСЃС‚Рѕ РЅР°Р·РЅР°С‡РµРЅРёСЏ СЌС‚РѕР№ РґСѓРіРё
-    long long direction;
-    bool operator<(const Arc_Sorted& other) const {
-
-
-        if (value != other.value)
-            return value < other.value;
-
-        if (origin == other.origin)
-            return direction < other.direction;
-
-        return origin < other.origin;
-
-    }
-};
-
-class Graph{
-public:
-    long long OutPutFormat=0; /// Р’ РЅРµРєРѕС‚РѕСЂС‹С… Р·Р°РґР°С‡Р°С… РїСЂРѕСЃСЏС‚ РІС‹РІРѕРґРёС‚СЊ РЅР°С‡РёРЅР°СЏ СЃ РµРґРёРЅРёС†С‹
-    long long Size; /// РљРѕР»РёС‡РµСЃС‚РІРѕ РІРµСЂС€РёРЅ
-    Node * Nodes; /// РўРѕС‡РєРё aka vertices aka vertex aka Р’РµСЂС€РёРЅР°
-    set<Arc> * Arcs; /// Р”СѓРіРё aka РЅР°РїСЂР°РІР»РµРЅРЅС‹Рµ СЂС‘Р±СЂР° aka
-
-    const long long pseudo_inf = 10000000000;
-
-    Graph& operator= (Graph another){
-
-        Size = another.Size;
-        Nodes = another.Nodes;
-        Arcs = another.Arcs;
-        OutPutFormat = another.OutPutFormat;
-
-
-
-        return *this;
-
-    }
-
-    void init(long long size_){
-        /// РРЅРЅРёС†РёР°Р»РёР·РёСЂСѓРµС‚ Р“СЂР°С„ СЃ РєРѕР»РёС‡РµСЃС‚РІРѕРј РќРѕРґ(С‚РѕС‡РµРє) size_ (С‚Р°РєР¶Рµ РёР·РІРµСЃС‚РЅРѕ, РєР°Рє n). РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ, РµСЃР»Рё СЃРѕР·РґР°С‘С‚Рµ СЃРІРѕР№ РІРІРѕРґ РіСЂР°С„Р°
-        Size = size_;
-        Arcs = new set<Arc> [Size];
-        Nodes = new Node [Size];
-
-
-        for(long long i = 0; i < Size; i++ ){
-            Nodes[i].SearchedDistance=pseudo_inf;
-            Nodes[i].used = 0 ;
-            Nodes[i].value = 0;
-        }
-    }
-
-    void InsertNewArc(long long start_point,long long value, long long direction){
-        /// Р”РѕР±Р°РІР»СЏРµС‚ Р°СЂРєСѓ РІ Р“СЂР°С„. РџРµСЂРµРґ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµРј СЃР»РµРґСѓРµС‚ РЅР°РїРёСЃР°С‚СЊ GRAPH.init(n), Р·Р°С‚РµРј РјРѕР¶РЅРѕ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Сѓ С„СѓРЅРєС†РёСЋ РґР»СЏ СЃРѕР·РґР°РЅРёСЏ СЃРІРѕРµРіРѕ РєР°СЃС‚РѕРјРЅРѕРіРѕ РІРІРѕРґР°
-        Arc A1 = {value,direction};
-
-        Arcs[start_point].insert(A1);
-    }
-
-    void ReadAsSquareMatrix(int sz){
-        /// Р§РёС‚Р°РµС‚ Р“СЂР°С„, РєР°Рє РґРІСѓРјРµСЂРЅСѓСЋ РјР°С‚СЂРёС†Сѓ. Р§РёС‚Р°РµС‚ n, Р·Р°С‚РµРј n^2 С‡РёСЃРµР» - РјР°С‚СЂРёС†Р° СЃРјРµР¶РЅРѕСЃС‚Рё. Р•СЃР»Рё 0 - РЅРµС‚ СЃРѕРµРґРёРЅРµРЅСЏ, РµСЃР»Рё РЅРµ 0 - РґР°С‘С‚ СЂР°СЃСЃС‚РѕСЏРЅРёРµ {INPUT} РІ РђСЂРєСѓ
-
-        init(sz);
-
-        long long req; // 1 - РµСЃС‚СЊ РІС…РѕРґ, 0 - РЅРµС‚
-        for(long long i = 0; i < Size; i++){
-            for(long long j = 0; j < Size; j++){
-                cin >> req;
-                if(req > 0){
-                    InsertNewArc(i,req,j);
-                }
-            }
-        }
-    }
-
-    void ReadAsSquareMatrix(){
-        /// Р§РёС‚Р°РµС‚ Р“СЂР°С„, РєР°Рє РґРІСѓРјРµСЂРЅСѓСЋ РјР°С‚СЂРёС†Сѓ. Р§РёС‚Р°РµС‚ n, Р·Р°С‚РµРј n^2 С‡РёСЃРµР» - РјР°С‚СЂРёС†Р° СЃРјРµР¶РЅРѕСЃС‚Рё. Р•СЃР»Рё 0 - РЅРµС‚ СЃРѕРµРґРёРЅРµРЅСЏ, РµСЃР»Рё РЅРµ 0 - РґР°С‘С‚ СЂР°СЃСЃС‚РѕСЏРЅРёРµ {INPUT} РІ РђСЂРєСѓ
-
-
-        cin >> Size;
-
-        ReadAsSquareMatrix(Size);
-    }
-
-    void ReadAsODArcList(bool directed, int format){
-        /// Р§РёС‚Р°РµС‚ Р“СЂР°С„, РєР°Рє ... One Distanced(РґР»РёРЅР°=1) Arc List (a -> b, РµСЃР»Рё directed==1, a <-> b, РµСЃР»Рё directed==0)
-        /// format = 1, РµСЃР»Рё РіСЂР°С„ Р·Р°РґР°С‘С‚СЃСЏ СЂС‘Р±СЂР°РјРё, РєР°Рє 1 .. n, Р° РЅРµ 0 .. n-1
-
-        cin >> Size;
-
-        init(Size);
-        int m;
-        cin >> m;
-
-        int from, to;
-
-        for(long long counter = 0; counter < m; counter++){
-
-                cin >> from >> to;
-                from -= format;
-                to -= format;
-                InsertNewArc(from,1,to);
-                if(!directed){
-                    InsertNewArc(to,1,from);
-                }
-
-        }
-    }
-
-    set<Arc>::iterator GetThisArcIterator(long long start_point, long long direction){
-        /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёС‚С‚РµСЂР°С‚РѕСЂ РђСЂРєРё РїРѕ Р·Р°РґР°РЅРЅС‹Рј РЅР°С‡Р°Р»СЊРЅРѕР№ Рё РєРѕРЅРµС‡РЅРѕР№ С‚РѕС‡РєРё (РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ -> РїРѕР»СѓС‡РёС‚СЊ СЂР°СЃСЃС‚РѕСЏРЅРёРµ РђСЂРєРё РѕС‚ РќРѕРґС‹ РґРѕ РќРѕРґС‹)
-        Arc A1 = {1,direction};
-        return Arcs[start_point].find(A1);
-    }
-
-    Arc GetThisArc(long long start_point, long long direction){
-        /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РђСЂРєСѓ РїРѕ Р·Р°РґР°РЅРЅС‹Рј РЅР°С‡Р°Р»СЊРЅРѕР№ Рё РєРѕРЅРµС‡РЅРѕР№ С‚РѕС‡РєРё (РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ -> РїРѕР»СѓС‡РёС‚СЊ СЂР°СЃСЃС‚РѕСЏРЅРёРµ РђСЂРєРё РѕС‚ РќРѕРґС‹ РґРѕ РќРѕРґС‹)
-        return *GetThisArcIterator(start_point, direction);
-    }
-
-    bool IsThereArc(long long start_point, long long direction){
-        /// Р’РѕР·РІСЂР°С‰Р°РµС‚ true РёР»Рё false РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‚РѕРіРѕ, СЃСѓС‰РµСЃС‚РІСѓРµС‚ Р»Рё РђСЂРєР° РѕС‚ start_point РґРѕ direction
-        return GetThisArcIterator(start_point,direction) != Arcs[start_point].end();
-    }
-
-    bool isOriented(){
-        /// РЈР·РЅР°С‘С‚ РѕСЂРёРµРЅС‚РёСЂРѕРІР°РЅ Р»Рё РіСЂР°С„
-
-        for(long long cou = 0; cou < Size; cou++){
-            for (Arc i : Arcs[cou]){
-                if (!IsThereArc(i.direction,cou)){
-                    return 1;
-                }
-            }
-        }
-        return 0;
-    }
-
-    bool DoesContainLoop(){
-        for(long long cou = 0; cou < Size; cou++){
-            if (IsThereArc(cou,cou)){return 1;}
-        }
-        return 0;
-    }
-
-    void DisorientGraph(){
-        /// Р”РµР·РѕСЂРёРµРЅС‚РёСЂСѓРµС‚ Р“СЂР°С„, РґРѕР±Р°РІР»СЏСЏ Р»РёС€РЅРёРё РђСЂРєРё, С‡С‚РѕР±С‹ СЃРґРµР»Р°С‚СЊ РћСЂРёРµРЅС‚РёСЂРѕРІР°РЅРЅС‹Рј
-        for(long long cou = 0; cou < Size; cou++){
-
-
-            for (Arc i : Arcs[cou]){
-                if (!IsThereArc(i.direction,cou)){
-                    InsertNewArc(i.direction,i.value,cou);
-                }
-            }
-        }
-    }
-
-    void Requr_BFS(long long Uses, long long distanto,long long dot){
-        /// Р—Р°СЂРµР·РµСЂРІРёСЂРѕРІР°РЅРЅР°СЏ С„СѓРЅРєС†РёСЏ РґР»СЏ РњСѓР»СЊС‚Рё-Р”РµР№РєСЃС‚СЂС‹
-        if( distanto > Nodes[dot].SearchedDistance ){return;}
-
-        if (distanto == Nodes[dot].SearchedDistance){
-            Uses = max(Uses,Nodes[dot].used);
-        }
-
-        Nodes[dot].used = Uses;
-        Nodes[dot].SearchedDistance = distanto;
-
-        for (Arc i : Arcs[dot]){
-
-            Requr_BFS(Uses+1,distanto+i.value,i.direction);
-        }
-
-
-
-    }
-
-    void Dijkstra_Search(long long start_point){
-        /// Р—РїСѓСЃРєР°РµС‚ РњСѓР»СЊС‚Рё-РџРѕРёСЃРє РїРѕ РіСЂР°С„Сѓ (РїРѕ СЃСѓС‚Рё С‚РѕС‚ Р¶Рµ Р”РµР№РєСЃС‚СЂР°-РџРѕРёСЃРє)
-        for(long long i=0;i<Size;i++){
-            Nodes[i].SearchedDistance=pseudo_inf;
-            Nodes[i].custom_data=0;
-            Nodes[i].used = 0; ///-> Р»РѕРјР°РµС‚ РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅС‹Рµ Р·Р°РїСѓСЃРєРё
-
-        }
-        Nodes[start_point].SearchedDistance = 999;
-        Requr_BFS(1,0,start_point);
-    }
-
-
-    void Quick_Search(int start_point, bool update_nodes){
-
-        if (update_nodes){
-            for(long long i=0;i<Size;i++){
-                Nodes[i].SearchedDistance=pseudo_inf;
-                Nodes[i].custom_data=0;
-                Nodes[i].used = 0; ///-> Рїв•©Рїв•¬Рїв•ЄРїв•џРїв•ЈСЏв”Њ РїВ©Рїв•¬СЏв”‚Рїв•©Рїв•ЈРїв•ўРїв•¬Рїв•ЎРїв•џСЏв”ЊРїв•ЈРїв•©СЏв–„Рїв•«СЏв–ЂРїв•Ј Рїв•ҐРїв•џРїВ©СЏв”ђСЏв”‚Рїв•ЁРїв•¦
-            }
-        }
-
-        set<pair<long long, int>> itteratable; /// dist, index
-        itteratable.insert(make_pair(0,start_point));
-
-        Nodes[start_point].SearchedDistance = 0;
-        Nodes[start_point].used = 1;
-
-        for (int i = 0; i < Size; i++){
-            itteratable.insert({ Nodes[i].SearchedDistance, i });
-        }
-
-        while(!itteratable.empty()){
-            pair<long long,int> first_itter = *(itteratable.begin());
-
-            long long first_ = first_itter.first;
-            long long second_ = first_itter.second;
-
-            itteratable.erase(itteratable.begin());
-
-            for(Arc that : Arcs[second_]){
-
-                long long dist = first_+that.value;
-
-                if ((Nodes[that.direction].SearchedDistance > dist) && (itteratable.find({ Nodes[that.direction].SearchedDistance, that.direction }) != itteratable.end()) ){
-                    itteratable.erase(itteratable.find({ Nodes[that.direction].SearchedDistance, that.direction }));
-
-                    Nodes[that.direction].SearchedDistance = dist;
-                    Nodes[that.direction].used = Nodes[first_itter.second].used+1;
-
-                    itteratable.insert({Nodes[that.direction].SearchedDistance,that.direction});
-                }
-            }
-        }
-    }
-
-
-
-    // FireStation
-
-    set<long long> Requr_BFS_fire(long long Uses, long long distanto,long long dot){
-        set<long long> return_value;
-
-        if( distanto >= Nodes[dot].SearchedDistance ){
-                set<long long> nulled;
-
-                return nulled;}
-
-        Nodes[dot].used = Uses;
-        Nodes[dot].SearchedDistance = distanto;
-        bool flag = 1;
-
-
-
-        for (Arc i : Arcs[dot]){
-            flag = 0;
-            set<long long> that = Requr_BFS_fire(Uses+1,distanto+i.value,i.direction);
-            return_value.insert(that.begin(),that.end());
-
-        }
-
-        if (flag == 1){
-            return_value.insert(dot);
-        }
-
-        return return_value;
-
-
-
-    }
-
-    set<long long> Dijkstra_Search_fire(long long start_point){
-
-        for(long long i=0;i<Size;i++){
-            Nodes[i].SearchedDistance=pseudo_inf;
-            ///Nodes[i].used=0;
-        }
-        return Requr_BFS_fire(1,0,start_point);
-    }
-
-
-    //FireStation
-
-    void gSort(long long i, vector<long long>& res, long long c,long long &flag) {
-        ///graph -> СЂС‘Р±СЂР°, color -> Node.value, res - РҐР—
-        if (Nodes[i].value == 1 && flag == 0) {
-            flag = 1;
-            return;
-        }
-        if (Nodes[i].value) return;
-
-        Nodes[i].value = 1;
-
-
-
-        for (Arc that_arc : Arcs[i]) {
-
-            gSort(that_arc.direction, res, c,flag);
-        }
-        res.push_back(i);
-
-        Nodes[i].value = c;
-    }
-
-    pair<vector<long long>,long long> StartTopSort(){
-
-        for(long long i =0;i<Size;i++){
-            Nodes[i].value = 0;
-        }
-        vector<long long> result;
-        long long flag = 0;
-        for (long long i = 0; i < Size; i++) {
-            if (!Nodes[i].value) {
-                gSort(i, result, i + 1,flag);
-            }
-        }
-        return make_pair( result,flag);
-
-    }
-
-    void ReverseGraph(){
-        Graph temp;
-        temp.init(Size);
-
-        for(long long cou = 0; cou < Size; cou++){
-
-
-            for (Arc i : Arcs[cou]){
-
-                temp.InsertNewArc(i.direction,i.value,cou);
-
-            }
-        }
-
-        Arcs = temp.Arcs;
-    }
-
-    Graph Get_Condensated_Graph(){
-
-            /// Р’ custom_data РЅР°С…РѕРґРёС‚СЃСЏ СЃС‚Р°СЂРѕРµ "РёРјСЏ-РёРЅРґРµРєСЃ" РЅРѕРґС‹
-
-            ///Р’РќРРњРђРќРР•!
-            ///РќРђ Р”РђРќРќР«Р™ РњРћРњР•РќРў Р“Р РђР¤, РџР Р РљРћРќР”Р•РќРЎРђР¦РР Р—РђР‘Р«Р’РђР•Рў РџР Рћ РўРђРљРР• Р—РќРђР§Р•РќРР•, РєР°Рє distance Сѓ РђСЂРѕРє, Р° С‚Р°РєР¶Рµ РїРѕС‡С‚Рё РІСЃРµ РґР°РЅС‹Рµ СЃ С‚РѕС‡РµРє СЃС‚РёСЂР°СЋС‚СЃСЏ
-            ///
-
-          Graph G2;
-
-          G2 = *this;
-
-          G2.ReverseGraph();
-
-          pair<vector<long long>,long long> ABOOBA = StartTopSort();
-          vector<long long> res = ABOOBA.first;
-            long long flag_temp = ABOOBA.second;
-
-          reverse(res.begin(), res.end());
-
-          vector<long long> _res;
-
-
-            for(long long i =0;i<Size;i++){
-                G2.Nodes[i].value = 0;
-            }
-
-          for(auto val: res) {
-            //cout << val << endl;
-            G2.gSort(val, _res, val + 1,flag_temp);
-          }
-          long long counter = 0;
-          set<pair<long long, long long>> diff_col;
-          for (long long i = 0; i < Size; ++i) {
-            for (auto counter_: G2.Arcs[i]) {
-                long long v = counter_.direction;
-              //cout << i << " " << v << " "  << inv_color[i] << " " << inv_color[v] << endl;
-              if (G2.Nodes[i].value != G2.Nodes[v].value) {
-                counter++;
-                diff_col.emplace(G2.Nodes[v].value, G2.Nodes[i].value);
-              }
-            }
-          }
-
-          //cout << "counter: " << counter;
-
-          Graph Condensated_Graph;
-          Condensated_Graph.init(Size);
-            long long * Achiles_array = new long long [Size];long long achiles_cou = 0;
-
-            const long long PLACEHOLDER = -10;
-            for(long long i =0;i<Size;i++){
-                Achiles_array[i] = PLACEHOLDER;
-            }
-
-            for (auto pseudo_arc : diff_col){
-                    //cout << "WARN" << endl;
-                long long first = pseudo_arc.first - 1;
-                long long second = pseudo_arc.second - 1;
-
-                if (Achiles_array[first] == PLACEHOLDER){
-                    Achiles_array[first] = achiles_cou;
-                    achiles_cou++;
-                }
-
-                if (Achiles_array[second] == PLACEHOLDER){
-                    Achiles_array[second] = achiles_cou;
-                    achiles_cou++;
-                }
-
-                first = Achiles_array[first];
-                second = Achiles_array[second];
-
-                Condensated_Graph.InsertNewArc(first,1,second);/// РђРђРђРђРђ, РїРѕС‡РµРјСѓ С‚РµРїРµСЂСЊ Сѓ РІСЃРµРіРѕ РґР»РёРЅР° 1 ???
-
-                //cout << first << " " << second << endl;
-            }
-
-            long long add_cou = 0;
-
-            for(long long i =0;i<Size;i++){
-
-                //cout << i<< " " << (Nodes[i].value-1) << endl;
-                if ( ((i) == (Nodes[i].value-1)) ){
-                    if (Achiles_array[i] == PLACEHOLDER){
-
-
-
-
-                        Condensated_Graph.Nodes[achiles_cou+add_cou].custom_data = i;
-                        add_cou++;
-
-                        //Condensated_Graph.Nodes[i].custom_data = 10000;
-                        //cout << i << " <-i " << 3 << endl;
-                    }
-                }
-            }
-
-            Condensated_Graph.Size = add_cou + achiles_cou;
-
-
-            /// РћР±СЂР°С‚РЅРѕРµ РђС…РёР»РµСЃРѕРІРѕРµ РґРµР№СЃС‚РІРёРµ, РґР»СЏ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ "СЃС‚Р°СЂС‹С… РёРјС‘РЅ" РЅРѕРґ. РњРѕР¶РЅРѕ СѓСЃРєРѕСЂРёС‚СЊ. РњРѕР¶РЅРѕ СѓРґР°Р»РёС‚СЊ, РµСЃР»Рё РЅРµ РЅСѓР¶РЅРѕ РїРѕРјРЅРёС‚СЊ СЃС‚Р°СЂС‹Рµ РёРјРµРЅР°
-            for(long long i =0;i<achiles_cou;i++){
-                    long long find_index = -1;
-                    for(long long j =0;j<Size;j++){
-                        if (Achiles_array[j] == i){
-                            find_index = j;
-                            break;
-                        }
-                    }
-                Condensated_Graph.Nodes[i].custom_data = find_index;
-            }
-            //cout << "BRUS" << Condensated_Graph.Nodes[1].custom_data << endl;
-
-          return Condensated_Graph;
-    }
-
-    /// РЎРёСЃС‚РµРјР° РЅРµРїРµСЂРµСЃРµРєР°СЋС‰РёС…СЃСЏ РјРЅРѕР¶РµСЃС‚РІ
-
-
-    long long get_root(long long v, long long *p){
-        /// Р”РѕР»РіРѕРІР°С‚Рѕ РїРµСЂРµРґРѕРІР°С‚СЊ РјР°СЃСЃРёРІ РєР°Рє Р°СЂРіСѓРјРµРЅС‚ РІ С„СѓРЅРєС†РёСЋ, СЃР»РµРґСѓРµС‚ РїРѕС‚РѕРј СѓСЃРєРѕСЂРёС‚СЊ (С…РѕС‚СЏ РҐРµРІР°РІ Рё Р“РѕСЃСѓРЅРѕРІ СЃРєР°Р·Р°Р»Рё, С‡С‚Рѕ Р±С‹СЃС‚СЂРѕ)
-        if(p[v] == v)
-        return v;
-
-        p[v] = get_root(p[v],p);
-        return p[v];
-
-    }
-
-    bool is_connected(long long a, long long b,long long *p){
-        return (get_root(a,p) == get_root(b,p));
-    }
-
-    void connect(long long a, long long b,long long *p){
-        a = get_root(a,p);
-        b = get_root(b,p);
-        if(Nodes[a].value < Nodes[b].value)
-            p[a] = b;
-        else if (Nodes[a].value > Nodes[b].value)
-            p[b] = a;
-        else{
-            p[a] = b;
-            Nodes[b].value++;
-        }
-    }
-
-    Graph Get_MinOst_Graph(){
-        /// СЂР°Р±РѕС‚Р°РµС‚ С‚РѕР»СЊРєРѕ СЃ РЅРµРѕСЂРёРµРЅС‚РёСЂРѕРІР°РЅРЅС‹Рј РіСЂР°С„РѕРј, РІРѕР·РІСЂР°С‰Р°СЏ РЅРµРѕСЂРёРµРЅС‚РёСЂРѕРІР°РЅРЅС‹Р№ РіСЂР°С„
-        Graph G_minOst;
-        G_minOst.init(Size);
-
-        long long * p ; ///
-        p = new long long[Size]; /// СЂРѕРґРёС‚РµР»СЊ РІ СЃРёСЃС‚РµРјРµ РЅРµРїРµСЂРµСЃРµРєР°СЋС‰РёС…СЃСЏ РјРЅРѕР¶РµСЃС‚РІ.
-
-        for(long long i =0;i<Size;i++){
-            p[i] = i;
-        }
-
-        ///long long rank_[100000]; /// Nodes[i].value
-        /// Р’ G_minOst - rank_ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°РЅ
-
-        /// connect РјРѕР¶РµС‚ РІС‹Р·С‹РІР°С‚СЊСЃСЏ С‚РѕР»СЊРєРѕ Сѓ G_minOst
-
-        set<Arc_Sorted> All_Arcs;
-        for(long long i =0;i<Size;i++){
-            for(Arc that : Arcs[i]){
-                Arc_Sorted temp;
-                temp.value = that.value;
-                temp.direction = that.direction;
-                temp.origin = i;
-                All_Arcs.insert(temp);
-            }
-        }
-
-        for (Arc_Sorted that : All_Arcs){
-            if (!G_minOst.is_connected(that.origin,that.direction,p)){
-
-                 G_minOst.InsertNewArc(that.origin,that.value,that.direction);
-                 G_minOst.InsertNewArc(that.direction,that.value,that.origin);
-
-                 G_minOst.connect(that.origin, that.direction,p);
-            }
-        }
-
-
-        return G_minOst;
-    }
-
-
-    void ItterateAllNode_sArcs(long long Node, bool WriteValue, bool WriteDirection, bool WriteEndl, string NullTxt){
-
-        /// NullTxt - С‡С‚Рѕ РІС‹РІРѕРґРёС‚СЊ, РµСЃР»Рё РІРµСЂС€РёРЅ РЅРµС‚
-        long long Nulled = 1;
-        for (Arc i : Arcs[Node]){
-            if(WriteValue){
-                cout << i.value << " ";
-            }
-            if(WriteDirection){
-               cout << i.direction+OutPutFormat << " ";
-            }
-            if(WriteEndl){
-                cout << endl;
-            }
-            Nulled = 0;
-        }
-
-        if(Nulled){
-            cout << NullTxt;
-            if(WriteEndl){
-                cout << endl;
-            }
-        }
-
-    }
-
-    long long GetLongestBranch(long long midPoint){
-        /// РџРѕР»СѓС‡Р°РµС‚ Р”Р»РёРЅСѓ(РєР°Рє РєРѕР»РёС‡РµСЃС‚РІРѕ РђСЂРѕРє) РѕС‚ С‚РѕС‡РєРё midPoint РІ РіСЂР°С„Рµ РґРѕ СЃР°РјРѕР№ РґР°Р»СЊРЅРµР№ С‚РѕС‡РєРё(РєР°Рє РІ РЅРµРѕСЂРёРµРЅС‚РёСЂРѕРІР°РЅРЅРѕРј РіСЂР°С„Рµ)
-        DisorientGraph();
-        Dijkstra_Search(midPoint);
-
-        long long longest = -1;
-        long long INDEX = -1;
-        for(long long i =0;i<Size;i++){
-                long long that = Nodes[i].used-1;
-                if (that > longest){
-                    longest = that;
-                    INDEX = i;
-                }
-
-        }
-        return longest;
-    }
-
-    long long GetDiameter(long long midPoint){
-        /// РџРѕР»СѓС‡Р°РµС‚ Р”Р»РёРЅСѓ(РєР°Рє РєРѕР»РёС‡РµСЃС‚РІРѕ РђСЂРѕРє) Р”РёР°РјРµС‚СЂР° РІ РіСЂР°С„Рµ(РєР°Рє РІ РЅРµРѕСЂРёРµРЅС‚РёСЂРѕРІР°РЅРЅРѕРј РіСЂР°С„Рµ)
-        DisorientGraph();
-        Dijkstra_Search(midPoint);
-
-        long long longest = -1;
-        long long INDEX = -1;
-        for(long long i =0;i<Size;i++){
-                long long that = Nodes[i].used-1;
-                if (that > longest){
-                    longest = that;
-                    INDEX = i;
-                }
-
-        }
-
-
-
-        Dijkstra_Search(INDEX);
-
-        long long longestPAIR = -1;
-
-        for(long long i =0;i<Size;i++){
-                long long that = Nodes[i].used-1;
-                if (that > longestPAIR){
-                   longestPAIR = that;
-                }
-
-        }
-
-        return longestPAIR;
-    }
-
-    long long count_component_svyaz(){
-        long long cou = 0;
-
-        for(long long i =0;i<Size;i++){
-            Nodes[i].used = 0;
-        }
-
-        for(long long i =0;i<Size;i++){
-            if (Nodes[i].used == 0){
-                cou++;
-                Dijkstra_Search(i);
-                //cout << "SEARCHING... " << i << endl;
-            }
-        }
-
-        return cou;
-    }
-
-
+    // основание системы счисления (1 000 000 000)
+	int BASE = total_base;
+
+
+	// класс-исключение, бросаемое при делении на ноль
+	class divide_by_zero : public std::exception {  };
+
+	BigInt();
+	BigInt(std::string);
+	BigInt(signed char);
+	BigInt(unsigned char);
+	BigInt(signed short);
+	BigInt(unsigned short);
+	BigInt(signed int);
+	BigInt(unsigned int);
+	BigInt(signed long);
+	BigInt(unsigned long);
+	BigInt(signed long long);
+	BigInt(unsigned long long);
+
+	friend std::ostream& operator <<(std::ostream&, const BigInt&);
+	friend std::istream& operator >>(std::istream&, BigInt&);
+	operator std::string() const;
+	const BigInt operator +() const;
+	const BigInt operator -() const;
+	const BigInt operator ++();
+	const BigInt operator ++(int);
+	const BigInt operator --();
+	const BigInt operator --(int);
+	friend bool operator ==(const BigInt&, const BigInt&);
+	friend bool operator <(const BigInt&, const BigInt&);
+	friend bool operator !=(const BigInt&, const BigInt&);
+	friend bool operator <=(const BigInt&, const BigInt&);
+	friend bool operator >(const BigInt&, const BigInt&);
+	friend bool operator >=(const BigInt&, const BigInt&);
+	friend const BigInt operator +(BigInt, const BigInt&);
+	BigInt& operator +=(const BigInt&);
+	friend const BigInt operator -(BigInt, const BigInt&);
+	BigInt& operator -=(const BigInt&);
+	friend const BigInt operator *(const BigInt&, const BigInt&);
+	BigInt& operator *=(const BigInt&);
+	friend const BigInt operator /(const BigInt&, const BigInt&);
+	BigInt& operator /=(const BigInt&);
+	friend const BigInt operator %(const BigInt&, const BigInt&);
+	BigInt& operator %=(const BigInt&);
+
+	bool odd() const;
+	bool even() const;
+	const BigInt pow(BigInt) const;
+    const int get_real_size() const;
+
+	/// [5,4,3,2,1](12345) (length=3)-> [0,0,0,5,4,3,2,1](12345000)
+    /// Следует Улучшить. Ужасно плохо реализованно
+    void inline _appendZeros(int);
 };
 
 
 
 
-
-#include <vector>
-
-
-template <typename T>
-ostream& operator<<(ostream &in, const vector<T> &vect) {
-    int n = vect.size();
-
-
-
-    for(int i =0;i<n;i++){
-
-        in << vect[i] << " " ;
-
-    }
-
-    return in;
-}
-
-template <typename T>
-istream& operator>>(istream& in, vector<T> &vect) {
-    int size_;
-    in >> size_;
-
-    vect.resize(size_);
-
-    for(int i = 0;i<size_;i++){
-        in >> vect[i];
-    }
-
-    return in;
-}
-
-template <typename T>
-void operator += (vector<T> &vect,T number) {
-    vect.push_back(number);
-}
-
-template <typename T>
-vector<T> get_all_sub_strings(T &vect){
-
-    vector<T> ret;
-
-    int sz = vect.size();
-
-    for(int l = 0;l<sz;l++){
-        for(int r = l+1;r<sz+1;r++){
-            T obj;
-            for(int cou = l;cou < r;cou ++){
-                obj += vect[cou];
-            }
-            ret.push_back(obj);
-
-        }
-    }
-
-    return ret;
-}
-
-
-/// ifdef iostream
-template <typename T>
-void read(vector<T> &vc, int sz){
-    vc.resize(sz);
-    for(int i =0;i<sz;++i){
-        cin >> vc[i];
-    }
-}
-
-template <typename T>
-T sum(vector<T> &vect){
-    T ret = 0;
-    int sz = vect.size();
-    for(int l = 0;l<sz;l++){
-        ret += vect[l];
-    }
-    return ret;
-}
-
-template <typename T>
-T min(vector<T> &vect){
-    T ret = vect[0];
-    int sz = vect.size();
-    for(int i = 0;i<sz;i++){
-        ret = min(ret,vect[i]);
-    }
-    return ret;
-}
-
-template <typename T>
-T max(vector<T> &vect){
-    T ret = vect[0];
-    int sz = vect.size();
-    for(int i = 0;i<sz;i++){
-        ret = max(ret,vect[i]);
-    }
-    return ret;
-}
-
-template <typename T>
-vector<T> list(basic_string<T> str){
-    vector<T> ret;
-    ret.resize(str.size());
-    for(size_t i = 0;i<str.size();i++){
-        ret[i] = str[i];
-    }
-    return ret;
-}
-
-template <typename T>
-inline T first(vector<T> &vect){
-    return vect[0];
-}
-
-template <typename T>
-inline T last(vector<T> &vect){
-    return vect[vect.size() - 1];
-}
-
-
-#include <vector>
-
-void YesNo(bool arg){
-    if (arg){
-        cout << "YES" << endl;
-    }else{
-        cout << "NO" << endl;
-    }
-}
-
-void NoYes(bool arg){
-    if (arg){
-        cout << "NO" << endl;
-    }else{
-        cout << "YES" << endl;
-    }
-}
-
-string input(){
-    string returner;
-    cin >> returner;
-    return returner;
-}
-
-template <typename T>
-T input(T ab){
-    T returner;
-    cin >> returner;
-    return returner;
-}
-
-long long to_int(string str){
-    long long mask = 1;
-    size_t start_index = 0;
-    long long returner = 0;
-    if (str[0] == '-'){
-        mask = -1;
-        start_index = 1;
-    }
-
-    for(size_t i =start_index;i<str.size();i++){
-        returner *= 10;
-        returner += (str[i] - '0');
-    }
-    return returner * mask;
-}
-
-long long intput(){
-    return to_int(input());
-}
-
-template <typename T, typename F>
-void print(T a, F b){
-    cout << a << " " << b << endl;
-}
-
-template <typename T>
-T max(const vector<T> &vect){
-    if (vect.size() < 1){
-        return -1;
-    }
-    T max_ = vect[0];
-    for (auto i : vect){
-        max_ = max(max_,i);
-    }
-    return max_;
-}
-
-template <typename T>
-T indexOf(const vector<T> &vect, T element){
-    size_t size_ = vect.size();
-    for (int i =0;i<size_;++i){
-        if (vect[i] == element){
-            return i;
-        }
-    }
-    return -1;
-}
-
-template <typename T>
-vector<T> slice(const vector<T> &vect, size_t elements){
-
-    vector<T> returner;
-
-    size_t size_ = min(vect.size(),elements);
-
-    for (int i =0;i<size_;++i){
-        returner.push_back(vect[i]);
-    }
-    return returner;
-}
-
-void print(string data){
-    cout << data << endl;
-}
-
-
-
-
-
-
-template <typename T>
-vector<T> NOP(vector<T> A, vector<T> B){
-
-     int n = A.size();
-     int m = B.size();
-
-    vector<vector<T> > F(n + 1, vector<T>(m + 1));
-
-     for (int i =1;i<=n;i++){
-        for (int j =1;j<=m;j++){
-            if (A[i-1] == B[j-1]){
-                F[i][j] = F[i - 1][j - 1] + 1;
-            }else{
-                F[i][j] = max(F[i - 1][j], F[i][j - 1]);
-            }
-        }
-     }
-
-
-     vector<T> Ans;
-     int i = n;
-     int j = m;
-     while (i > 0 && j > 0){
-        if (A[i - 1] == B[j - 1]){
-            Ans.push_back(A[i - 1]);
-            i -= 1;
-            j -= 1;
-        }else{
-        if (F[i - 1][j] == F[i][j]){
-            i--;
-
-        }else{
-            j--;
-        }
-        }
-     }
-     reverse(Ans.begin(),Ans.end());
-
-    return Ans;
-}
-
-
-
-vector<long long> vector_generator(int n, int a1, int k, int b, int m){
-    vector<long long> ret(n);
-    ret[0] = a1;
-
-    for(int i = 1;i<n;++i){
-        ret[i] = (k*ret[i-1] + b) % m;
-    }
-    return ret;
-}
-
-
-
-
-/// Можно быстрее ... https://neerc.ifmo.ru/wiki/index.php?title=%D0%91%D1%8B%D1%81%D1%82%D1%80%D1%8B%D0%B9_%D0%BF%D0%BE%D0%B8%D1%81%D0%BA_%D0%BD%D0%B0%D0%B8%D0%B1%D0%BE%D0%BB%D1%8C%D1%88%D0%B5%D0%B9_%D0%B2%D0%BE%D0%B7%D1%80%D0%B0%D1%81%D1%82%D0%B0%D1%8E%D1%89%D0%B5%D0%B9_%D0%BF%D0%BE%D0%B4%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D0%B8
-
-/// from wiki https://ru.wikipedia.org/wiki/%D0%97%D0%B0%D0%B4%D0%B0%D1%87%D0%B0_%D0%BF%D0%BE%D0%B8%D1%81%D0%BA%D0%B0_%D0%BD%D0%B0%D0%B8%D0%B1%D0%BE%D0%BB%D1%8C%D1%88%D0%B5%D0%B9_%D1%83%D0%B2%D0%B5%D0%BB%D0%B8%D1%87%D0%B8%D0%B2%D0%B0%D1%8E%D1%89%D0%B5%D0%B9%D1%81%D1%8F_%D0%BF%D0%BE%D0%B4%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D0%B8
-template <typename T>
-vector<T> NVP(vector<T> A){
-
-    int N = A.size();
-
-    /*
-    int n = A.size();
-
-    vector<int> d;
-    d.resize(n+1);
-    d[0] = -100000;
-    for (int i=1; i<=n; ++i)
-        d[i] = 1000000;
-
-    for (int i=0; i<n; i++) {
-        int j = int (upper_bound (d.begin(), d.end(), A[i]) - d.begin());
-        if (d[j-1] < A[i] && A[i] < d[j])
-            d[j] = A[i];
-    }
-
-    return d;
-    */
-
-
-    vector<T> P(N);
-    vector<T> M(N + 1);
-    int L = 0;
-    for (int i=0; i< N;i++){
-      int lo = 1;
-      int hi = L;
-      while (lo <= hi){
-        int mid = ((lo+hi + 1)/2);
-        if (A[M[mid]] < A[i]){
-          lo = mid+1;
-        }else{
-          hi = mid-1;
-        }
-      }
-      int newL = lo;
-      P[i] = M[newL-1];
-      M[newL] = i;
-      if (newL > L){
-        L = newL;
-      }
-    }
-    vector<T> S(L);
-    int k = M[L];
-    for (int i= L-1;i>-1;i--){
-      S[i] = A[k];
-      k = P[k];
-    }
-    return S;
-
-}
-
-
-
-
-#include <vector>
-/// REF : http://web.mit.edu/~ecprice/acm/acm08/notebook.html#file12
-
-/// USAGE :
-/// v and u - are vector<int>
-/// FFT::convolution(v, u);
-
-#include <vector>
-
-#include <cmath>
-#include <iostream>
-using namespace std;
-
-#define VI vector<long long>
-#define int long long
-#define double long double
-
-double PI = acos(0) * 2;
-
-class complex
-{
-public:
-	double a, b;
-	complex() {a = 0.0; b = 0.0;}
-	complex(double na, double nb) {a = na; b = nb;}
-	const complex operator+(const complex &c) const
-		{return complex(a + c.a, b + c.b);}
-	const complex operator-(const complex &c) const
-		{return complex(a - c.a, b - c.b);}
-	const complex operator*(const complex &c) const
-		{return complex(a*c.a - b*c.b, a*c.b + b*c.a);}
-	double magnitude() {return sqrt(a*a+b*b);}
-	void print() {printf("(%.3f %.3f)\n", a, b);}
-};
-
-class FFT
-{
-public:
-	vector<complex> data;
-	vector<complex> roots;
-	VI rev;
-	int s, n;
-
-	void setSize(int ns)
-	{
-		s = ns;
-		n = (1 << s);
-		int i, j;
-		rev = VI(n);
-		data = vector<complex> (n);
-		roots = vector<complex> (n+1);
-		for (i = 0; i < n; i++)
-			for (j = 0; j < s; j++)
-				if ((i & (1 << j)) != 0)
-					rev[i] += (1 << (s-j-1));
-		roots[0] = complex(1, 0);
-		complex mult = complex(cos(2*PI/n), sin(2*PI/n));
-		for (i = 1; i <= n; i++)
-			roots[i] = roots[i-1] * mult;
-	}
-
-	void bitReverse(vector<complex> &array)
-	{
-		vector<complex> temp(n);
-		int i;
-		for (i = 0; i < n; i++)
-			temp[i] = array[rev[i]];
-		for (i = 0; i < n; i++)
-			array[i] = temp[i];
-	}
-
-	void transform(bool inverse = false)
-	{
-		bitReverse(data);
-		int i, j, k;
-		for (i = 1; i <= s; i++) {
-			int m = (1 << i), md2 = m / 2;
-			int start = 0, increment = (1 << (s-i));
-			if (inverse) {
-				start = n;
-				increment *= -1;
-			}
-			complex t, u;
-			for (k = 0; k < n; k += m) {
-				int index = start;
-				for (j = k; j < md2+k; j++) {
-					t = roots[index] * data[j+md2];
-					index += increment;
-					data[j+md2] = data[j] - t;
-					data[j] = data[j] + t;
-				}
-			}
-		}
-		if (inverse)
-			for (i = 0; i < n; i++) {
-				data[i].a /= n;
-				data[i].b /= n;
-			}
-	}
-    template <typename T>
-	static VI convolution(const vector<T> &a, const vector<T> &b)
-	{
-		int alen = a.size(), blen = b.size();
-		int resn = alen + blen - 1;	// size of the resulting array
-		int s = 0, i;
-		while ((1 << s) < resn) s++;	// n = 2^s
-		int n = 1 << s;	// round up the the nearest power of two
-
-		FFT pga, pgb;
-		pga.setSize(s);	// fill and transform first array
-		for (i = 0; i < alen; i++) pga.data[i] = complex(a[i], 0);
-		for (i = alen; i < n; i++)	pga.data[i] = complex(0, 0);
-		pga.transform();
-
-		pgb.setSize(s);	// fill and transform second array
-		for (i = 0; i < blen; i++)	pgb.data[i] = complex(b[i], 0);
-		for (i = blen; i < n; i++)	pgb.data[i] = complex(0, 0);
-		pgb.transform();
-
-		for (i = 0; i < n; i++)	pga.data[i] = pga.data[i] * pgb.data[i];
-		pga.transform(true);	// inverse transform
-		VI result = VI (resn);	// round to nearest integer
-		for (i = 0; i < resn; i++)	result[i] = (int) (pga.data[i].a + 0.5);
-
-		int actualSize = resn - 1;	// find proper size of array
-		while (result[actualSize] == 0)
-			actualSize--;
-		if (actualSize < 0) actualSize = 0;
-		result.resize(actualSize+1);
-		return result;
-	}
-};
-
-
-
-
-#undef VI
-
-
-
-
-#define debug_delenie false
-
-#define int long long
-
-#define char_zero '0'
-
-int intlog(double base, double x) {
-    return (int)(log(x) / log(base));
-}
-/// 9 223 372 036 854 775 807
-/// 2147483647
-const int INT_MAXI = 9223372036854775807;
-
-int inline intSqrt(int arg){
-    return (int)(sqrt(arg));
-}
 
 char FromIntToChar(int a){
 
@@ -1265,833 +148,549 @@ int FromCharToInt(char a){
 
 }
 
-const int zero = 0;
-
-#define default_base 10
-
-#define container_stack 6 /// 6
-
-#define total_base 1000000 /// 1000000
-
-#define sqrt_of_total_base 1000 /// 1000
-
-/// Реализация класса больших чисел, через массив нестабильных битов.
-class BigInt{
-private:
-    void _remove_leading_zeros();
-    bool _is_negative = false;
-
-
-
-public:
-    /// 1234 === [4,3,2,1]
-    vector<int> data;
-    int Base = -1;
-
-    int rsz = -1;
-
-    void operator=(const BigInt &another){
-        data = another.data;
-        Base = another.Base;
-    }
-
-    BigInt(){data = {0};Base = total_base;}
-
-    BigInt(long long num, int Base_ = total_base){
-        Base = Base_;
-        while(num != 0){
-            data.push_back(num % Base_);
-            num /= Base;
-        }
-
-        if (data.size() == 0){
-            data.push_back(0);
-        }
-    }
-
-    /// Обработка сравнения двух положительных чисел (0 => второе больше, 1 => равны, 2 => наше больше)
-    short inline compare(const BigInt &another){
-        if (another.data.size() != data.size()){
-            return (data.size() > another.data.size()) << 1;
-        }
-
-        int sz = data.size();
-
-        for (int i = 0;i<sz;i++){
-            int p = sz - i - 1;
-            if (data[p] != another.data[p]){
-                return (data[p] > another.data[p]) << 1;
-            }
-        }
-
-        return 1;
-    }
-
-    friend bool operator <(const BigInt&, const BigInt&);
-    friend bool operator ==(const BigInt&, const BigInt&);
-	friend bool operator !=(const BigInt&, const BigInt&);
-	friend bool operator <=(const BigInt&, const BigInt&);
-	friend bool operator >(const BigInt&, const BigInt&);
-	friend bool operator >=(const BigInt&, const BigInt&);
-
-    /// Обработка сложения двух положительных чисел
-    void inline _add(const BigInt &another){
-
-        size_t extra_size = 1;
-
-        size_t an_sz = another.data.size();
-
-        if (an_sz > data.size()){
-            extra_size = an_sz - data.size() + 1;
-        }
-
-        for(size_t i = 0;i < extra_size; i++){
-            data.push_back(zero);
-        }
-        /// Заполняем контейнер нулями, чтобы было место под новые возможные числа(aka разряды)
-
-        for(size_t i = 0; i < an_sz;i++){
-            data[i] += another.data[i];
-            if (data[i] >= Base){
-                data[i] -= Base;
-                data[i+1]++;
-            }
-        }
-
-        while(data[an_sz] >= Base){
-            data[an_sz] -= Base;
-            an_sz++;
-            data[an_sz]++;
-        }
-
-
-
-        _remove_leading_zeros();
-    }
-
-    void operator +=(const BigInt& right) {
-        if (_is_negative == right._is_negative){
-            _add(right);
-        }else{
-            _is_negative = !_is_negative;
-            *this -= right;
-        }
-    }
-
-    const BigInt operator +() const;
-    const BigInt operator -() const;
-
-
-    /// Верный оператор (с учётом знаков и прочего)
-    void operator-=(BigInt another){
-        short comp_ = !(compare(another));
-        if ( comp_){
-            swap(another,*this);
-            _is_negative = !_is_negative;
-        }
-
-
-        if ( (_is_negative == another._is_negative) ^ (comp_) ) {
-            // Одинаковы по знаку
-            _subtract(another);
-        }else{
-            // Разные по знаку.
-            _add(another);
-        }
-
-    }
-
-
-
-    /// Обработка вычитания двух положительных чисел (работает, если второе меньше первого)
-    void _subtract(const BigInt &another){
-
-        size_t an_sz = another.data.size();
-
-        for(size_t i = 0; i < an_sz;i++){
-            data[i] -= another.data[i];
-            if (data[i] < zero){
-                data[i] += Base;
-                data[i+1]--;
-            }
-        }
-
-        while(data[an_sz] < 0){
-            data[an_sz] += Base;
-            an_sz++;
-            data[an_sz]--;
-        }
-
-
-
-        _remove_leading_zeros();
-    }
-
-    /// Обработка умножения числа на маленькое( такое, что (Base-1)*number < INT_MAX )
-    void inline _mult(const int number){
-
-        if (number == 0){data = {0}; return;}
-
-        size_t sz = data.size();
-        for(size_t i = 0;i < sz; ++i ){
-            data[i] *= number;
-        }
-        --sz;
-        for(size_t i = 0;i < sz; ++i){
-            data[i+1] += data[i] / Base;
-            data[i] %= Base;
-        }
-
-        while (data[sz] >= Base){
-            data.push_back(data[sz] / Base);
-            data[sz] %= Base;
-            ++sz;
-        }
-
-    }
-
-    void operator *=(int);
-    void operator /=(int);
-    friend const BigInt operator *(const BigInt&, const BigInt&);
-    friend const BigInt operator *(BigInt, int);
-    friend const BigInt operator /(BigInt, BigInt);
-    const BigInt operator /(int);
-    void operator *=(const BigInt&);
-
-    //BigInt& operator *=(const big_integer&);
-
-    BigInt reqKar(int l, int r, BigInt& another){
-        /*
-        int n = MakeEqualLength(X, Y);
-
-        if (n == 1) return std::to_string(std::stoi(Y) * std::stoi(X));
-
-        int fh = n / 2;   // First half of string
-        int sh = (n - fh); // Second half of string, ceil(n/2)
-
-        // Find the first half and second half of first string.
-        std::string X1 = X.substr(0, fh);    // high half
-        std::string X0 = X.substr(fh, sh);   // low half
-
-        // Find the first half and second half of second string
-        std::string Y1 = Y.substr(0, fh);
-        std::string Y0 = Y.substr(fh, sh);
-
-        // Recursively calculate the three products of inputs of size n/2
-        // Z0 = X0 * Y0
-        std::string Z0 = MultiplyRecur(X0, Y0);
-        // Z2 = X1 * Y1
-        std::string Z2 = MultiplyRecur(X1, Y1);
-        // Z1 = (X0 + X1)(Y0 + Y1) - Z0 - Z2
-        std::string Z1 = MultiplyRecur(Add(X0, X1), Add(Y0, Y1));
-        Z1 = Subtraction(Z1, Add(Z0, Z2));
-
-        // return added string version
-        // Z = Z2 * (10^(low half digits * 2)) + Z1 * (10^(low half digit)) + Z0
-        return Add(Add(Shift(Z2, sh*2), Z0), Shift(Z1, sh));
-        */
-        return BigInt(12);
-    }
-
-    void _kar_mult(const BigInt& another, BigInt &write_to){
-
-
-
-    }
-
-    /// Возводит число в натуральную степень
-    void inline _pow(int pow_){
-
-        BigInt cp = (*this);
-        data = {1};
-        for (; pow_; pow_ >>= 1) {
-            if (pow_ & 1)
-                (*this) *= cp;
-            cp *= cp;
-        }
-
-
-    }
-
-    /// Возводит число в натуральную степень, оставляя лишь
-    void inline _pow(int pow_,BigInt &write_to, int truncated_digits){
-
-        BigInt cp = (*this);
-        data = {1};
-        for (; pow_; pow_ >>= 1) {
-            if (pow_ & 1)
-                (*this) *= cp;
-            cp *= cp;
-
-
-
-            if (cp.data.size() > truncated_digits){cp.data.resize(truncated_digits);cp._remove_leading_zeros();}
-            if (data.size() > truncated_digits){data.resize(truncated_digits);_remove_leading_zeros();}
-        }
-
-
-    }
-
-    /// Делит число на короткое
-    int inline _divide(int digit_, BigInt &to_write){
-        to_write.data = {};
-        to_write.Base = Base;
-        int Carret = 0;
-        int sz = data.size() - 1;
-        for(int i = sz;i > -1; --i){
-            Carret *= Base;
-            Carret += data[i];
-            to_write.data.push_back(Carret / digit_);
-            Carret %= digit_;
-        }
-
-
-
-        reverse(to_write.data.begin(),to_write.data.end());
-
-        to_write._remove_leading_zeros();
-
-        return Carret;
-
-    }
-
-    void inline Interate(BigInt &b, int precision)
-    {
-
-        // 2 * X(i)
-        BigInt minus_ = *this;
-        minus_ *= minus_;
-        minus_ *= b;
-
-        minus_._ShiftR(precision);
-
-        _mult(2);
-
-        _subtract(minus_);
-        /// this - 2*this*this*b*SHIFT_R
-
-    }
-
-    /// То сколько можно взять в int чисел из контейнеров
-
-
-    const BigInt Reciprocal(int precision);
-
-    void inline _DivUnrefined( BigInt &divisor, size_t precision, BigInt &write_to)
-    {
-
-        write_to = divisor.Reciprocal(precision) * (*this);
-    }
-
-    void inline _DivInt( BigInt &divisor, BigInt &write_to)
-    {
-
-        if ( (data[data.size() - 1] == 0) || (divisor.data.size() > data.size()) ){write_to = 0; return;}
-        size_t precision = data.size() + 4;
-        _DivUnrefined(divisor,precision,write_to);
-        write_to._ShiftR(precision);
-        if (write_to.data.size() == 0){
-            write_to.data.push_back(0);
-        }
-    }
-
-    void inline _DivIntRem( BigInt &divisor, BigInt &write_to, BigInt &rem_write_to)
-    {
-        _DivInt(divisor,write_to);
-        rem_write_to = *this;
-        BigInt minus_ = write_to;
-        minus_ *= divisor;
-        rem_write_to._subtract(minus_);
-    }
-
-    /// В некоторых случаях, если число - это на 1 меньше, чем полный квадрат, то ответом будет число на один больше
-    /// Например 24 -> 5, 48 -> 7, 35 -> 6
-    /// safe_sqrt избегает этого
-    void inline _sqrt()
-    {
-        if (data.size() == 1){*this = (intSqrt(data[0])); return;}
-        BigInt copy_ = (*this);
-
-
-
-        int sz = data.size();
-        int rsz = (sz-1)*container_stack + intlog(default_base,data[sz - 1]) + 1;
-        //cout << sz <<" rsz : " << rsz << endl;
-        data.clear();
-
-
-
-        data.push_back (intSqrt(data[sz-1]) * ((sz%2) ? 1 : sqrt_of_total_base) );
-
-        _appendZeros((sz - 1) / 2 );
-
-        ///cout << *this << endl;
-
-        // Do the interation to fullfil the precision
-        int end{  log2(sz) + 6 };
-
-        //cout << *this << endl;
-
-        BigInt smth;
-        BigInt tmp;
-
-        for (int i = 0; i < end; i++)
-        {
-
-            // x(i) * 10^precision + a * 10^(2*precision) / x(i)
-            copy_._DivInt(*this, smth); /// double the precision here (of normal)
-
-
-            _add(smth);
-            tmp = *this;
-            tmp._divide(2,*this);
-            ///cout << "Cycle "<< i << " " << (*this) << endl;
-        }
-
-
-
-
-
-        ///_ShiftR(1);
-
-
-    }
-
-
-
-    void inline safe_sqrt(){
-
-        BigInt orig = *this;
-
-        _sqrt();
-
-        BigInt cp = *this;
-        cp *= cp;
-        if ( orig < cp){
-            *this -= 1;
-        }
-    }
-
-
-    /// Дописывает "подчисло" в write_to, начиная с БОЛЬШИХ разрядов
-
-    /// Пример
-    /// write_to = [4,3,2,1](1234), this=[8,7,6,5](5678), length = 2
-
-    /// => write_to = [4,3,2,1,6,5](561234)
-    void _subInt(int length, BigInt &write_to){
-        int sz = data.size();
-        for(int i = 0;i<length;i++){
-            write_to.data.push_back(data[i + sz -length]);
-        }
-    }
-
-    /// Убирает с конца числа length цифр
-    /// [5,4,3,2,1](12345) (length=3)-> [2,1](12)
-    void inline _ShiftR(int length){
-
-        data.erase(data.begin(), data.begin() + length);
-
-    }
-
-    /// [5,4,3,2,1](12345) (length=3)-> [0,0,0,5,4,3,2,1](12345000)
-    /// Следует Улучшить. Ужасно плохо реализованно
-    void inline _appendZeros(int length){
-        vector<int> v1(length);
-        vector<int> tmp = data;
-        data.clear();
-        std::merge(v1.begin(), v1.end(), tmp.begin(), tmp.end(), std::back_inserter(data));
-    }
-
-
-
-
-    friend istream& operator>>(istream& in, BigInt &bi) {
-
-
-
-        if (bi.Base == -1){
-            bi.Base = total_base;
-        }
-
-        string stream_;
-        in >> stream_;
-
-        int sz = stream_.size();
-        bi.rsz = sz;
-        sz = (sz+container_stack-1)/container_stack; /// /= по ceil
-        bi.data.resize(sz);
-
-        int Carret;
-
-        for(int i = 0;i<sz;++i){
-            Carret = 0;
-            for(int j = 0; j < container_stack;++j){
-                int index = bi.rsz - (i+1)*container_stack + j;
-                if (index > -1){
-                    Carret *= default_base;
-                    Carret += FromCharToInt(stream_[index]);
-                }
-            }
-
-            bi.data[i] = Carret;
-        }
-
-        bi._remove_leading_zeros();
-
-        return in;
-
-    }
-
-    friend ostream& operator<<(ostream &in, const BigInt &bi) {
-
-        if ( (bi.data.size() == 1) && (bi.data[0] == 0)){
-            in << FromIntToChar(0);
-            return in;
-        }
-
-        int sz = bi.data.size();
-        if (bi._is_negative){in << '-';}
-        int Carret;
-        string buff = "";
-        for(int i = 0;i<sz;++i){
-            Carret = bi.data[i];
-            for(int j = 0; j < container_stack;++j){
-                buff += FromIntToChar(Carret % default_base);
-                Carret /= default_base;
-            }
-
-        }
-
-        while(buff.back() == char_zero){
-            buff.pop_back();
-        }
-
-        reverse(buff.begin(),buff.end());
-
-        in << buff;
-        return in;
-    }
-
-    /*
-    void Stabilize(){
-        for(int i=SIZEE_-1;i>-1;i--){
-            OneNumTransform(i);
-        }
-    }
-    */
-
-};
-
-void get_sqrt(BigInt &take_from, BigInt &to_write){
-
-    to_write = 0;
-    int prefix = 2;
-    int sz = take_from.data.size();
-
-    int Carret = take_from.data.back();
-
-    vector<int> reverse_ans;
-
-    if (sz % 2 == 0){
-        Carret *= take_from.Base;
-        Carret += take_from.data[sz - 2];
-        prefix++;
-    }
-
-    int iSqrt_ = intSqrt(Carret);
-    reverse_ans.push_back(iSqrt_);
-    Carret = Carret - iSqrt_*iSqrt_;
-
-
-    cout << "Carret : "<< Carret << endl;
-
-
-    for (int i = sz-prefix;i>=0;i-=2)
-    {
-
-        Carret *= take_from.Base;
-        Carret += take_from.data[i];
-
-        Carret *= take_from.Base;
-        Carret += take_from.data[i - 1];
-
-
-        iSqrt_ = intSqrt(Carret);
-        cout << iSqrt_ << endl;
-        cout << "Carret : "<< Carret << endl;
-        reverse_ans.push_back(iSqrt_);
-        Carret -= iSqrt_*iSqrt_;
-        cout << "Carret : "<< Carret << endl;
-    }
-
-
-
+int intlog(double base, double x) {
+    return (int)(log(x) / log(base));
+}
+/// 9 223 372 036 854 775 807
+/// 2147483647
+const int INT_MAXI = 9223372036854775807;
+
+int inline intSqrt(int arg){
+    return (int)(sqrt(arg));
 }
 
 
-///
-
-const BigInt operator +(BigInt left, const BigInt& right) {
-    left += right;
-    return left;
+// создает длинное целое число со значением 0
+BigInt::BigInt() {
+	this->_is_negative = false;
 }
 
-const BigInt operator -(BigInt left, const BigInt& right) {
-    left -= right;
-    return left;
+// создает длинное целое число из C++-строки
+BigInt::BigInt(std::string str) {
+	if (str.length() == 0) {
+		this->_is_negative = false;
+	}
+	else {
+		if (str[0] == '-') {
+			str = str.substr(1);
+			this->_is_negative = true;
+		}
+		else {
+			this->_is_negative = false;
+		}
+
+		for (long long i = str.length(); i > 0; i -= 9) {
+			if (i < 9)
+				this->_digits.push_back(atoi(str.substr(0, i).c_str()));
+			else
+				this->_digits.push_back(atoi(str.substr(i - 9, 9).c_str()));
+		}
+
+		this->_remove_leading_zeros();
+	}
 }
 
-void BigInt::operator *=(int number) {
-    if (number == 0){data = {0}; return;}
-    if (number < 0){_is_negative = !_is_negative; number = abs(number);}
-    size_t sz = data.size();
-    for(size_t i = 0;i < sz; ++i ){
-        data[i] *= number;
-    }
-    --sz;
-    for(size_t i = 0;i < sz; ++i){
-        data[i+1] += data[i] / Base;
-        data[i] %= Base;
-    }
+// удаляет ведущие нули
+void BigInt::_remove_leading_zeros() {
+	while (this->_digits.size() > 1 && this->_digits.back() == 0) {
+		this->_digits.pop_back();
+	}
 
-    while (data[sz] >= Base){
-        data.push_back(data[sz] / Base);
-        data[sz] %= Base;
-        ++sz;
-    }
-}
-
-const BigInt BigInt::operator / (int number) {
-    BigInt write_to;
-    write_to.data = {};
-    write_to.Base = Base;
-    int Carret = 0;
-    int sz = data.size() - 1;
-    for(int i = sz;i > -1; --i){
-        Carret *= Base;
-        Carret += data[i];
-        write_to.data.push_back(Carret / number);
-        Carret %= number;
-    }
-
-
-
-    reverse(write_to.data.begin(),write_to.data.end());
-
-    write_to._remove_leading_zeros();
-
-    return write_to;
-
-    ///
-    /// Остаток <- return Carret;
-}
-
-const BigInt operator *(const BigInt& left, const BigInt& right) {
-    BigInt ret;
-    ret._is_negative = left._is_negative != right._is_negative;
-    ret.Base = left.Base;
-    ret.data = FFT::convolution(left.data, right.data);
-
-
-    size_t sz = ret.data.size() - 1;
-    for(size_t i = 0;i < sz; ++i ){
-        ret.data[i + 1] += ret.data[i] / ret.Base;
-        ret.data[i] %= ret.Base;
-    }
-
-
-    while (ret.data[sz] >= ret.Base){
-        ret.data.push_back(ret.data[sz] / ret.Base);
-        ret.data[sz] %= ret.Base;
-        ++sz;
-    }
-
-    return ret;
-}
-
-// домножает текущее число на указанное
-void BigInt::operator *=(const BigInt& value) {
-    *this = (*this * value);
-}
-
-const BigInt operator /(BigInt left, BigInt right)
-{
-
-    if ( (left.data[left.data.size() - 1] == 0) || (right.data.size() > left.data.size()) ){return 0;}
-    size_t precision = left.data.size() + 4;
-    left._DivUnrefined(right,precision,left);
-    left._ShiftR(precision);
-    if (left.data.size() == 0){
-        left.data.push_back(0);
-    }
-    return left;
+	if (this->_digits.size() == 1 && this->_digits[0] == 0) this->_is_negative = false;
 }
 
 
 
+// сравнивает два числа на равенство
+bool operator ==(const BigInt& left, const BigInt& right) {
+	if (left._is_negative != right._is_negative) return false;
+	if (left._digits.empty()) {
+		if (right._digits.empty() || (right._digits.size() == 1 && right._digits[0] == 0)) return true;
+		else return false;
+	}
 
-const BigInt BigInt::Reciprocal(int precision)
-{
-    BigInt write_to;
+	if (right._digits.empty()) {
+		if (left._digits.size() == 1 && left._digits[0] == 0) return true;
+		else return false;
+	}
 
-    int mx_sz = intlog(Base, INT_MAXI);
-    int sz = data.size();
-    size_t len{ (sz > (mx_sz - 1)) ? (mx_sz) : sz };
+	if (left._digits.size() != right._digits.size()) return false;
+	for (size_t i = 0; i < left._digits.size(); ++i) if (left._digits[i] != right._digits[i]) return false;
 
-    int divisor = 0;
-
-
-
-
-
-    for(int i = 0;i<len;i++){
-        divisor *= write_to.Base;
-        divisor += data[sz - i - 1];
-    }
-
-    int dividend = 1;
-    for(int i = 0;i<len;++i){
-        dividend *= Base;
-    }
-
-
-    ///cout << dividend << endl << divisor << endl;
-    // Extra condition for initial guess is: x(i) < 2R/b
-    write_to = dividend / divisor;
-
-
-
-    write_to._appendZeros(precision - sz);
-
-    ///cout << "TestPut " << write_to << endl;
-
-    // Do the interation to fullfil the precision
-    int end{ (int)(std::log2(precision)) + 4 };
-    for (int i = 0; i < end; i++)
-    {
-        write_to.Interate(*this, precision);
-        ///cout << "InCycle " << write_to << endl;
-    }
-
-    return write_to;
+	return true;
 }
 
+// возвращает копию переданного числа
+const BigInt BigInt::operator +() const {
+	return BigInt(*this);
+}
+
+// возвращает переданное число с другим знаком
+const BigInt BigInt::operator -() const {
+	BigInt copy(*this);
+	copy._is_negative = !copy._is_negative;
+	return copy;
+}
 
 // проверяет, является ли левый операнд меньше правого
 bool operator <(const BigInt& left, const BigInt& right) {
+	if (left == right) return false;
+	if (left._is_negative) {
+		if (right._is_negative) return ((-right) < (-left));
+		else return true;
+	}
+	else if (right._is_negative) return false;
+	else {
+		if (left._digits.size() != right._digits.size()) {
+			return left._digits.size() < right._digits.size();
+		}
+		else {
+			for (long long i = left._digits.size() - 1; i >= 0; --i) {
+				if (left._digits[i] != right._digits[i]) return left._digits[i] < right._digits[i];
+			}
 
-    if (left._is_negative != right._is_negative){
-        return left._is_negative;
-    }
-
-	if (left.data.size() != right.data.size()){
-        return (left.data.size() < right.data.size()) ^ (left._is_negative);
-    }
-
-    int sz = left.data.size();
-
-    for (int i = 0;i<sz;i++){
-        int p = sz - i - 1;
-        if (left.data[p] != right.data[p]){
-            return (left.data[p] < right.data[p]) ^ (left._is_negative);
-        }
-    }
-
-    // Числа равны
-    return 0;
+			return false;
+		}
+	}
 }
 
-// проверяет, является ли левый операнд меньше правого
+// сравнивает два числа на неравенство
 bool operator !=(const BigInt& left, const BigInt& right) {
-
-    if (left._is_negative != right._is_negative){
-        return 1;
-    }
-
-	if (left.data.size() != right.data.size()){
-        return 1;
-    }
-
-    int sz = left.data.size();
-
-    for (int i = 0;i<sz;i++){
-        int p = sz - i - 1;
-        if (left.data[p] != right.data[p]){
-            return 1;
-        }
-    }
-
-    // Числа равны
-    return 0;
+	return !(left == right);
 }
 
+// проверяет, является ли левый операнд меньше либо равен правого
+bool operator <=(const BigInt& left, const BigInt& right) {
+	return (left < right || left == right);
+}
 
-void BigInt::_remove_leading_zeros() {
-	while (this->data.size() > 1 && this->data.back() == 0) {
-		this->data.pop_back();
+// проверяет, является ли левый операнд больше правого
+bool operator >(const BigInt& left, const BigInt& right) {
+	return !(left <= right);
+}
+
+// проверяет, является ли левый операнд больше либо равен правого
+bool operator >=(const BigInt& left, const BigInt& right) {
+	return !(left < right);
+}
+
+// складывает два числа
+const BigInt operator +(BigInt left, const BigInt& right) {
+	if (left._is_negative) {
+		if (right._is_negative) return -(-left + (-right));
+		else return right - (-left);
+	}
+	else if (right._is_negative) return left - (-right);
+	int carry = 0;
+	for (size_t i = 0; i < std::max(left._digits.size(), right._digits.size()) || carry != 0; ++i) {
+		if (i == left._digits.size()) left._digits.push_back(0);
+		left._digits[i] += carry + (i < right._digits.size() ? right._digits[i] : 0);
+		carry = left._digits[i] >= left.BASE;
+		if (carry != 0) left._digits[i] -= left.BASE;
 	}
 
-	if (this->data.size() == 1 && this->data[0] == 0) this->_is_negative = false;
+	return left;
+}
+
+// прибавляет к текущему числу новое
+BigInt& BigInt::operator +=(const BigInt& value) {
+	return *this = (*this + value);
+}
+
+// префиксный инкремент
+const BigInt BigInt::operator++() {
+	return (*this += 1);
+}
+
+// преобразует число к строке
+BigInt::operator std::string() const {
+	std::stringstream ss;
+	ss << *this;
+	return ss.str();
+}
+
+// преобразует signed char к BigInt
+BigInt::BigInt(signed char c) {
+	if (c < 0) this->_is_negative = true;
+	else this->_is_negative = false;
+	this->_digits.push_back(std::abs(c));
+}
+
+// преобразует unsigned char к BigInt
+BigInt::BigInt(unsigned char c) {
+	this->_is_negative = false;
+	this->_digits.push_back(c);
+}
+
+// преобразует signed short к BigInt
+BigInt::BigInt(signed short s) {
+	if (s < 0) this->_is_negative = true;
+	else this->_is_negative = false;
+	this->_digits.push_back(std::abs(s));
+}
+
+// преобразует unsigned short к BigInt
+BigInt::BigInt(unsigned short s) {
+	this->_is_negative = false;
+	this->_digits.push_back(s);
+}
+
+// преобразует signed int к BigInt
+BigInt::BigInt(signed int i) {
+	if (i < 0) this->_is_negative = true;
+	else this->_is_negative = false;
+	this->_digits.push_back(std::abs(i) % BASE);
+	i /=    BASE;
+	if (i != 0) this->_digits.push_back(std::abs(i));
+}
+
+// преобразует unsigned int к BigInt
+BigInt::BigInt(unsigned int i) {
+	this->_digits.push_back(i % BASE);
+	i /= BASE;
+	if (i != 0) this->_digits.push_back(i);
+}
+
+// преобразует signed long к BigInt
+BigInt::BigInt(signed long l) {
+	if (l < 0) this->_is_negative = true;
+	else this->_is_negative = false;
+	this->_digits.push_back(std::abs(l) % BASE);
+	l /= BASE;
+	if (l != 0) this->_digits.push_back(std::abs(l));
+}
+
+// преобразует unsigned long к BigInt
+BigInt::BigInt(unsigned long l) {
+	this->_digits.push_back(l % BASE);
+	l /= BASE;
+	if (l != 0) this->_digits.push_back(l);
+}
+
+// преобразует signed long long к BigInt
+BigInt::BigInt(signed long long l) {
+	if (l < 0) { this->_is_negative = true; l = -l; }
+	else this->_is_negative = false;
+	do {
+		this->_digits.push_back(l % BASE);
+		l /= BASE;
+	} while (l != 0);
+}
+
+// преобразует unsigned long long к BigInt
+BigInt::BigInt(unsigned long long l) {
+	this->_is_negative = false;
+	do {
+		this->_digits.push_back(l % BASE);
+		l /= BASE;
+	} while (l != 0);
+}
+
+// постфиксный инкремент
+const BigInt BigInt::operator ++(int) {
+	*this += 1;
+	return *this - 1;
+}
+
+// префиксный декремент
+const BigInt BigInt::operator --() {
+	return *this -= 1;
+}
+
+// постфиксный декремент
+const BigInt BigInt::operator --(int) {
+	*this -= 1;
+	return *this + 1;
+}
+
+// вычитает два числа
+const BigInt operator -(BigInt left, const BigInt& right) {
+	if (right._is_negative) return left + (-right);
+	else if (left._is_negative) return -(-left + right);
+	else if (left < right) return -(right - left);
+	int carry = 0;
+	for (size_t i = 0; i < right._digits.size() || carry != 0; ++i) {
+		left._digits[i] -= carry + (i < right._digits.size() ? right._digits[i] : 0);
+		carry = left._digits[i] < 0;
+		if (carry != 0) left._digits[i] += left.BASE;
+	}
+
+	left._remove_leading_zeros();
+	return left;
+}
+
+// вычитает из текущего числа новое
+BigInt& BigInt::operator -=(const BigInt& value) {
+	return *this = (*this - value);
+}
+
+// перемножает два числа
+const BigInt operator *(const BigInt& left, const BigInt& right) {
+	BigInt result;
+	result._digits.resize(left._digits.size() + right._digits.size());
+	for (size_t i = 0; i < left._digits.size(); ++i) {
+		int carry = 0;
+		for (size_t j = 0; j < right._digits.size() || carry != 0; ++j) {
+			long long cur = result._digits[i + j] +
+				left._digits[i] * 1LL * (j < right._digits.size() ? right._digits[j] : 0) + carry;
+			result._digits[i + j] = static_cast<int>(cur % left.BASE);
+			carry = static_cast<int>(cur / left.BASE);
+		}
+	}
+
+	result._is_negative = left._is_negative != right._is_negative;
+	result._remove_leading_zeros();
+	return result;
+}
+
+// домножает текущее число на указанное
+BigInt& BigInt::operator *=(const BigInt& value) {
+	return *this = (*this * value);
+}
+
+// сдвигает все разряды на 1 вправо (домножает на BASE)
+void BigInt::_shift_right() {
+	if (this->_digits.size() == 0) {
+		this->_digits.push_back(0);
+		return;
+	}
+	this->_digits.push_back(this->_digits[this->_digits.size() - 1]);
+	for (size_t i = this->_digits.size() - 2; i > 0; --i) this->_digits[i] = this->_digits[i - 1];
+	this->_digits[0] = 0;
+}
+
+// делит два числа
+const BigInt operator /(const BigInt& left, const BigInt& right) {
+	if (right == 0) throw BigInt::divide_by_zero();
+	BigInt b = right;
+	b._is_negative = false;
+	BigInt result, current;
+	result._digits.resize(left._digits.size());
+	for (long long i = static_cast<long long>(left._digits.size()) - 1; i >= 0; --i) {
+		current._shift_right();
+		current._digits[0] = left._digits[i];
+		current._remove_leading_zeros();
+		int x = 0, l = 0, r = left.BASE;
+		while (l <= r) {
+			int m = (l + r) / 2;
+			BigInt t = b * m;
+			if (t <= current) {
+				x = m;
+				l = m + 1;
+			}
+			else r = m - 1;
+		}
+
+		result._digits[i] = x;
+		current = current - b * x;
+	}
+
+	result._is_negative = left._is_negative != right._is_negative;
+	result._remove_leading_zeros();
+	return result;
+}
+
+// делит текущее число на указанное
+BigInt& BigInt::operator /=(const BigInt& value) {
+	return *this = (*this / value);
+}
+
+// возвращает остаток от деления двух чисел
+const BigInt operator %(const BigInt& left, const BigInt& right) {
+	BigInt result = left - (left / right) * right;
+	if (result._is_negative) result += right;
+	return result;
+}
+
+// присваивает текущему числу остаток от деления на другое число
+BigInt& BigInt::operator %=(const BigInt& value) {
+	return *this = (*this % value);
+}
+
+// проверяет, является ли текущее число нечетным
+bool BigInt::odd() const {
+	if (this->_digits.size() == 0) return false;
+	return this->_digits[0] & 1;
+}
+
+// проверяет, является ли текущее число четным
+bool BigInt::even() const {
+	return !this->odd();
+}
+
+// возводит текущее число в указанную степень
+const BigInt BigInt::pow(BigInt n) const {
+	BigInt a(*this), result(1);
+	while (n != 0) {
+		if (n.odd()) result *= a;
+		a *= a;
+		n /= 2;
+	}
+
+	return result;
+}
+
+// печатает число в поток вывода
+std::ostream& operator <<(std::ostream& os, const BigInt& bi) {
+	if ( (bi._digits.size() == 1) && (bi._digits[0] == 0)){
+        os << FromIntToChar(0);
+        return os;
+    }
+
+    int sz = bi._digits.size();
+    if (bi._is_negative){os << '-';}
+    int Carret;
+    std::string buff = "";
+    for(int i = 0;i<sz;++i){
+        Carret = bi._digits[i];
+        for(int j = 0; j < container_stack;++j){
+            buff += FromIntToChar(Carret % default_base);
+            Carret /= default_base;
+        }
+
+    }
+
+    while(buff.back() == '0'){
+        buff.pop_back();
+    }
+
+    reverse(buff.begin(),buff.end());
+
+    os << buff;
+    return os;
+}
+
+std::istream& operator>>(std::istream& in, BigInt &bi) {
+
+
+    std::string stream_;
+    in >> stream_;
+
+    int sz = stream_.size();
+    int rsz = sz;
+    sz = (sz+container_stack-1)/container_stack; /// /= по ceil
+    bi._digits.resize(sz);
+
+    int Carret;
+
+    for(int i = 0;i<sz;++i){
+        Carret = 0;
+        for(int j = 0; j < container_stack;++j){
+            int index = rsz - (i+1)*container_stack + j;
+            if (index > -1){
+                Carret *= default_base;
+                Carret += FromCharToInt(stream_[index]);
+            }
+        }
+
+        bi._digits[i] = Carret;
+    }
+
+    bi._remove_leading_zeros();
+
+    return in;
+
+}
+
+/// [5,4,3,2,1](12345) (length=3)-> [0,0,0,5,4,3,2,1](12345000)
+/// Следует Улучшить. Ужасно плохо реализованно
+void inline BigInt::_appendZeros(int length){
+    std::vector<int> v1(length);
+    std::vector<int> tmp = _digits;
+    _digits.clear();
+    std::merge(v1.begin(), v1.end(), tmp.begin(), tmp.end(), std::back_inserter(_digits));
+}
+
+const int BigInt::get_real_size() const{
+    return (_digits.size()-1)*container_stack + intlog(default_base,_digits[_digits.size() - 1]) + 1;
 }
 
 
-#undef int
 
 
-#include <fstream>
+using namespace std;
+
+const BigInt eps = BigInt(1);
 
 
-template <typename T>
-T sqrt(T n) {
 
-  T x = 10;
-  ///x = x.pow(a.length() / 2 + 1); <- initial guess
-  T last = 0;
+string a,b;
+BigInt sqrt(BigInt n) {
+
+
+    BigInt x;
+    int rsz = n.get_real_size();
+    /*
+    //cout << sz <<" rsz : " << rsz << endl;
+    x._digits.clear();
+
+    x._digits.push_back (intSqrt(n._digits[sz-1]) * ((sz%2) ? 1 : sqrt_of_total_base) );
+
+
+    x._appendZeros((sz - 1) / 2 );
+    */
+    x = 10;
+    x = x.pow(rsz / 2 + 1);
+  BigInt last = 0;
   int iter = 0;
+
+  //cout << last << endl << x << endl << endl;
+
   while (last != x) {
     last = x;
     x = (x + n / x) / 2;
-    cout << last - x << endl;
+    //cout << last << endl << x << endl << endl;
     ++iter;
   }
   cout << iter << endl;
   return x;
 }
+/*
+int main() {
+	ifstream fin;
+	ofstream fout;
+	fin.open("input.txt");
+	fin >> a >> b;
+
+	BigInt n1(a), n2(b);
+
+	fout.open("output.txt");
+
+    BigInt ans = n1/n2;
+    BigInt an2 = n1 % n2;
+    fout << ans << endl << an2;
+
+ending:
+	cout << endl;
+
+	return 0;
+}
+*/
+
+
+
+
+#include <fstream>
 
 using namespace std;
 
 int main()
 {
-    ifstream fin("input.txt");
-    ofstream fout("output.txt");
      
-    BigInt a = 1000;
-    BigInt b = 999;
-    BigInt c,d;
+    ifstream fin;
+	ofstream fout;
+	fin.open("input.txt");
+	getline(fin, a);
+	fin.close();
 
+	BigInt n1(a);
 
-    cin >> a;
+	fout.open("output.txt");
 
-    b = a;
-    //a._sqrt();
-    a = sqrt(a);
-
-
-    cout << a; //endl << d;
-
-    a *= a;
-    b._subtract(a);
-    cout << endl << b;
-
-
-    ///cout << a << endl;
-
-    //cout << r << endl;
-
-
-    ///cout << counter << endl;
-    return 0;
+  BigInt ans = sqrt(n1);
+  cout << "CALCULATED" << endl;
+  fout << ans << endl << n1 - ans * ans;
+  return 0;
 }
 
 

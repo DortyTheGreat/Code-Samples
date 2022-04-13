@@ -1,44 +1,28 @@
 #include <iostream>
-#include "../DortyLibs/DortyGraph.h"
+
+#include "../DortyLibs/BigIntLib.h"
+
 #include "../DortyLibs/DortyBuild.h"
-#include "../DortyLibs/BetterVector.h"
-#include "../DortyLibs/Cython.h"
-#include "../DortyLibs/algo.h"
-#include "../DortyLibs/OperatorBigInt.h"
 #include <fstream>
-#include "../DortyLibs/NewtonsSQRT.h"
+
 using namespace std;
 
 int main()
 {
-    ifstream fin("input.txt");
-    ofstream fout("output.txt");
     AppBuild();
-    BigInt a = 1000;
-    BigInt b = 999;
-    BigInt c,d;
+    ifstream fin;
+	ofstream fout;
+	fin.open("input.txt");
+	getline(fin, a);
+	fin.close();
 
+	BigInt n1(a);
 
-    cin >> a;
+	fout.open("output.txt");
 
-    b = a;
-    //a._sqrt();
-    a = sqrt(a);
-
-
-    cout << a; //endl << d;
-
-    a *= a;
-    b._subtract(a);
-    cout << endl << b;
-
-
-    ///cout << a << endl;
-
-    //cout << r << endl;
-
-
-    ///cout << counter << endl;
-    return 0;
+  BigInt ans = sqrt(n1);
+  cout << "CALCULATED" << endl;
+  fout << ans << endl << n1 - ans * ans;
+  return 0;
 }
 

@@ -35,8 +35,6 @@ public:
 	big_integer(unsigned long long);
 
 	friend std::ostream& operator <<(std::ostream&, const big_integer&);
-
-
 	operator std::string() const;
 	const big_integer operator +() const;
 	const big_integer operator -() const;
@@ -453,16 +451,33 @@ using namespace std;
 
 const big_integer eps = big_integer(1);
 
-string a,b;
+string a;
 big_integer sqrt(big_integer n) {
-  big_integer x = 10;
-  x = x.pow(a.length() / 2 + 1);
+
+
+    big_integer x;
+
+    int rsz = a.length();
+    /*
+    //cout << sz <<" rsz : " << rsz << endl;
+    x._digits.clear();
+
+    x._digits.push_back (intSqrt(n._digits[sz-1]) * ((sz%2) ? 1 : sqrt_of_total_base) );
+
+
+    x._appendZeros((sz - 1) / 2 );
+    */
+    x = 10;
+    x = x.pow(rsz / 2 + 1);
   big_integer last = 0;
   int iter = 0;
+
+  //cout << last << endl << x << endl << endl;
+
   while (last != x) {
     last = x;
     x = (x + n / x) / 2;
-    //cout << last - x << endl;
+    //cout << last << endl << x << endl << endl;
     ++iter;
   }
   cout << iter << endl;
@@ -473,15 +488,15 @@ int main() {
 	ifstream fin;
 	ofstream fout;
 	fin.open("input.txt");
-	fin >> a >> b;
+	getline(fin, a);
+	fin.close();
 
-	big_integer n1(a), n2(b);
+	big_integer n1(a);
 
 	fout.open("output.txt");
 
-    big_integer ans = n1/n2;
-    big_integer an2 = n1 % n2;
-    fout << ans << endl << an2;
+  big_integer ans = sqrt(n1);
+  fout << ans << endl << n1 - ans * ans;
 
 ending:
 	cout << endl;
