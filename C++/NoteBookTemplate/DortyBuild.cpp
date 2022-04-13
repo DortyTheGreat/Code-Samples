@@ -29,10 +29,13 @@ int main()
     ofstream fout("output.txt");
     AppBuild();
 
-    BigInt a,b,c;
+    BigInt a,b;
+
+    BigInt * c;
+
     fin >> a >> b;
-    c = a * b;
-    fout << c << endl;
+    c = k_mul(&a,&b);
+    fout << *c << endl;
 
 
     return 0;
@@ -49,144 +52,6 @@ using namespace std;
 #include <algorithm>
 
 #include <vector>
-/// REF : http://web.mit.edu/~ecprice/acm/acm08/notebook.html#file12
-
-/// USAGE :
-/// v and u - are vector<int>
-/// FFT::convolution(v, u);
-
-#include <vector>
-
-#include <cmath>
-#include <iostream>
-using namespace std;
-
-#define VI vector<long long>
-#define int long long
-#define double long double
-
-double PI = acos(0) * 2;
-
-class complex
-{
-public:
-	double a, b;
-	complex() {a = 0.0; b = 0.0;}
-	complex(double na, double nb) {a = na; b = nb;}
-	const complex operator+(const complex &c) const
-		{return complex(a + c.a, b + c.b);}
-	const complex operator-(const complex &c) const
-		{return complex(a - c.a, b - c.b);}
-	const complex operator*(const complex &c) const
-		{return complex(a*c.a - b*c.b, a*c.b + b*c.a);}
-	double magnitude() {return sqrt(a*a+b*b);}
-	//void print() {printf("(%.3f %.3f)\n", a, b);}
-};
-
-class FFT
-{
-public:
-	vector<complex> data;
-	vector<complex> roots;
-	VI rev;
-	int s, n;
-
-	void setSize(int ns)
-	{
-		s = ns;
-		n = (1 << s);
-		int i, j;
-		rev = VI(n);
-		data = vector<complex> (n);
-		roots = vector<complex> (n+1);
-		for (i = 0; i < n; i++)
-			for (j = 0; j < s; j++)
-				if ((i & (1 << j)) != 0)
-					rev[i] += (1 << (s-j-1));
-		roots[0] = complex(1, 0);
-		complex mult = complex(cos(2*PI/n), sin(2*PI/n));
-		for (i = 1; i <= n; i++)
-			roots[i] = roots[i-1] * mult;
-	}
-
-	void bitReverse(vector<complex> &array)
-	{
-		vector<complex> temp(n);
-		int i;
-		for (i = 0; i < n; i++)
-			temp[i] = array[rev[i]];
-		for (i = 0; i < n; i++)
-			array[i] = temp[i];
-	}
-
-	void transform(bool inverse = false)
-	{
-		bitReverse(data);
-		int i, j, k;
-		for (i = 1; i <= s; i++) {
-			int m = (1 << i), md2 = m / 2;
-			int start = 0, increment = (1 << (s-i));
-			if (inverse) {
-				start = n;
-				increment *= -1;
-			}
-			complex t, u;
-			for (k = 0; k < n; k += m) {
-				int index = start;
-				for (j = k; j < md2+k; j++) {
-					t = roots[index] * data[j+md2];
-					index += increment;
-					data[j+md2] = data[j] - t;
-					data[j] = data[j] + t;
-				}
-			}
-		}
-		if (inverse)
-			for (i = 0; i < n; i++) {
-				data[i].a /= n;
-				data[i].b /= n;
-			}
-	}
-    template <typename T>
-	static VI convolution(const vector<T> &a, const vector<T> &b)
-	{
-		int alen = a.size(), blen = b.size();
-		int resn = alen + blen - 1;	// size of the resulting array
-		int s = 0, i;
-		while ((1 << s) < resn) s++;	// n = 2^s
-		int n = 1 << s;	// round up the the nearest power of two
-
-		FFT pga, pgb;
-		pga.setSize(s);	// fill and transform first array
-		for (i = 0; i < alen; i++) pga.data[i] = complex(a[i], 0);
-		for (i = alen; i < n; i++)	pga.data[i] = complex(0, 0);
-		pga.transform();
-
-		pgb.setSize(s);	// fill and transform second array
-		for (i = 0; i < blen; i++)	pgb.data[i] = complex(b[i], 0);
-		for (i = blen; i < n; i++)	pgb.data[i] = complex(0, 0);
-		pgb.transform();
-
-		for (i = 0; i < n; i++)	pga.data[i] = pga.data[i] * pgb.data[i];
-		pga.transform(true);	// inverse transform
-		VI result = VI (resn);	// round to nearest integer
-		for (i = 0; i < resn; i++)	result[i] = (int) (pga.data[i].a + 0.5);
-
-		int actualSize = resn - 1;	// find proper size of array
-		while (result[actualSize] == 0)
-			actualSize--;
-		if (actualSize < 0) actualSize = 0;
-		result.resize(actualSize+1);
-		return result;
-	}
-};
-
-
-
-
-#undef VI
-
-
 
 
 #define debug_delenie false
@@ -879,7 +744,7 @@ const BigInt operator *(const BigInt& left, const BigInt& right) {
 
 */
 
-/*
+
 /// Karatsuba, пока не делает ничего со знаком
 const BigInt operator *(const BigInt& left, const BigInt& right) {
     bool flag = (right.data.size() > left.data.size());
@@ -924,7 +789,6 @@ const BigInt operator *(const BigInt& left, const BigInt& right) {
         for(int i = 0;i<_0_sz;++i){
             R0.data[i] = right.data[i];
         }
-        Z0 = L0 * R0;
 
     }else{
 
@@ -946,11 +810,10 @@ const BigInt operator *(const BigInt& left, const BigInt& right) {
         for(int i = 0;i<_0_sz;++i){
             R0.data[i] = left.data[i];
         }
-        Z0 = L0 * R0;
     }
 
 
-
+    Z0 = L0 * R0;
     int _1_sz = s_sz - _0_sz;
     if (_1_sz == 0){
         /// Z2 = 0
@@ -958,9 +821,10 @@ const BigInt operator *(const BigInt& left, const BigInt& right) {
 
         ///Z1._appendZeros(fh);
 
+        Z1 += Z0;
 
 
-        return Z1 + Z0;
+        return Z1;
     }else{
         BigInt R1;
         R1.data.resize(_1_sz);
@@ -985,33 +849,17 @@ const BigInt operator *(const BigInt& left, const BigInt& right) {
         ///if ( !(Z2.data.size() == 1 && Z2.data[0] == 0) )
             ///Z2._appendZeros(fh * 2);
 
-        return Z2 + Z1 + Z0;
+        Z2 += Z1;
+        Z2 += Z0;
+
+        return Z2;
     }
-
-
-
-
-
-    // Recursively calculate the three products of inputs of size n/2
-
-    // Z2 = X1 * Y1
-    std::string Z2 = MultiplyRecur(X1, Y1);
-    // Z1 = (X0 + X1)(Y0 + Y1) - Z0 - Z2
-    std::string Z1 = MultiplyRecur(Add(X0, X1), Add(Y0, Y1));
-    Z1 = Subtraction(Z1, Add(Z0, Z2));
-
-    // return added string version
-    // Z = Z2 * (10^(low half digits * 2)) + Z1 * (10^(low half digit)) + Z0
-    return Add(Add(Shift(Z2, sh*2), Z0), Shift(Z1, sh));
-
-
-    return BigInt(12);
 
 }
 
-*/
 
 
+/*
 const BigInt operator *(const BigInt& left, const BigInt& right) {
 	BigInt result;
 	result.data.resize(left.data.size() + right.data.size());
@@ -1029,7 +877,7 @@ const BigInt operator *(const BigInt& left, const BigInt& right) {
 	result._remove_leading_zeros();
 	return result;
 }
-
+*/
 // домножает текущее число на указанное
 void BigInt::operator *=(const BigInt& value) {
     *this = (*this * value);
@@ -1156,6 +1004,85 @@ void BigInt::_remove_leading_zeros() {
 }
 
 
+
+
+/// Karatsuba, пока не делает ничего со знаком
+static BigInt* k_mul(BigInt* left, BigInt* right) {
+
+    BigInt *t1;
+    if (left->data.size() < right->data.size()){
+        t1 = left;
+        left = right;
+        right = t1;
+    }
+
+    int n = left->data.size(); /// size of biggest num
+
+    if (n == 1){return new BigInt(left->data[0] * right->data[0]);}
+    int fh = (n+1) / 2;   // First half Data (take more)
+    int sh = (n - fh); // Second half of Data
+
+    // Find the first half and second half of first string.
+
+    BigInt *L0, *L1;
+    L0->data.resize(fh);
+    L1->data.resize(sh);
+
+    BigInt *R0;
+    BigInt *Z0;
+    BigInt *Z1;
+
+
+    int _0_sz;
+    int s_sz;
+
+
+    for(int i = 0;i<fh;++i){
+        L0->data[i] = left->data[i];
+    }
+
+    for(int i = 0;i<sh;++i){
+        L1->data[i] = left->data[fh + i];
+    }
+
+
+
+    Z0 = k_mul(L0,R0);
+    int _1_sz = s_sz - _0_sz;
+    if (_1_sz == 0){
+        /// Z2 = 0
+        Z1 = k_mul(L1,R0); /// no swap
+
+        ///Z1._appendZeros(fh);
+
+
+        return new BigInt((*Z1)+(*Z0));
+    }else{
+        BigInt *R1;
+        R1->data.resize(_1_sz);
+
+
+
+        for(int i = 0;i<_1_sz;++i){
+            R1->data[i] = right->data[fh + i];
+        }
+
+        BigInt *Z2 = k_mul(L1,R1); /// no swap
+
+        Z1 = new BigInt((*L0+*L1) * (*R0+*R1) - (*Z2 + *Z0));
+
+        ///if ( !(Z1.data.size() == 1 && Z1.data[0] == 0) )
+            ///Z1._appendZeros(fh);
+
+        ///if ( !(Z2.data.size() == 1 && Z2.data[0] == 0) )
+            ///Z2._appendZeros(fh * 2);
+
+        return new BigInt(*Z2 + *Z1 + *Z0);
+    }
+
+}
+
+
 #undef int
 
 
@@ -1172,10 +1099,13 @@ int main()
     ofstream fout("output.txt");
      
 
-    BigInt a,b,c;
+    BigInt a,b;
+
+    BigInt * c;
+
     fin >> a >> b;
-    c = a * b;
-    fout << c << endl;
+    c = k_mul(&a,&b);
+    fout << *c << endl;
 
 
     return 0;

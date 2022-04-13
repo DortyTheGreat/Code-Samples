@@ -22,10 +22,13 @@ int main()
     ofstream fout("output.txt");
     AppBuild();
 
-    BigInt a,b,c;
+    BigInt a,b;
+
+    BigInt * c;
+
     fin >> a >> b;
-    c = a * b;
-    fout << c << endl;
+    c = k_mul(&a,&b);
+    fout << *c << endl;
 
 
     return 0;

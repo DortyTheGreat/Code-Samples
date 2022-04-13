@@ -1,5 +1,5 @@
 #include <vector>
-//#include "Simple_FFT.h"
+
 
 #define debug_delenie false
 
@@ -768,10 +768,10 @@ const BigInt operator *(const BigInt& left, const BigInt& right) {
 
         ///Z1._appendZeros(fh);
 
-        Z0
+        Z1 += Z0;
 
 
-        return Z1 + Z0;
+        return Z1;
     }else{
         BigInt R1;
         R1.data.resize(_1_sz);
@@ -796,7 +796,10 @@ const BigInt operator *(const BigInt& left, const BigInt& right) {
         ///if ( !(Z2.data.size() == 1 && Z2.data[0] == 0) )
             ///Z2._appendZeros(fh * 2);
 
-        return Z2 + Z1 + Z0;
+        Z2 += Z1;
+        Z2 += Z0;
+
+        return Z2;
     }
 
 }
@@ -945,6 +948,85 @@ void BigInt::_remove_leading_zeros() {
 	}
 
 	if (this->data.size() == 1 && this->data[0] == 0) this->_is_negative = false;
+}
+
+
+
+
+/// Karatsuba, пока не делает ничего со знаком
+static BigInt* k_mul(BigInt* left, BigInt* right) {
+
+    BigInt *t1;
+    if (left->data.size() < right->data.size()){
+        t1 = left;
+        left = right;
+        right = t1;
+    }
+
+    int n = left->data.size(); /// size of biggest num
+
+    if (n == 1){return new BigInt(left->data[0] * right->data[0]);}
+    int fh = (n+1) / 2;   // First half Data (take more)
+    int sh = (n - fh); // Second half of Data
+
+    // Find the first half and second half of first string.
+
+    BigInt *L0, *L1;
+    L0->data.resize(fh);
+    L1->data.resize(sh);
+
+    BigInt *R0;
+    BigInt *Z0;
+    BigInt *Z1;
+
+
+    int _0_sz;
+    int s_sz;
+
+
+    for(int i = 0;i<fh;++i){
+        L0->data[i] = left->data[i];
+    }
+
+    for(int i = 0;i<sh;++i){
+        L1->data[i] = left->data[fh + i];
+    }
+
+
+
+    Z0 = k_mul(L0,R0);
+    int _1_sz = s_sz - _0_sz;
+    if (_1_sz == 0){
+        /// Z2 = 0
+        Z1 = k_mul(L1,R0); /// no swap
+
+        ///Z1._appendZeros(fh);
+
+
+        return new BigInt((*Z1)+(*Z0));
+    }else{
+        BigInt *R1;
+        R1->data.resize(_1_sz);
+
+
+
+        for(int i = 0;i<_1_sz;++i){
+            R1->data[i] = right->data[fh + i];
+        }
+
+        BigInt *Z2 = k_mul(L1,R1); /// no swap
+
+        Z1 = new BigInt((*L0+*L1) * (*R0+*R1) - (*Z2 + *Z0));
+
+        ///if ( !(Z1.data.size() == 1 && Z1.data[0] == 0) )
+            ///Z1._appendZeros(fh);
+
+        ///if ( !(Z2.data.size() == 1 && Z2.data[0] == 0) )
+            ///Z2._appendZeros(fh * 2);
+
+        return new BigInt(*Z2 + *Z1 + *Z0);
+    }
+
 }
 
 
