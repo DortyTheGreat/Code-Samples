@@ -27,9 +27,9 @@ int intlog(double base, double x) {
 }
 /// 9 223 372 036 854 775 807
 /// 2147483647
-const int INT_MAXI = 9223372036854775807;
+//const int INT_MAXI = 9223372036854775807;
 
-long long inline intSqrt(long long arg){
+long long intSqrt(long long arg){
     return (long long)(sqrt(arg));
 }
 
@@ -165,6 +165,7 @@ const BigInt operator +(BigInt left, const BigInt& right) {
 
 	return left;
 }
+
 
 // прибавляет к текущему числу новое
 BigInt& BigInt::operator +=(const BigInt& value) {
@@ -527,6 +528,7 @@ const BigInt eps = BigInt(1);
 
 string a,b;
 BigInt sqrt(BigInt n) {
+    std::cout << "called sqrt" << std::endl;
 
 
 
@@ -543,7 +545,7 @@ BigInt sqrt(BigInt n) {
 
     ///std::cout << "Initial Guess : " << x << std::endl;
 
-    int end{  log2(sz) + 6 };
+    int end{  (int)(log2(sz)) + 6 };
 
     //x = 10;
     //x = x.pow(rsz / 2 + 1);
