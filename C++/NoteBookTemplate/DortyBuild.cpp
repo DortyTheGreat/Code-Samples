@@ -8,36 +8,28 @@ Discord: “есла#9030
 
 #include <iostream>
 #include <cmath>
+using namespace std;
 
 #include "../DortyLibs/BigIntLib.h"
 
 #include "../DortyLibs/DortyBuild.h"
 #include <fstream>
 
-using namespace std;
+
 
 int main()
 {
 
-    cout << BigInt(5) <<" " <<BigInt(12345);
     AppBuild();
     ifstream fin("input.txt");
 	ofstream fout("output.txt");
 
-    BigInt b;
-    //cin >> b;
-    //cout << "SQRT : " << sqrt(b) << endl;
-    cout << "here" << endl;
+
+
     for(int test = 0;test < 1000000; test++){
-        cout << "here" << endl;
+
         BigInt a(test);
-        cout << "here" << endl;
-        cout << sqrt(2) << endl;
-        sqrt(a);
-        cout << "here" << endl;
-        cout << sqrt(2) << endl;
-        cout << (long long)(sqrt(test)) << endl;
-        cout << BigInt(intSqrt(test)) << endl;
+        if (test % 1000 == 0){cout << "test : " << test << endl;}
         if (sqrt(a) != BigInt(intSqrt(test))){
             cout << test << " " << sqrt(a) << " " << test << " " << intSqrt(test) <<endl;
         }
@@ -46,13 +38,13 @@ int main()
 
 
 	BigInt n1;
-	cin >> n1;
+	fin >> n1;
 
 
 
   BigInt ans = sqrt(n1);
   cout << "CALCULATED" << endl;
-  cout << ans << endl << n1 - ans * ans;
+  fout << ans << endl << n1 - ans * ans;
 
   return 0;
 }
@@ -64,8 +56,9 @@ int main()
 
 #include <iostream>
 #include <cmath>
+using namespace std;
 
-#pragma GCC target ("avx2")
+//#pragma GCC target ("avx2")
 //#pragma GCC optimization ("O3")
 //#pragma GCC optimization ("unroll-loops")
 
@@ -73,11 +66,11 @@ int main()
 
 #define default_base 10
 
-#define container_stack 1 /// 6
+#define container_stack 9 /// 9
 
-#define total_base 10 /// 1000000
+#define total_base 1000000000 /// 1000000000
 
-#define sqrt_of_total_base 3 /// 1000
+#define sqrt_of_total_base 31622 /// 31622
 
 class BigInt {
 
@@ -187,7 +180,7 @@ int intlog(double base, double x) {
 /// 2147483647
 //const int INT_MAXI = 9223372036854775807;
 
-long long intSqrt(long long arg){
+long long  intSqrt(long long arg){
     return (long long)(sqrt(arg));
 }
 
@@ -686,7 +679,7 @@ const BigInt eps = BigInt(1);
 
 string a,b;
 BigInt sqrt(BigInt n) {
-    std::cout << "called sqrt" << std::endl;
+    //std::cout << "called sqrt" << std::endl;
 
 
 
@@ -694,16 +687,24 @@ BigInt sqrt(BigInt n) {
     int sz = n._digits.size();
 
     if (sz == 1){return BigInt(intSqrt(n._digits[sz-1]));}
+    long long a = n._digits[sz-1];
+    a *= n.BASE;
+    a += n._digits[sz-2];
+    std::cout << "taking sqrt of" << a <<" "<<  n._digits[sz-2] << std::endl;
 
-    BigInt x(intSqrt(n._digits[sz-1]*n.BASE +  n._digits[sz-2]));
+    BigInt x(intSqrt(a));
+
+    std::cout << "Initial Guess : " << x << std::endl;
 
     x *= (((sz-1)%2) ? 1 : sqrt_of_total_base);
 
+    std::cout << "Initial Guess : " << x << std::endl;
+
     x._appendZeros((sz) / 2 - 1);
 
-    ///std::cout << "Initial Guess : " << x << std::endl;
+    std::cout << "Initial Guess : " << x << std::endl;
 
-    int end{  (int)(log2(sz)) + 6 };
+    int end{  (int)(log2(sz)) };
 
     //x = 10;
     //x = x.pow(rsz / 2 + 1);
@@ -714,24 +715,26 @@ BigInt sqrt(BigInt n) {
 
   for (int i = 0;i<end;++i) {
 
-    ///cout << endl<<n << " " << x << " "<<n/x << endl;
+    cout << endl<<n << " " << x << " "<<n/x << endl;
 
     x = (x + n / x) / 2;
 
     ++iter;
   }
+
+  /// ¬ некоторых случа€х, если число - это на 1 меньше, чем полный квадрат, то ответом будет число на один больше
+    /// Ќапример 24 -> 5, 48 -> 7, 35 -> 6
+    /// safe_sqrt избегает этого
+  BigInt sv = (x + n / x) / 2;
+  if (sv != x){return min(x,sv);}
+
+
   ///cout << iter << endl;
 
 
-    /// ¬ некоторых случа€х, если число - это на 1 меньше, чем полный квадрат, то ответом будет число на один больше
-    /// Ќапример 24 -> 5, 48 -> 7, 35 -> 6
-    /// safe_sqrt избегает этого
 
-    BigInt sq_test = x*x;
-    if ( sq_test > n){
-        ///std::cout <<"new " << sq_test << " " << x << " "<< n <<  std::endl;
-        --x;
-    }
+
+
 
 
     return x;
@@ -763,30 +766,21 @@ ending:
 
 #include <fstream>
 
-using namespace std;
+
 
 int main()
 {
 
-    cout << BigInt(5) <<" " <<BigInt(12345);
      
     ifstream fin("input.txt");
 	ofstream fout("output.txt");
 
-    BigInt b;
-    //cin >> b;
-    //cout << "SQRT : " << sqrt(b) << endl;
-    cout << "here" << endl;
+
+
     for(int test = 0;test < 1000000; test++){
-        cout << "here" << endl;
+
         BigInt a(test);
-        cout << "here" << endl;
-        cout << sqrt(2) << endl;
-        sqrt(a);
-        cout << "here" << endl;
-        cout << sqrt(2) << endl;
-        cout << (long long)(sqrt(test)) << endl;
-        cout << BigInt(intSqrt(test)) << endl;
+        if (test % 1000 == 0){cout << "test : " << test << endl;}
         if (sqrt(a) != BigInt(intSqrt(test))){
             cout << test << " " << sqrt(a) << " " << test << " " << intSqrt(test) <<endl;
         }
@@ -795,13 +789,13 @@ int main()
 
 
 	BigInt n1;
-	cin >> n1;
+	fin >> n1;
 
 
 
   BigInt ans = sqrt(n1);
   cout << "CALCULATED" << endl;
-  cout << ans << endl << n1 - ans * ans;
+  fout << ans << endl << n1 - ans * ans;
 
   return 0;
 }

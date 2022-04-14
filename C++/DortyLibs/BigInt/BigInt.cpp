@@ -29,7 +29,7 @@ int intlog(double base, double x) {
 /// 2147483647
 //const int INT_MAXI = 9223372036854775807;
 
-long long intSqrt(long long arg){
+long long  intSqrt(long long arg){
     return (long long)(sqrt(arg));
 }
 
@@ -528,7 +528,7 @@ const BigInt eps = BigInt(1);
 
 string a,b;
 BigInt sqrt(BigInt n) {
-    std::cout << "called sqrt" << std::endl;
+    //std::cout << "called sqrt" << std::endl;
 
 
 
@@ -536,16 +536,24 @@ BigInt sqrt(BigInt n) {
     int sz = n._digits.size();
 
     if (sz == 1){return BigInt(intSqrt(n._digits[sz-1]));}
+    long long a = n._digits[sz-1];
+    a *= n.BASE;
+    a += n._digits[sz-2];
+    std::cout << "taking sqrt of" << a <<" "<<  n._digits[sz-2] << std::endl;
 
-    BigInt x(intSqrt(n._digits[sz-1]*n.BASE +  n._digits[sz-2]));
+    BigInt x(intSqrt(a));
+
+    std::cout << "Initial Guess : " << x << std::endl;
 
     x *= (((sz-1)%2) ? 1 : sqrt_of_total_base);
 
+    std::cout << "Initial Guess : " << x << std::endl;
+
     x._appendZeros((sz) / 2 - 1);
 
-    ///std::cout << "Initial Guess : " << x << std::endl;
+    std::cout << "Initial Guess : " << x << std::endl;
 
-    int end{  (int)(log2(sz)) + 6 };
+    int end{  (int)(log2(sz)) };
 
     //x = 10;
     //x = x.pow(rsz / 2 + 1);
@@ -556,24 +564,26 @@ BigInt sqrt(BigInt n) {
 
   for (int i = 0;i<end;++i) {
 
-    ///cout << endl<<n << " " << x << " "<<n/x << endl;
+    cout << endl<<n << " " << x << " "<<n/x << endl;
 
     x = (x + n / x) / 2;
 
     ++iter;
   }
+
+  /// В некоторых случаях, если число - это на 1 меньше, чем полный квадрат, то ответом будет число на один больше
+    /// Например 24 -> 5, 48 -> 7, 35 -> 6
+    /// safe_sqrt избегает этого
+  BigInt sv = (x + n / x) / 2;
+  if (sv != x){return min(x,sv);}
+
+
   ///cout << iter << endl;
 
 
-    /// В некоторых случаях, если число - это на 1 меньше, чем полный квадрат, то ответом будет число на один больше
-    /// Например 24 -> 5, 48 -> 7, 35 -> 6
-    /// safe_sqrt избегает этого
 
-    BigInt sq_test = x*x;
-    if ( sq_test > n){
-        ///std::cout <<"new " << sq_test << " " << x << " "<< n <<  std::endl;
-        --x;
-    }
+
+
 
 
     return x;

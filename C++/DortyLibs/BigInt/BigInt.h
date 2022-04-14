@@ -1,4 +1,4 @@
-#pragma GCC target ("avx2")
+//#pragma GCC target ("avx2")
 //#pragma GCC optimization ("O3")
 //#pragma GCC optimization ("unroll-loops")
 
@@ -6,11 +6,11 @@
 
 #define default_base 10
 
-#define container_stack 1 /// 6
+#define container_stack 9 /// 9
 
-#define total_base 10 /// 1000000
+#define total_base 1000000000 /// 1000000000
 
-#define sqrt_of_total_base 3 /// 1000
+#define sqrt_of_total_base 31622 /// 31622
 
 class BigInt {
 
