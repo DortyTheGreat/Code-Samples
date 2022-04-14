@@ -18,22 +18,33 @@ using namespace std;
 int main()
 {
 
-
+    cout << BigInt(5) <<" " <<BigInt(12345);
     AppBuild();
     ifstream fin("input.txt");
 	ofstream fout("output.txt");
 
+    BigInt b;
+    cin >> b;
+    cout << "SQRT : " << sqrt(b) << endl;
+
+    for(int test = 0;test < 1000000; test++){
+        BigInt a(test);
+
+        if (sqrt(a) != BigInt(intSqrt(test))){
+            cout << test << " " << sqrt(a) << " " << test << " " << intSqrt(test) <<endl;
+        }
+    }
 
 
 
 	BigInt n1;
-	fin >> n1;
+	cin >> n1;
 
 
 
   BigInt ans = sqrt(n1);
   cout << "CALCULATED" << endl;
-  fout << ans << endl << n1 - ans * ans;
+  cout << ans << endl << n1 - ans * ans;
 
   return 0;
 }
@@ -53,11 +64,11 @@ int main()
 
 #define default_base 10
 
-#define container_stack 9 /// 6
+#define container_stack 1 /// 6
 
-#define total_base 1000000000 /// 1000000
+#define total_base 10 /// 1000000
 
-#define sqrt_of_total_base 31622 /// 1000
+#define sqrt_of_total_base 3 /// 1000
 
 class BigInt {
 
@@ -70,9 +81,9 @@ class BigInt {
 
 	void _remove_leading_zeros();
 	void _shift_right();
-    static const int BASE = total_base;
-public:
 
+public:
+    static const int BASE = total_base;
     std::vector<int> _digits;
 
 
@@ -167,8 +178,8 @@ int intlog(double base, double x) {
 /// 2147483647
 const int INT_MAXI = 9223372036854775807;
 
-int inline intSqrt(int arg){
-    return (int)(sqrt(arg));
+long long inline intSqrt(long long arg){
+    return (long long)(sqrt(arg));
 }
 
 
@@ -321,81 +332,29 @@ BigInt::operator std::string() const {
 	return ss.str();
 }
 
-// преобразует signed char к BigInt
-BigInt::BigInt(signed char c) {
-	if (c < 0) this->_is_negative = true;
-	else this->_is_negative = false;
-	this->_digits.push_back(std::abs(c));
+BigInt::BigInt(long long num){
+    _is_negative = (num < 0);
+    while(num != 0){
+        _digits.push_back(num % BASE);
+        num /= BASE;
+    }
+
+    if (_digits.size() == 0){
+        _digits.push_back(0);
+    }
 }
 
-// преобразует unsigned char к BigInt
-BigInt::BigInt(unsigned char c) {
-	this->_is_negative = false;
-	this->_digits.push_back(c);
-}
 
-// преобразует signed short к BigInt
-BigInt::BigInt(signed short s) {
-	if (s < 0) this->_is_negative = true;
-	else this->_is_negative = false;
-	this->_digits.push_back(std::abs(s));
-}
+BigInt::BigInt(int num){
+    _is_negative = (num < 0);
+    while(num != 0){
+        _digits.push_back(num % BASE);
+        num /= BASE;
+    }
 
-// преобразует unsigned short к BigInt
-BigInt::BigInt(unsigned short s) {
-	this->_is_negative = false;
-	this->_digits.push_back(s);
-}
-
-// преобразует signed int к BigInt
-BigInt::BigInt(signed int i) {
-	if (i < 0) this->_is_negative = true;
-	else this->_is_negative = false;
-	this->_digits.push_back(std::abs(i) % BASE);
-	i /=    BASE;
-	if (i != 0) this->_digits.push_back(std::abs(i));
-}
-
-// преобразует unsigned int к BigInt
-BigInt::BigInt(unsigned int i) {
-	this->_digits.push_back(i % BASE);
-	i /= BASE;
-	if (i != 0) this->_digits.push_back(i);
-}
-
-// преобразует signed long к BigInt
-BigInt::BigInt(signed long l) {
-	if (l < 0) this->_is_negative = true;
-	else this->_is_negative = false;
-	this->_digits.push_back(std::abs(l) % BASE);
-	l /= BASE;
-	if (l != 0) this->_digits.push_back(std::abs(l));
-}
-
-// преобразует unsigned long к BigInt
-BigInt::BigInt(unsigned long l) {
-	this->_digits.push_back(l % BASE);
-	l /= BASE;
-	if (l != 0) this->_digits.push_back(l);
-}
-
-// преобразует signed long long к BigInt
-BigInt::BigInt(signed long long l) {
-	if (l < 0) { this->_is_negative = true; l = -l; }
-	else this->_is_negative = false;
-	do {
-		this->_digits.push_back(l % BASE);
-		l /= BASE;
-	} while (l != 0);
-}
-
-// преобразует unsigned long long к BigInt
-BigInt::BigInt(unsigned long long l) {
-	this->_is_negative = false;
-	do {
-		this->_digits.push_back(l % BASE);
-		l /= BASE;
-	} while (l != 0);
+    if (_digits.size() == 0){
+        _digits.push_back(0);
+    }
 }
 
 // постфиксный инкремент
@@ -719,35 +678,52 @@ string a,b;
 BigInt sqrt(BigInt n) {
 
 
-    BigInt x;
-    int rsz = n.get_real_size();
+
+
     int sz = n._digits.size();
-    //cout << sz <<" rsz : " << rsz << endl;
-    x._digits.clear();
 
-    x._digits.push_back (intSqrt(n._digits[sz-1]) * ((sz%2) ? 1 : sqrt_of_total_base) );
+    if (sz == 1){return BigInt(intSqrt(n._digits[sz-1]));}
 
+    BigInt x(intSqrt(n._digits[sz-1]*n.BASE +  n._digits[sz-2]));
 
-    x._appendZeros((sz - 1) / 2 );
+    x *= (((sz-1)%2) ? 1 : sqrt_of_total_base);
+
+    x._appendZeros((sz) / 2 - 1);
+
+    ///std::cout << "Initial Guess : " << x << std::endl;
+
+    int end{  log2(sz) + 6 };
 
     //x = 10;
     //x = x.pow(rsz / 2 + 1);
-  BigInt last = 0;
+
   int iter = 0;
 
   //cout << last << endl << x << endl << endl;
 
-  while (last != x) {
-    last = x;
+  for (int i = 0;i<end;++i) {
 
     ///cout << endl<<n << " " << x << " "<<n/x << endl;
 
     x = (x + n / x) / 2;
-    ///cout << last << endl << x << endl << endl;
+
     ++iter;
   }
-  cout << iter << endl;
-  return x;
+  ///cout << iter << endl;
+
+
+    /// В некоторых случаях, если число - это на 1 меньше, чем полный квадрат, то ответом будет число на один больше
+    /// Например 24 -> 5, 48 -> 7, 35 -> 6
+    /// safe_sqrt избегает этого
+
+    BigInt sq_test = x*x;
+    if ( sq_test > n){
+        ///std::cout <<"new " << sq_test << " " << x << " "<< n <<  std::endl;
+        --x;
+    }
+
+
+    return x;
 }
 /*
 int main() {
@@ -781,22 +757,33 @@ using namespace std;
 int main()
 {
 
-
+    cout << BigInt(5) <<" " <<BigInt(12345);
      
     ifstream fin("input.txt");
 	ofstream fout("output.txt");
 
+    BigInt b;
+    cin >> b;
+    cout << "SQRT : " << sqrt(b) << endl;
+
+    for(int test = 0;test < 1000000; test++){
+        BigInt a(test);
+
+        if (sqrt(a) != BigInt(intSqrt(test))){
+            cout << test << " " << sqrt(a) << " " << test << " " << intSqrt(test) <<endl;
+        }
+    }
 
 
 
 	BigInt n1;
-	fin >> n1;
+	cin >> n1;
 
 
 
   BigInt ans = sqrt(n1);
   cout << "CALCULATED" << endl;
-  fout << ans << endl << n1 - ans * ans;
+  cout << ans << endl << n1 - ans * ans;
 
   return 0;
 }

@@ -6,11 +6,11 @@
 
 #define default_base 10
 
-#define container_stack 9 /// 6
+#define container_stack 1 /// 6
 
-#define total_base 1000000000 /// 1000000
+#define total_base 10 /// 1000000
 
-#define sqrt_of_total_base 31622 /// 1000
+#define sqrt_of_total_base 3 /// 1000
 
 class BigInt {
 
@@ -23,9 +23,9 @@ class BigInt {
 
 	void _remove_leading_zeros();
 	void _shift_right();
-    static const int BASE = total_base;
-public:
 
+public:
+    static const int BASE = total_base;
     std::vector<int> _digits;
 
 

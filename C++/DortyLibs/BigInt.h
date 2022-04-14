@@ -74,6 +74,7 @@ public:
     }
 
     BigInt(long long num){
+
         while(num != 0){
             data.push_back(num % Base);
             num /= Base;
