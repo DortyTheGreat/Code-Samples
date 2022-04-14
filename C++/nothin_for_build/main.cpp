@@ -2,7 +2,7 @@
 ---------------------
 This File was Build Automatically by DortyBuild v 1.3.
 For More Information ask:
-Discord: Тесла#9030 
+Discord: Тесла#9030
 ---Original---Code---
 
 
@@ -20,14 +20,17 @@ using namespace std;
 int main()
 {
 
+    BigInt d(1476247);
+
+    d._mult(31622);
+
+    cout << d << endl;
+
     ifstream fin("input.txt");
 	ofstream fout("output.txt");
     AppBuild();
     BigInt a;
     fin >> a;
-    //for(int i = 0;i < 1000;++i){
-    //    sqrt(a);
-    //}
     fout << sqrt(a) << endl;
 
 
@@ -101,8 +104,6 @@ using namespace std;
 
 #endif
 
-
-
 class BigInt {
 
 
@@ -117,7 +118,7 @@ class BigInt {
 
 public:
     static const int BASE = total_base;
-    std::vector<long long> _digits;
+    std::vector<int> _digits;
 
 
     // основание системы счисления (1 000 000 000)
@@ -148,7 +149,7 @@ public:
     void _subtract(const BigInt&);
 
     void _mult(const int number);
-    const friend BigInt operator *(BigInt,const int);
+    friend const BigInt operator *(BigInt,const int);
 
 	const BigInt operator +() const;
 	const BigInt operator -() const;
@@ -265,8 +266,8 @@ bool BigInt::even() const {
 /// [5,4,3,2,1](12345) (length=3)-> [0,0,0,5,4,3,2,1](12345000)
 /// Следует Улучшить. Ужасно плохо реализованно
 void inline BigInt::_appendZeros(int length){
-    std::vector<long long> v1(length);
-    std::vector<long long> tmp = _digits;
+    std::vector<int> v1(length);
+    std::vector<int> tmp = _digits;
     _digits.clear();
     std::merge(v1.begin(), v1.end(), tmp.begin(), tmp.end(), std::back_inserter(_digits));
 }
@@ -609,36 +610,37 @@ const BigInt operator -(BigInt left, const BigInt& right) {
 
 
 
-/// Обработка умножения числа на маленькое( из-за этой функции контейнер нельзя ставить на оч. высокую базу (1 миллиард - примерно придел для интов) )
+/// Обработка умножения числа на маленькое( zxc ?? )
 void BigInt::_mult(const int number){
-    //cout << "Called Simple Mult for " << *this << " " << number << endl;
-
 
     if (number == 0){_digits = {0}; return;}
 
-
-    int sz = _digits.size();
+    size_t sz = _digits.size();
     long long carr;
-    int carry = 0;
-
-    for(int i = 0;i < sz; ++i ){
+    _digits.push_back(0);
+    for(int i = sz - 1;i > -1; --i ){
         carr = _digits[i];
+
         carr *= number;
-        carr += carry;
         _digits[i] = carr % BASE;
-        carry = carr / BASE;
+        _digits[i+1] += carr / BASE;
 
     }
-    if (carry != 0){
-        _digits.push_back(carry);
+
+
+    while (_digits[sz] >= BASE){
+        _digits.push_back(_digits[sz] % BASE);
+        _digits[sz] /= BASE;
+        ++sz;
     }
+
+    _remove_leading_zeros();
 
 }
 
 const BigInt operator *(BigInt bi, int number){
-    //cout << "called that" << endl;
+    cout << "called that" << endl;
     bi._is_negative ^= (number<0);
-    number = abs(number);
     bi._mult(number);
     return bi;
 }
@@ -663,7 +665,7 @@ long long  intSqrt(long long arg){
 
 // перемножает два числа
 const BigInt operator *(const BigInt& left, const BigInt& right) {
-    //cout << "called y" << endl;
+    cout << "called y" << endl;
 	BigInt result;
 	result._digits.resize(left._digits.size() + right._digits.size());
 	for (size_t i = 0; i < left._digits.size(); ++i) {
@@ -844,17 +846,24 @@ BigInt sqrt(BigInt n) {
 
     BigInt x(intSqrt(a));
 
+    cout << x << endl;
     const int m = (((sz-1)%2) ? 1 : sqrt_of_total_base);
 
-    x._mult( m); /// я хз почему я не могу использовать ТУТ _mult, он ломается не на этой строчке, а дальше... Хотя переменная та же
-    /// З.Ы. Всё починил, была прикольная проблема в переполнении))
+    BigInt e = x;
+    e *= m;
+    x._mult (m);
 
+    if (e != x){
+        cout << "Something is wrong" << endl;
+    }
 
+    cout << x << endl;
+    cout << x._digits.size() << endl;
 
     x._appendZeros((sz) / 2 - 1);
+    cout << "Appending " << endl;
 
-
-    int end_ = (int)(log2(sz)) + 1;
+    int end_ = (int)(log2(sz)) + 2;
 
 
     for (int i = 0;i<end_;++i) {
@@ -881,15 +890,14 @@ BigInt sqrt(BigInt n) {
 int main()
 {
 
+
+
     ifstream fin("input.txt");
 	ofstream fout("output.txt");
-     
+
     BigInt a;
-    fin >> a;
-    //for(int i = 0;i < 1000;++i){
-    //    sqrt(a);
-    //}
-    fout << sqrt(a) << endl;
+    cin >> a;
+    cout << sqrt(a) << endl;
 
 
 

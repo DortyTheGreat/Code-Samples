@@ -15,6 +15,7 @@ long long  intSqrt(long long arg){
 
 // перемножает два числа
 const BigInt operator *(const BigInt& left, const BigInt& right) {
+    //cout << "called y" << endl;
 	BigInt result;
 	result._digits.resize(left._digits.size() + right._digits.size());
 	for (size_t i = 0; i < left._digits.size(); ++i) {
@@ -194,10 +195,18 @@ BigInt sqrt(BigInt n) {
     a += n._digits[sz-2];
 
     BigInt x(intSqrt(a));
-    x *= (((sz-1)%2) ? 1 : sqrt_of_total_base);
+
+    const int m = (((sz-1)%2) ? 1 : sqrt_of_total_base);
+
+    x._mult( m); /// я хз почему я не могу использовать ТУТ _mult, он ломается не на этой строчке, а дальше... Хотя переменная та же
+    /// З.Ы. Всё починил, была прикольная проблема в переполнении))
+
+
+
     x._appendZeros((sz) / 2 - 1);
 
-    int end_ = (int)(log2(sz)) + 2;
+
+    int end_ = (int)(log2(sz)) + 1;
 
 
     for (int i = 0;i<end_;++i) {

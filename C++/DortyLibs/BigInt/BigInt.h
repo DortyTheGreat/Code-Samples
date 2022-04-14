@@ -22,6 +22,8 @@
 
 #endif
 
+
+
 class BigInt {
 
 
@@ -36,7 +38,7 @@ class BigInt {
 
 public:
     static const int BASE = total_base;
-    std::vector<int> _digits;
+    std::vector<long long> _digits;
 
 
     // основание системы счисления (1 000 000 000)
@@ -67,6 +69,7 @@ public:
     void _subtract(const BigInt&);
 
     void _mult(const int number);
+    const friend BigInt operator *(BigInt,const int);
 
 	const BigInt operator +() const;
 	const BigInt operator -() const;

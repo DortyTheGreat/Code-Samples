@@ -1,31 +1,36 @@
 
-/// ќбработка умножени€ числа на маленькое( такое, что (Base-1)*number < INT_MAX )
+/// ќбработка умножени€ числа на маленькое( из-за этой функции контейнер нельз€ ставить на оч. высокую базу (1 миллиард - примерно придел дл€ интов) )
 void BigInt::_mult(const int number){
+    //cout << "Called Simple Mult for " << *this << " " << number << endl;
+
 
     if (number == 0){_digits = {0}; return;}
 
-    size_t sz = _digits.size();
+
+    int sz = _digits.size();
     long long carr;
-    _digits.push_back(0);
-    _digits.push_back(0);
-    for(size_t i = 0;i < sz; ++i ){
+    int carry = 0;
+
+    for(int i = 0;i < sz; ++i ){
         carr = _digits[i];
-
         carr *= number;
+        carr += carry;
         _digits[i] = carr % BASE;
-        _digits[i+1] += carr / BASE;
-        _digits[i+1] +=
+        carry = carr / BASE;
+
+    }
+    if (carry != 0){
+        _digits.push_back(carry);
     }
 
+}
 
-    while (_digits[sz] >= BASE){
-        _digits.push_back(_digits[sz] % BASE);
-        _digits[sz] /= BASE;
-        ++sz;
-    }
-
-    _remove_leading_zeros();
-
+const BigInt operator *(BigInt bi, int number){
+    //cout << "called that" << endl;
+    bi._is_negative ^= (number<0);
+    number = abs(number);
+    bi._mult(number);
+    return bi;
 }
 
 //const int PSEUDO_MAX_INT
