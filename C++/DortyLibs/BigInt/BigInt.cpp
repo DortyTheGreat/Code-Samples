@@ -5,6 +5,8 @@
 #include "compare.cpp"
 #include "add.cpp"
 
+#include "exponential.cpp"
+
 
 long long  intSqrt(long long arg){
     return (long long)(sqrt(arg));
@@ -73,7 +75,7 @@ const BigInt operator /(const BigInt& left, const int digit_){
 const BigInt operator /(const BigInt& left, const BigInt& right) {
     ///std::cout << "Called div" << std::endl;
 	if (right == 0) throw BigInt::divide_by_zero();
-	int b_sz = right._digits.size();
+	const int b_sz = right._digits.size();
     if (b_sz == 1){return left / right._digits[0];}
 
 	BigInt b = right;
@@ -82,20 +84,23 @@ const BigInt operator /(const BigInt& left, const BigInt& right) {
 	b._is_negative = false;
 	BigInt result, current;
 	result._digits.resize(left._digits.size());
+    result._is_negative = left._is_negative != right._is_negative;
 
     /// b = 45678, two_from_b = 45
-    long long two_from_b = b._digits.back();
-    two_from_b *= left.BASE;
-    two_from_b += b._digits[b_sz - 2];
+    long long tfb = b._digits.back();
+    tfb *= left.BASE;
+    tfb += b._digits[b_sz - 2];
 
-	int x;
+    const long long two_from_b = tfb;
+
+	int x,curr_sz;
 
 	for (long long i = static_cast<long long>(left._digits.size()) - 1; i >= 0; --i) {
 		current._shift_right();
 		current._digits[0] = left._digits[i];
 		current._remove_leading_zeros();
 
-        int curr_sz = current._digits.size();
+        curr_sz = current._digits.size();
 
         if (curr_sz < b_sz){
             /// x = 0 -> current = current - b * x; -> current -= 0 -> current не меняется
@@ -115,13 +120,7 @@ const BigInt operator /(const BigInt& left, const BigInt& right) {
 
 
 
-
-        ///cout << "Current : " << current << endl;
-        ///cout << two_from_current << endl << two_from_b << endl;
-
-
 		if (curr_sz == b_sz){
-            /// check x, x-1, x+1
             x = (two_from_current/two_from_b);
 		}else{
             /// тут надо применить хитрость, ибо в таком случае надо делить
@@ -134,16 +133,10 @@ const BigInt operator /(const BigInt& left, const BigInt& right) {
             x = d;
 		}
 
-		//std::cout << "guessed x for div : " << x << std::endl;
-
-
-		/// current -= b*x
 
 		current -= b*x;
 		if (current._is_negative){
-                //cout << current << " " << b<< endl;
             current += b;
-            //cout << "curr is neg -> " << current << endl;
             result._digits[i] = x - 1;
             continue;
 		}
@@ -153,16 +146,10 @@ const BigInt operator /(const BigInt& left, const BigInt& right) {
             result._digits[i] = x + 1;
             continue;
 		}
-
-		//cout << "after : " << current << endl;
-
 		result._digits[i] = x;
-
-
-
 	}
 
-	result._is_negative = left._is_negative != right._is_negative;
+
 	result._remove_leading_zeros();
 	return result;
 }
@@ -198,10 +185,6 @@ const BigInt BigInt::pow(BigInt n) const {
 }
 
 BigInt sqrt(BigInt n) {
-    //std::cout << "called sqrt" << std::endl;
-
-
-
 
     int sz = n._digits.size();
 
@@ -209,52 +192,23 @@ BigInt sqrt(BigInt n) {
     long long a = n._digits[sz-1];
     a *= n.BASE;
     a += n._digits[sz-2];
-    //std::cout << "taking sqrt of" << a <<" "<<  n._digits[sz-2] << std::endl;
 
     BigInt x(intSqrt(a));
-
-    //std::cout << "Initial Guess : " << x << std::endl;
-
     x *= (((sz-1)%2) ? 1 : sqrt_of_total_base);
-
-    //std::cout << "Initial Guess : " << x << std::endl;
-
     x._appendZeros((sz) / 2 - 1);
 
-    //std::cout << "Initial Guess : " << x << std::endl;
+    int end_ = (int)(log2(sz)) + 2;
 
-    int end{  (int)(log2(sz)) + 5 };
 
-    //x = 10;
-    //x = x.pow(rsz / 2 + 1);
+    for (int i = 0;i<end_;++i) {
+        x = (x + n / x) / 2;
+    }
 
-  int iter = 0;
-
-  //cout << last << endl << x << endl << endl;
-
-  for (int i = 0;i<end;++i) {
-
-    //cout << endl<<n << " " << x << " "<<n/x << endl;
-
-    x = (x + n / x) / 2;
-
-    ++iter;
-  }
-
-  /// В некоторых случаях, если число - это на 1 меньше, чем полный квадрат, то ответом будет число на один больше
+    /// В некоторых случаях, если число - это на 1 меньше, чем полный квадрат, то ответом будет число на один больше
     /// Например 24 -> 5, 48 -> 7, 35 -> 6
     /// safe_sqrt избегает этого
-  BigInt sv = (x + n / x) / 2;
-  if (sv != x){return min(x,sv);}
-
-
-  ///cout << iter << endl;
-
-
-
-
-
-
+    BigInt sv = (x + n / x) / 2;
+    if (sv != x){return min(x,sv);}
 
     return x;
 }

@@ -12,11 +12,16 @@ using namespace std;
 
 int main()
 {
-
     AppBuild();
-    ifstream fin("input.txt");
-	ofstream fout("output.txt");
+    int a;
+    cin >> a;
+    cout << factorial(a) << endl;
 
+
+
+    //ifstream fin("input.txt");
+	//ofstream fout("output.txt");
+    return 0;
 
     //BigInt a(-13);
 
@@ -39,16 +44,16 @@ int main()
 
 
 
-	BigInt n1;
-	fin >> n1;
+	//BigInt n1;
+	//fin >> n1;
 
 
 
-  BigInt ans = sqrt(n1);
+  //BigInt ans = sqrt(n1);
   //cout << "CALCULATED" << endl;
-  fout << ans << endl << n1 - ans * ans;
+  //fout << ans << endl << n1 - ans * ans;
 
-  return 0;
+  //1return 0;
 }
 
 

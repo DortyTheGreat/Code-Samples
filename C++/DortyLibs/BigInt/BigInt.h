@@ -66,6 +66,8 @@ public:
 	void _add(const BigInt&);
     void _subtract(const BigInt&);
 
+    void _mult(const int number);
+
 	const BigInt operator +() const;
 	const BigInt operator -() const;
 	const BigInt operator ++();
