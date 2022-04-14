@@ -18,9 +18,9 @@ int main()
     AppBuild();
     BigInt a;
     fin >> a;
-    //for(int i = 0;i < 1000;++i){
-    //    sqrt(a);
-    //}
+    for(int i = 0;i < 100;++i){
+        sqrt(a);
+    }
     fout << sqrt(a) << endl;
 
 

@@ -70,6 +70,7 @@ public:
 
     void _mult(const int number);
     const friend BigInt operator *(BigInt,const int);
+    void operator *=(int);
 
 	const BigInt operator +() const;
 	const BigInt operator -() const;

@@ -25,9 +25,9 @@ int main()
     AppBuild();
     BigInt a;
     fin >> a;
-    //for(int i = 0;i < 1000;++i){
-    //    sqrt(a);
-    //}
+    for(int i = 0;i < 100;++i){
+        sqrt(a);
+    }
     fout << sqrt(a) << endl;
 
 
@@ -149,6 +149,7 @@ public:
 
     void _mult(const int number);
     const friend BigInt operator *(BigInt,const int);
+    void operator *=(int);
 
 	const BigInt operator +() const;
 	const BigInt operator -() const;
@@ -205,6 +206,17 @@ BigInt::BigInt() {
 // создает длинное целое число из C++-строки
 BigInt::BigInt(std::string str) {
 	/// to_do
+}
+
+// сдвигает все разряды на 1 вправо (домножает на BASE)
+void BigInt::_shift_right() {
+	if (_digits.size() == 0) {
+		_digits.push_back(0);
+		return;
+	}
+	_digits.push_back(_digits[_digits.size() - 1]);
+	for (size_t i = _digits.size() - 2; i > 0; --i) _digits[i] = _digits[i - 1];
+	_digits[0] = 0;
 }
 
 // удаляет ведущие нули
@@ -607,8 +619,6 @@ const BigInt operator -(BigInt left, const BigInt& right) {
 
 
 
-
-
 /// Обработка умножения числа на маленькое( из-за этой функции контейнер нельзя ставить на оч. высокую базу (1 миллиард - примерно придел для интов) )
 void BigInt::_mult(const int number){
     //cout << "Called Simple Mult for " << *this << " " << number << endl;
@@ -635,31 +645,17 @@ void BigInt::_mult(const int number){
 
 }
 
-const BigInt operator *(BigInt bi, int number){
-    //cout << "called that" << endl;
-    bi._is_negative ^= (number<0);
+// домножает текущее число на указанное
+void BigInt::operator *=(int number) {
+    _is_negative ^= (number<0);
     number = abs(number);
-    bi._mult(number);
+    _mult(number);
+}
+
+const BigInt operator *(BigInt bi, int number){
+    bi *= number;
     return bi;
 }
-
-//const int PSEUDO_MAX_INT
-
-BigInt factorial(int num){
-    BigInt ret = 1;
-    for(int mul = 1; mul <= num;++mul){
-        ret._mult(mul);
-        //xcout << ret << endl;
-    }
-    return ret;
-}
-
-
-
-long long  intSqrt(long long arg){
-    return (long long)(sqrt(arg));
-}
-
 
 // перемножает два числа
 const BigInt operator *(const BigInt& left, const BigInt& right) {
@@ -686,16 +682,9 @@ BigInt& BigInt::operator *=(const BigInt& value) {
 	return *this = (*this * value);
 }
 
-// сдвигает все разряды на 1 вправо (домножает на BASE)
-void BigInt::_shift_right() {
-	if (this->_digits.size() == 0) {
-		this->_digits.push_back(0);
-		return;
-	}
-	this->_digits.push_back(this->_digits[this->_digits.size() - 1]);
-	for (size_t i = this->_digits.size() - 2; i > 0; --i) this->_digits[i] = this->_digits[i - 1];
-	this->_digits[0] = 0;
-}
+
+
+
 
 const BigInt operator /(const BigInt& left, const int digit_){
 
@@ -808,18 +797,17 @@ BigInt& BigInt::operator /=(const BigInt& value) {
 	return *this = (*this / value);
 }
 
-// возвращает остаток от деления двух чисел
-const BigInt operator %(const BigInt& left, const BigInt& right) {
-	BigInt result = left - (left / right) * right;
-	if (result._is_negative) result += right;
-	return result;
-}
 
-// присваивает текущему числу остаток от деления на другое число
-BigInt& BigInt::operator %=(const BigInt& value) {
-	return *this = (*this % value);
-}
 
+
+
+BigInt factorial(int num){
+    BigInt ret = 1;
+    for(int mul = 1; mul <= num;++mul){
+        ret._mult(mul);
+    }
+    return ret;
+}
 
 // возводит текущее число в указанную степень
 const BigInt BigInt::pow(BigInt n) const {
@@ -833,6 +821,30 @@ const BigInt BigInt::pow(BigInt n) const {
 	return result;
 }
 
+
+
+long long  intSqrt(long long arg){
+    return (long long)(sqrt(arg));
+}
+
+
+
+
+
+// возвращает остаток от деления двух чисел
+const BigInt operator %(const BigInt& left, const BigInt& right) {
+	BigInt result = left - (left / right) * right;
+	if (result._is_negative) result += right;
+	return result;
+}
+
+// присваивает текущему числу остаток от деления на другое число
+BigInt& BigInt::operator %=(const BigInt& value) {
+	return *this = (*this % value);
+}
+
+
+
 BigInt sqrt(BigInt n) {
 
     int sz = n._digits.size();
@@ -844,16 +856,10 @@ BigInt sqrt(BigInt n) {
 
     BigInt x(intSqrt(a));
 
-    const int m = (((sz-1)%2) ? 1 : sqrt_of_total_base);
-
-    x._mult( m); /// я хз почему я не могу использовать ТУТ _mult, он ломается не на этой строчке, а дальше... Хотя переменная та же
-    /// З.Ы. Всё починил, была прикольная проблема в переполнении))
-
-
-
+    x._mult( (((sz-1)%2) ? 1 : sqrt_of_total_base) );
     x._appendZeros((sz) / 2 - 1);
 
-
+    /// Хз, от чего это константа зависит, следует подумать
     int end_ = (int)(log2(sz)) + 1;
 
 
@@ -886,9 +892,9 @@ int main()
      
     BigInt a;
     fin >> a;
-    //for(int i = 0;i < 1000;++i){
-    //    sqrt(a);
-    //}
+    for(int i = 0;i < 100;++i){
+        sqrt(a);
+    }
     fout << sqrt(a) << endl;
 
 

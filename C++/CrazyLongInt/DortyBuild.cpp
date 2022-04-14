@@ -2,7 +2,7 @@
 ---------------------
 This File was Build Automatically by DortyBuild v 1.3.
 For More Information ask:
-Discord: Òåñëà#9030
+Discord: �����#9030 
 ---Original---Code---
 
 
@@ -30,6 +30,10 @@ int main(int argc, char** argv) {
 
     fin >> a;
     LongInteger value1(a);
+
+    for(int i = 0;i<10;i++){
+        LongInteger::sqrt(value1);
+    }
 
     fout << LongInteger::sqrt(value1).toDecimal() << endl;
     return 0;
@@ -212,7 +216,7 @@ public:
 	virtual void iHaveFinished(unsigned int) = 0;
 	virtual void iAmWaiting() = 0;
 	virtual void iHaveStoppedWaiting() = 0;
-
+	
 };
 
 template <class T>
@@ -649,12 +653,35 @@ generics or the threading, so I tied it to LongIntWrapper to remove that from th
 #include <queue>
 #include <vector>
 #include <condition_variable>
-
+#pragma once
 
 // Interface class to define common messages the subclasses can receive
 
+template<class T>
+class ReceiveUpdateClass
+{
+public:
+	// If I make the constructor virtual Visual Studio refuses to compile. Dunno why. GCC has no issues.
+	ReceiveUpdateClass();
+	// Virtual destructor needed so I can assign a subclass to a ReceiveUpdateClass pointer and not get memory leaks
+	// if delete is called on that pointer
+	virtual ~ReceiveUpdateClass();
 
+	virtual void iHaveFinished(unsigned int) = 0;
+	virtual void iAmWaiting() = 0;
+	virtual void iHaveStoppedWaiting() = 0;
+	
+};
 
+template <class T>
+ReceiveUpdateClass<T>::ReceiveUpdateClass()
+{
+}
+
+template <class T>
+ReceiveUpdateClass<T>::~ReceiveUpdateClass()
+{
+}
 
 
 #ifndef _WIN32
@@ -726,6 +753,54 @@ using std::condition_variable;
 
 
 #define UINT unsigned int
+template<class T>
+class QueueOfThreads : ReceiveUpdateClass<T>
+{
+public:
+	QueueOfThreads();
+	~QueueOfThreads();
+
+private:
+	// Attributes
+	UINT threadsRunning;
+	UINT threadsWaiting;
+	UINT maxThreads;
+	UINT deviceCores;
+	static const UINT minThreads = 4; // 4 seems as good a number as any.
+	mutex myMutex;
+	vector<T*> queueOfWaitingThreads;
+	vector<int> queueOfRunningThreads;
+	condition_variable myConditionVariable;
+	UINT threadID;
+
+public:
+	// Methods
+	void decreaseCount(UINT id);
+	bool addToQueue(T*);
+	void startAThread();
+
+	UINT numOfThreads();
+	void setNumThreads(UINT);
+	UINT getDeviceCores();
+
+	// Tell the queue that the current thread has finished
+	void iHaveFinished(UINT id);
+
+	// Tell the queue that the current thread is waiting and so remove it from the count of running threads
+	void iAmWaiting();
+	// Tell the queue that the current thread is ready to start running again
+	void iHaveStoppedWaiting();
+
+	// Wait for a thread to finish
+	void waitForThread(T*);
+
+
+	void logwithoutlock(std::string);
+	void logwithlock(std::string);
+
+
+
+};
 
 // A workaround for the requirement that the declaration and definition of template methods must be in the same file
 /*
@@ -736,6 +811,259 @@ The .h file includes this file at the end. All seems to work just fine.
 
 #include <thread>
 #include <fstream>
+
+template <class T>
+QueueOfThreads<T>::QueueOfThreads() {
+	threadsRunning = 0;
+	threadsWaiting = 0;
+	threadID = 0;
+	//	deviceCores = std::thread::hardware_concurrency();
+
+	deviceCores = 4;
+	if (deviceCores < minThreads) {
+		maxThreads = minThreads; // Default value
+	}
+	else {
+		maxThreads = deviceCores;
+	}
+
+}
+
+template <class T>
+QueueOfThreads<T>::~QueueOfThreads() {
+	// Can't exit whilst threads are running.
+	// Set the shutting down flag (all should have a reference to that - use an interface)
+	// and wait for them to finish
+
+}
+
+template <class T>
+void QueueOfThreads<T>::decreaseCount(UINT id) {
+	try {
+		unique_lock<mutex> lock(myMutex);
+		// Find out which thread has finished and remove it from the list
+		UINT index = 0;
+		bool bFound = false;
+
+		while (!bFound && index < queueOfRunningThreads.size()) {
+			if (queueOfRunningThreads[index] == id) {
+				bFound = true;
+			}
+			else {
+				index++;
+			}
+		}
+
+		if (!bFound) {
+			abort();
+		}
+
+		queueOfRunningThreads.erase(queueOfRunningThreads.begin() + index);
+
+		threadsRunning--;
+		lock.unlock();
+		myConditionVariable.notify_all();
+
+	}
+	catch (std::exception e) {
+
+		std::string fred(e.what());
+
+	}
+	catch (...) {
+
+		std::string fred("Dunno what happened");
+
+	}
+
+}
+
+template <class T>
+bool QueueOfThreads<T>::addToQueue(T* newLongInt) {
+	try {
+
+		unique_lock<mutex> lock(myMutex);
+
+		newLongInt->setID(threadID);
+		queueOfWaitingThreads.push_back(newLongInt);
+
+		threadID++;
+		threadsWaiting++;
+		newLongInt->setCallback(this);
+
+		// I was using a lambda and it was working fine, but this format of thread starting
+		// matches up to the other one.
+		// Starting a thread to start a thread may seem weird, but this functionality is just a placeholder
+		std::thread t1(&QueueOfThreads<T>::startAThread, this);
+
+		t1.detach();
+		lock.unlock();
+		myConditionVariable.notify_all();
+	}
+	catch (std::exception e) {
+
+		std::string fred(e.what());
+
+	}
+	catch (...) {
+
+		std::string fred("Dunno what happened");
+
+	}
+	return true;
+}
+
+template <class T>
+void QueueOfThreads<T>::startAThread() {
+	if (threadsWaiting == 0) {
+		return;
+	}
+	try {
+		unique_lock<std::mutex> lock(myMutex);
+		// The wait will unlock and then try to reacquire the lock when it wakes up
+		myConditionVariable.wait(lock, [this]() {
+			return threadsRunning < maxThreads; });
+
+
+		// Insert code to start a thread
+		if (queueOfWaitingThreads.size() == 0) {
+			abort();
+		}
+
+
+		T* tempLIW = queueOfWaitingThreads[0];
+		queueOfWaitingThreads.erase(queueOfWaitingThreads.begin());
+		queueOfRunningThreads.push_back(tempLIW->getID());
+		threadsRunning++;
+		threadsWaiting--;
+
+
+		//	CString strOutput;
+		//	strOutput.Format(L"Thread ID %d - Starting \n", tempLIW->getID());
+		//	logwithoutlock(strOutput);
+
+
+		// This format of call seems to have fixed the issues with access violation. Let's hope it
+		// keeps on working.
+		std::thread t1(&T::startProcess, tempLIW);
+
+		t1.detach();
+
+		lock.unlock();
+		myConditionVariable.notify_all();
+	}
+	catch (std::exception e) {
+
+		std::string fred(e.what());
+
+	}
+}
+
+template <class T>
+UINT QueueOfThreads<T>::numOfThreads() {
+	// For testing
+	unique_lock<mutex> lock(myMutex);
+	return threadsRunning + threadsWaiting;
+	lock.unlock();
+	myConditionVariable.notify_all();
+}
+
+template <class T>
+void QueueOfThreads<T>::iHaveFinished(UINT id) {
+	decreaseCount(id);
+#ifdef __linux__
+	// Linux test code
+	std::cout << "Thread " << id << " finished. Threads waiting&running " << threadsWaiting << "," << threadsRunning << std::endl;
+#endif
+}
+
+template <class T>
+void QueueOfThreads<T>::iAmWaiting() {
+	if (threadsRunning == 0) abort(); // Test code
+
+									  // The current thread is waiting on something, so let the queue know that other threads can be started
+	unique_lock<mutex> lock(myMutex);
+
+	threadsRunning--;
+	threadsWaiting++;
+
+	// Although the lock will release when it goes out of scope, I need to unlock it before calling notify
+	lock.unlock();
+	myConditionVariable.notify_all();
+
+}
+
+template <class T>
+void QueueOfThreads<T>::iHaveStoppedWaiting() {
+	if (threadsWaiting == 0) abort(); // Test code
+
+	unique_lock<mutex> lock(myMutex);
+	myConditionVariable.wait(lock, [this]() {
+		return threadsRunning < maxThreads; });
+
+	threadsRunning++;
+	threadsWaiting--;
+
+	lock.unlock();
+	myConditionVariable.notify_all();
+}
+
+template <class T>
+void QueueOfThreads<T>::waitForThread(T* pLIW) {
+	unique_lock<mutex> lock(myMutex);
+
+	myConditionVariable.wait(lock, [pLIW]() {
+		return pLIW->bFinished; });
+
+	lock.unlock();
+	myConditionVariable.notify_all();
+
+}
+
+
+template <class T>
+void QueueOfThreads<T>::logwithoutlock(std::string logString) {
+	// Called if a lock has already been established
+
+	std::ofstream ffiillee;
+	ffiillee.open("~/Desktop/threads.txt", std::ofstream::out | std::ofstream::ate | std::ofstream::app);
+	if (ffiillee)
+	{
+		ffiillee << logString;
+		ffiillee.close();
+	}
+}
+
+
+
+template <class T>
+void QueueOfThreads<T>::logwithlock(std::string logString) {
+	unique_lock<mutex> lock(myMutex);
+	std::ofstream ffiillee;
+	ffiillee.open("~/Desktop/threads.txt", std::ofstream::out | std::ofstream::ate | std::ofstream::app);
+	if (ffiillee)
+	{
+		ffiillee << logString;
+		ffiillee.close();
+	}
+	lock.unlock();
+	myConditionVariable.notify_all();
+}
+
+
+
+template <class T>
+void QueueOfThreads<T>::setNumThreads(UINT numThreads) {
+	maxThreads = numThreads;
+}
+
+template <class T>
+UINT QueueOfThreads<T>::getDeviceCores() {
+	return deviceCores;
+}
+
+
+
 
 
 template<class T> class GeneralIntWrapper
@@ -1772,7 +2100,71 @@ inline LongInteger operator >> (UINT lhs, const LongInteger& rhs) {
 #endif
 
 
+﻿#ifdef _WIN32
 
+// stdafx.h : include file for standard system include files,
+// or project specific include files that are used frequently,
+// but are changed infrequently
+
+#pragma once
+
+#ifndef VC_EXTRALEAN
+#define VC_EXTRALEAN            // Exclude rarely-used stuff from Windows headers
+#endif
+
+#pragma once
+
+// Including SDKDDKVer.h defines the highest available Windows platform.
+
+// If you wish to build your application for a previous Windows platform, include WinSDKVer.h and
+// set the _WIN32_WINNT macro to the platform you wish to support before including SDKDDKVer.h.
+
+#include <SDKDDKVer.h>
+
+
+#define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS      // some CString constructors will be explicit
+
+// turns off MFC's hiding of some common and often safely ignored warning messages
+#define _AFX_ALL_WARNINGS
+
+///#include <afxwin.h>         // MFC core and standard components
+///#include <afxext.h>         // MFC extensions
+
+
+///#include <afxdisp.h>        // MFC Automation classes
+
+
+
+#ifndef _AFX_NO_OLE_SUPPORT
+///#include <afxdtctl.h>           // MFC support for Internet Explorer 4 Common Controls
+#endif
+#ifndef _AFX_NO_AFXCMN_SUPPORT
+///#include <afxcmn.h>             // MFC support for Windows Common Controls
+#endif // _AFX_NO_AFXCMN_SUPPORT
+
+///#include <afxcontrolbars.h>     // MFC support for ribbons and control bars
+
+
+
+
+
+
+
+
+
+#ifdef _UNICODE
+#if defined _M_IX86
+#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='x86' publicKeyToken='6595b64144ccf1df' language='*'\"")
+#elif defined _M_X64
+#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='amd64' publicKeyToken='6595b64144ccf1df' language='*'\"")
+#else
+#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+#endif
+#endif
+
+
+
+#endif
 /*
 * LongInteger.h
 *
@@ -1864,7 +2256,7 @@ public:
 	virtual void iHaveFinished(unsigned int) = 0;
 	virtual void iAmWaiting() = 0;
 	virtual void iHaveStoppedWaiting() = 0;
-
+	
 };
 
 template <class T>
@@ -2318,7 +2710,7 @@ public:
 	virtual void iHaveFinished(unsigned int) = 0;
 	virtual void iAmWaiting() = 0;
 	virtual void iHaveStoppedWaiting() = 0;
-
+	
 };
 
 template <class T>
@@ -3897,7 +4289,7 @@ public:
 	virtual void iHaveFinished(unsigned int) = 0;
 	virtual void iAmWaiting() = 0;
 	virtual void iHaveStoppedWaiting() = 0;
-
+	
 };
 
 template <class T>
@@ -4351,7 +4743,7 @@ public:
 	virtual void iHaveFinished(unsigned int) = 0;
 	virtual void iAmWaiting() = 0;
 	virtual void iHaveStoppedWaiting() = 0;
-
+	
 };
 
 template <class T>
@@ -6063,7 +6455,7 @@ public:
 	virtual void iHaveFinished(unsigned int) = 0;
 	virtual void iAmWaiting() = 0;
 	virtual void iHaveStoppedWaiting() = 0;
-
+	
 };
 
 template <class T>
@@ -6517,7 +6909,7 @@ public:
 	virtual void iHaveFinished(unsigned int) = 0;
 	virtual void iAmWaiting() = 0;
 	virtual void iHaveStoppedWaiting() = 0;
-
+	
 };
 
 template <class T>
@@ -7962,7 +8354,7 @@ public:
 
 	/** Get prime by index */
 	LongInteger GetPrime(LongInteger index) { return m_LIMPrimes[index]; }
-
+	
 	/** Returns prime index in collection */
 	LongInteger GetPrimeIndex(const LongInteger& number, LongInteger lowerBound, LongInteger upperBound);
 
@@ -11077,18 +11469,18 @@ vector<LongIntegerUP> LongInteger::DivTwoDigitsByOne(LongIntegerUP & AHigh, Long
 
 
 	/*
-	Input Two nonnegative integers A and B, such that A<Î²nB and Î²n/2 â‰¤ B<Î²n.
+	Input Two nonnegative integers A and B, such that A<βnB and βn/2 ≤ B<βn.
 	n must be even.
 	Output The quotient A/B and the remainder A mod B.
-	1. Let A = A3Î²3n/2 +A2Î²n +A1Î²n/2 +A0 and B = B1Î²n/2 +B0, with 0 â‰¤ Ai <
-	Î²n/2 and 0 â‰¤ Bi < Î²n/2.
-	2. Compute the high half Q1 of the quotient as Q1 = A3Î²n+A2Î²n/2+A1
+	1. Let A = A3β3n/2 +A2βn +A1βn/2 +A0 and B = B1βn/2 +B0, with 0 ≤ Ai <
+	βn/2 and 0 ≤ Bi < βn/2.
+	2. Compute the high half Q1 of the quotient as Q1 = A3βn+A2βn/2+A1
 	B with remainder
 	R1 using algorithm 3.4.
-	3. Compute the low half Q0 of the quotient as Q0 = R1Î²n/2+A4
+	3. Compute the low half Q0 of the quotient as Q0 = R1βn/2+A4
 	B with remainder
 	R0 using algorithm 3.4.
-	4. Return the quotient Q = Q1Î²n/2 + Q0 and the remainder R = R0.
+	4. Return the quotient Q = Q1βn/2 + Q0 and the remainder R = R0.
 
 	*/
 	vector<LongIntegerUP> vReturn(2); // Return Q & S
@@ -11160,16 +11552,16 @@ vector<LongIntegerUP> LongInteger::DivThreeHalvesByTwo(LongIntegerUP & a2, LongI
 	//18) Return quotient q and remainder R
 
 	/*
-	Input Two nonnegative integers A and B, such that A<Î²nB and Î²2n/2 â‰¤ B <
-	Î²2n. n must be even.
+	Input Two nonnegative integers A and B, such that A<βnB and β2n/2 ≤ B <
+	β2n. n must be even.
 	Output The quotient A/B and the remainder A mod B.
-	1. Let A = A2Î²2n + A1Î²n + A0 and B = B1Î²n + B0, with 0 â‰¤ Ai < Î²n and
-	0 â‰¤ Bi < Î²n.
-	2. If A2 < B1, compute Q = A2Î²n+A1 / B1  with remainder R1 using algorithm 3.3;
-	otherwise, let Q = Î²n âˆ’ 1 and R1 = (A2 âˆ’ B1)Î²n + A1 + B1.
-	3. R â† R1Î²n + A4 âˆ’ QB 0
-	4. If R < 0, R â† R + B and Q â† Q âˆ’ 1.
-	5. If R < 0, R â† R + B and Q â† Q âˆ’ 1.
+	1. Let A = A2β2n + A1βn + A0 and B = B1βn + B0, with 0 ≤ Ai < βn and
+	0 ≤ Bi < βn.
+	2. If A2 < B1, compute Q = A2βn+A1 / B1  with remainder R1 using algorithm 3.3;
+	otherwise, let Q = βn − 1 and R1 = (A2 − B1)βn + A1 + B1.
+	3. R ← R1βn + A4 − QB 0
+	4. If R < 0, R ← R + B and Q ← Q − 1.
+	5. If R < 0, R ← R + B and Q ← Q − 1.
 	6. Return Q = Q and R = R.
 	*/
 
@@ -11532,6 +11924,41 @@ LongInteger LongInteger::ln(const LongInteger & lin)
 	return returnValue;
 }
 
+#ifdef WIN32
+bool LongInteger::writeToFile(CString & fileName)
+{
+	// Write out the data to file
+	bool returnflag;
+	CFile outFile;
+	returnflag = outFile.Open(fileName, CFile::modeCreate | CFile::modeWrite);
+	if (returnflag) {
+		outFile.Write(digits, maxSize);
+		outFile.Close();
+	}
+	return returnflag;
+}
+
+bool LongInteger::readFromFile(CString & fileName)
+{
+	// Read in the data
+	bool returnflag;
+	CFile inFile;
+	returnflag = inFile.Open(fileName, CFile::modeRead);
+	if (returnflag) {
+		ULONGLONG fileSize = inFile.GetLength();
+		if (fileSize > MAXULONG64)
+		{
+			return false;
+		}
+		byte* newData = new byte[fileSize];
+		inFile.Read(newData, (UINT)fileSize);
+		assignByteArray(newData, (UINT)fileSize);
+		inFile.Close();
+		delete newData;
+	}
+	return returnflag;
+}
+#else
 bool LongInteger::writeToFile(string & fileName)
 {
 	// Write out the data to file
@@ -11573,7 +12000,7 @@ bool LongInteger::readFromFile(string & fileName)
 }
 
 
-
+#endif
 
 
 
@@ -11582,7 +12009,7 @@ bool LongInteger::readFromFile(string & fileName)
 int main(int argc, char** argv) {
 
 
-
+     
     string a;
     ifstream fin("input.txt");
 	ofstream fout("output.txt");
@@ -11591,6 +12018,10 @@ int main(int argc, char** argv) {
 
     fin >> a;
     LongInteger value1(a);
+
+    for(int i = 0;i<10;i++){
+        LongInteger::sqrt(value1);
+    }
 
     fout << LongInteger::sqrt(value1).toDecimal() << endl;
     return 0;
