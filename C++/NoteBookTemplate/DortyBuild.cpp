@@ -6,6 +6,8 @@ Discord: Тесла#9030
 ---Original---Code---
 
 
+
+
 #include <iostream>
 #include <cmath>
 using namespace std;
@@ -15,13 +17,22 @@ using namespace std;
 #include "../DortyLibs/DortyBuild.h"
 #include <fstream>
 
-
+#include "../enviroment.h"
 
 int main()
 {
+
+    stringstream ss;
+    ss << "123 22";
+
+
+    ///std::streambuf *cinbuf = std::cin.rdbuf(); //save old buf
+    cin.rdbuf(ss.rdbuf());
     AppBuild();
     int a;
+    cout << "here" << endl;
     cin >> a;
+    cout << "cinned" << endl;
     cout << factorial(a) << endl;
 
 
@@ -68,6 +79,8 @@ int main()
 
 */
 
+
+
 #include <iostream>
 #include <cmath>
 using namespace std;
@@ -96,6 +109,8 @@ using namespace std;
 
 #endif
 
+
+
 class BigInt {
 
 
@@ -110,7 +125,7 @@ class BigInt {
 
 public:
     static const int BASE = total_base;
-    std::vector<int> _digits;
+    std::vector<long long> _digits;
 
 
     // основание системы счисления (1 000 000 000)
@@ -141,6 +156,8 @@ public:
     void _subtract(const BigInt&);
 
     void _mult(const int number);
+    const friend BigInt operator *(BigInt,const int);
+    void operator *=(int);
 
 	const BigInt operator +() const;
 	const BigInt operator -() const;
@@ -197,6 +214,17 @@ BigInt::BigInt() {
 // создает длинное целое число из C++-строки
 BigInt::BigInt(std::string str) {
 	/// to_do
+}
+
+// сдвигает все разряды на 1 вправо (домножает на BASE)
+void BigInt::_shift_right() {
+	if (_digits.size() == 0) {
+		_digits.push_back(0);
+		return;
+	}
+	_digits.push_back(_digits[_digits.size() - 1]);
+	for (size_t i = _digits.size() - 2; i > 0; --i) _digits[i] = _digits[i - 1];
+	_digits[0] = 0;
 }
 
 // удаляет ведущие нули
@@ -257,8 +285,8 @@ bool BigInt::even() const {
 /// [5,4,3,2,1](12345) (length=3)-> [0,0,0,5,4,3,2,1](12345000)
 /// Следует Улучшить. Ужасно плохо реализованно
 void inline BigInt::_appendZeros(int length){
-    std::vector<int> v1(length);
-    std::vector<int> tmp = _digits;
+    std::vector<long long> v1(length);
+    std::vector<long long> tmp = _digits;
     _digits.clear();
     std::merge(v1.begin(), v1.end(), tmp.begin(), tmp.end(), std::back_inserter(_digits));
 }
@@ -599,53 +627,47 @@ const BigInt operator -(BigInt left, const BigInt& right) {
 
 
 
-
-
-/// Обработка умножения числа на маленькое( такое, что (Base-1)*number < INT_MAX )
+/// Обработка умножения числа на маленькое( из-за этой функции контейнер нельзя ставить на оч. высокую базу (1 миллиард - примерно придел для интов) )
 void BigInt::_mult(const int number){
+    //cout << "Called Simple Mult for " << *this << " " << number << endl;
+
 
     if (number == 0){_digits = {0}; return;}
 
-    size_t sz = _digits.size();
+
+    int sz = _digits.size();
     long long carr;
-    _digits.push_back(0);
-    for(size_t i = 0;i < sz; ++i ){
+    int carry = 0;
+
+    for(int i = 0;i < sz; ++i ){
         carr = _digits[i];
-
         carr *= number;
+        carr += carry;
         _digits[i] = carr % BASE;
-        _digits[i+1] += carr / BASE;
+        carry = carr / BASE;
+
     }
-
-
-    while (_digits[sz] >= BASE){
-        _digits.push_back(_digits[sz] % BASE);
-        _digits[sz] /= BASE;
-        ++sz;
+    if (carry != 0){
+        _digits.push_back(carry);
     }
 
 }
 
-//const int PSEUDO_MAX_INT
-
-BigInt factorial(int num){
-    BigInt ret = 1;
-    for(int mul = 1; mul <= num;++mul){
-        ret._mult(mul);
-        //xcout << ret << endl;
-    }
-    return ret;
+// домножает текущее число на указанное
+void BigInt::operator *=(int number) {
+    _is_negative ^= (number<0);
+    number = abs(number);
+    _mult(number);
 }
 
-
-
-long long  intSqrt(long long arg){
-    return (long long)(sqrt(arg));
+const BigInt operator *(BigInt bi, int number){
+    bi *= number;
+    return bi;
 }
-
 
 // перемножает два числа
 const BigInt operator *(const BigInt& left, const BigInt& right) {
+    //cout << "called y" << endl;
 	BigInt result;
 	result._digits.resize(left._digits.size() + right._digits.size());
 	for (size_t i = 0; i < left._digits.size(); ++i) {
@@ -668,16 +690,9 @@ BigInt& BigInt::operator *=(const BigInt& value) {
 	return *this = (*this * value);
 }
 
-// сдвигает все разряды на 1 вправо (домножает на BASE)
-void BigInt::_shift_right() {
-	if (this->_digits.size() == 0) {
-		this->_digits.push_back(0);
-		return;
-	}
-	this->_digits.push_back(this->_digits[this->_digits.size() - 1]);
-	for (size_t i = this->_digits.size() - 2; i > 0; --i) this->_digits[i] = this->_digits[i - 1];
-	this->_digits[0] = 0;
-}
+
+
+
 
 const BigInt operator /(const BigInt& left, const int digit_){
 
@@ -790,18 +805,17 @@ BigInt& BigInt::operator /=(const BigInt& value) {
 	return *this = (*this / value);
 }
 
-// возвращает остаток от деления двух чисел
-const BigInt operator %(const BigInt& left, const BigInt& right) {
-	BigInt result = left - (left / right) * right;
-	if (result._is_negative) result += right;
-	return result;
-}
 
-// присваивает текущему числу остаток от деления на другое число
-BigInt& BigInt::operator %=(const BigInt& value) {
-	return *this = (*this % value);
-}
 
+
+
+BigInt factorial(int num){
+    BigInt ret = 1;
+    for(int mul = 1; mul <= num;++mul){
+        ret._mult(mul);
+    }
+    return ret;
+}
 
 // возводит текущее число в указанную степень
 const BigInt BigInt::pow(BigInt n) const {
@@ -815,6 +829,40 @@ const BigInt BigInt::pow(BigInt n) const {
 	return result;
 }
 
+
+
+long long  intSqrt(long long arg){
+    return (long long)(sqrt(arg));
+}
+
+
+
+
+
+// возвращает остаток от деления двух чисел
+const BigInt operator %(const BigInt& left, const BigInt& right) {
+	BigInt result = left - (left / right) * right;
+	if (result._is_negative) result += right;
+	return result;
+}
+
+// присваивает текущему числу остаток от деления на другое число
+BigInt& BigInt::operator %=(const BigInt& value) {
+	return *this = (*this % value);
+}
+
+
+/**
+* Надо ещё написать "ручной" алгоритм корня. с O(n^2)
+* Сложность O(n^2 * log(n))
+* Примерная скорость выполнения -> log(n) * Скорость(Деления Двух Длинных)
+* Алгоритм Вавилонский(Герона) - обобщённый Ньютон.
+* Краткое пояснение: т.к. среднее арифметическое приближенно равно среднему геометрическому -> sqrt(n) = sqrt( x * (n / x) ) ~= (x + (n/x))/2
+* Достаточно примерно log2(n) итераций для сходимости к целочисленному ответу.
+* @author Dorty_Schmorty
+* @return целочисленный длинный корень целочисленного длинного числа
+*
+*/
 BigInt sqrt(BigInt n) {
 
     int sz = n._digits.size();
@@ -825,10 +873,12 @@ BigInt sqrt(BigInt n) {
     a += n._digits[sz-2];
 
     BigInt x(intSqrt(a));
-    x *= (((sz-1)%2) ? 1 : sqrt_of_total_base);
+
+    x._mult( (((sz-1)%2) ? 1 : sqrt_of_total_base) );
     x._appendZeros((sz) / 2 - 1);
 
-    int end_ = (int)(log2(sz)) + 2;
+    /// Хз, от чего это константа зависит, следует подумать
+    int end_ = (int)(log2(sz)) + 1;
 
 
     for (int i = 0;i<end_;++i) {
@@ -850,13 +900,77 @@ BigInt sqrt(BigInt n) {
 
 #include <fstream>
 
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <stdio.h>
+using namespace std;
+
+
+
+void preRun(){
+
+    ifstream std_file_ifstream("input.txt");
+    ofstream std_file_ofstream("output.txt");
+    if ( std_file_ifstream.fail() == 0 ){
+        cout << "INPUT_FILE_EXISTS" << endl;
+        freopen("input.txt", "r", stdin);
+    }else{
+        cout << "INPUT FILE WAS NOT FOUND";
+    }
+
+    ///print_state(cout);
+    /*
+    string a;
+    try{
+        cin >> a;
+    }
+    catch( ... ){
+        cout << "Oops..";
+    }
+    */
+}
+
+class PreLauncher{
+public:
+
+    void (*destruct_f)();
+
+    PreLauncher(void (*func)(),void (*endel)()){
+        destruct_f = endel;
+        func();
+    }
+
+    ~PreLauncher()
+    {
+        destruct_f();
+    }
+};
+
+void post_launching2(){
+    cout << "after launch" << endl;
+}
+
+
+
+///PreLauncher __Dorty_Pre_Launch([]() -> void {cout << "abobus" << endl;});
+PreLauncher __Dorty_Pre_Launch(preRun,post_launching2);
 
 
 int main()
 {
+
+    stringstream ss;
+    ss << "123 22";
+
+
+    ///std::streambuf *cinbuf = std::cin.rdbuf(); //save old buf
+    cin.rdbuf(ss.rdbuf());
      
     int a;
+    cout << "here" << endl;
     cin >> a;
+    cout << "cinned" << endl;
     cout << factorial(a) << endl;
 
 

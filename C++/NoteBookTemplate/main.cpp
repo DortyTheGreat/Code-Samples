@@ -1,4 +1,6 @@
 
+
+
 #include <iostream>
 #include <cmath>
 using namespace std;
@@ -8,13 +10,22 @@ using namespace std;
 #include "../DortyLibs/DortyBuild.h"
 #include <fstream>
 
-
+#include "../enviroment.h"
 
 int main()
 {
+
+    stringstream ss;
+    ss << "123 22";
+
+
+    ///std::streambuf *cinbuf = std::cin.rdbuf(); //save old buf
+    cin.rdbuf(ss.rdbuf());
     AppBuild();
     int a;
+    cout << "here" << endl;
     cin >> a;
+    cout << "cinned" << endl;
     cout << factorial(a) << endl;
 
 
