@@ -16,13 +16,28 @@ BigInt::BigInt(std::string str) {
 
 // сдвигает все разряды на 1 вправо (домножает на BASE)
 void BigInt::_shift_right() {
-	if (_digits.size() == 0) {
-		_digits.push_back(0);
-		return;
-	}
+
+    /// removed exceptions
+
 	_digits.push_back(_digits[_digits.size() - 1]);
 	for (size_t i = _digits.size() - 2; i > 0; --i) _digits[i] = _digits[i - 1];
 	_digits[0] = 0;
+}
+
+// сдвигает все разряды на 1 вправо (домножает на BASE)
+void BigInt::_double_shift_right() {
+
+    /// removed exceptions
+
+    if (_digits.size() == 1){
+        _digits = {0,0,_digits[0]};
+    }
+
+	_digits.push_back(_digits[_digits.size() - 2]);
+	_digits.push_back(_digits[_digits.size() - 2]);
+	for (size_t i = _digits.size() - 4; i > 0; --i) _digits[i] = _digits[i - 2];
+	_digits[0] = 0;
+	_digits[1] = 0;
 }
 
 // удаляет ведущие нули

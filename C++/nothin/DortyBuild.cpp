@@ -23,12 +23,16 @@ int main()
     ifstream fin("input.txt");
 	ofstream fout("output.txt");
     AppBuild();
-    BigInt a;
-    fin >> a;
+    BigInt a(12345);
+    ///fin >> a;
+
+
+    /*
     for(int i = 0;i < 100;++i){
         sqrt(a);
     }
-    fout << sqrt(a) << endl;
+    */
+    cout << handSqrt(a) << endl;
 
 
 
@@ -85,7 +89,7 @@ using namespace std;
 
 #define default_base 10
 
-#define big_container 1
+#define big_container 0
 
 #if big_container
 
@@ -844,7 +848,17 @@ BigInt& BigInt::operator %=(const BigInt& value) {
 }
 
 
-
+/**
+* Надо ещё написать "ручной" алгоритм корня. с O(n^2)
+* Сложность O(n^2 * log(n))
+* Примерная скорость выполнения -> log(n) * Скорость(Деления Двух Длинных)
+* Алгоритм Вавилонский(Герона) - обобщённый Ньютон.
+* Краткое пояснение: т.к. среднее арифметическое приближенно равно среднему геометрическому -> sqrt(n) = sqrt( x * (n / x) ) ~= (x + (n/x))/2
+* Достаточно примерно log2(n) итераций для сходимости к целочисленному ответу.
+* @author Dorty_Schmorty
+* @return целочисленный длинный корень целочисленного длинного числа
+*
+*/
 BigInt sqrt(BigInt n) {
 
     int sz = n._digits.size();
@@ -877,6 +891,55 @@ BigInt sqrt(BigInt n) {
 }
 
 
+BigInt handSqrt(const BigInt& n){
+    BigInt ret;
+    int prefix = 2;
+    int sz = n._digits.size();
+
+    int Carret = n._digits.back();
+
+
+    if (sz % 2 == 0){
+        Carret *= n.BASE;
+        Carret += n._digits[sz - 2];
+        prefix++;
+    }
+
+    ret._digits.resize(1 + (sz - prefix + 1)/2);
+
+    int iSqrt_ = intSqrt(Carret);
+    cout << "iSQRT : " << iSqrt_ << endl;
+    ret._digits.back() = iSqrt_;
+    Carret = Carret - iSqrt_*iSqrt_;
+
+
+    cout << "Carret : "<< Carret << endl;
+
+
+    for (int i = sz-prefix;i>=0;i-=2)
+    {
+
+        Carret *= n.BASE;
+        Carret += n._digits[i];
+
+        Carret *= n.BASE;
+        Carret += n._digits[i - 1];
+
+
+        iSqrt_ = intSqrt(Carret);
+        cout << iSqrt_ << endl;
+        cout << "Carret : "<< Carret << endl;
+        ret._digits[i / 2] = iSqrt_;
+        cout << "i : " << i/2 << endl;
+        Carret -= iSqrt_*iSqrt_;
+        cout << "Carret : "<< Carret << endl;
+    }
+
+    return ret;
+}
+
+
+
 
 
 
@@ -890,12 +953,16 @@ int main()
     ifstream fin("input.txt");
 	ofstream fout("output.txt");
      
-    BigInt a;
-    fin >> a;
+    BigInt a(12345);
+    ///fin >> a;
+
+
+    /*
     for(int i = 0;i < 100;++i){
         sqrt(a);
     }
-    fout << sqrt(a) << endl;
+    */
+    cout << handSqrt(a) << endl;
 
 
 

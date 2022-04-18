@@ -16,12 +16,16 @@ int main()
     ifstream fin("input.txt");
 	ofstream fout("output.txt");
     AppBuild();
-    BigInt a;
-    fin >> a;
+    BigInt a(12345);
+    ///fin >> a;
+
+
+    /*
     for(int i = 0;i < 100;++i){
         sqrt(a);
     }
-    fout << sqrt(a) << endl;
+    */
+    cout << handSqrt(a) << endl;
 
 
 

@@ -6,7 +6,7 @@
 
 #define default_base 10
 
-#define big_container 1
+#define big_container 0
 
 #if big_container
 
@@ -35,6 +35,7 @@ class BigInt {
 
 	void _remove_leading_zeros();
 	void _shift_right();
+	void _double_shift_right();
 
 public:
     static const int BASE = total_base;
@@ -60,6 +61,8 @@ public:
 	BigInt(unsigned long);
 	BigInt(signed long long);
 	BigInt(unsigned long long);
+
+    BigInt handSqrt(const BigInt& n);
 
 	friend std::ostream& operator <<(std::ostream&, const BigInt&);
 	friend std::istream& operator >>(std::istream&, BigInt&);

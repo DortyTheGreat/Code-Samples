@@ -71,3 +71,90 @@ BigInt sqrt(BigInt n) {
     return x;
 }
 
+
+BigInt BigInt::handSqrt(const BigInt& n){
+    BigInt ret;
+    int prefix = 2;
+    int sz = n._digits.size();
+
+    int Carret = n._digits.back();
+
+
+    if (sz % 2 == 0){
+        Carret *= n.BASE;
+        Carret += n._digits[sz - 2];
+        prefix++;
+    }
+
+    ret._digits.resize(1 + (sz - prefix + 1)/2);
+
+    int curDigit = intSqrt(Carret);
+    cout << "iSQRT : " << curDigit << endl;
+    ret._digits.back() = curDigit;
+    Carret = Carret - curDigit*curDigit;
+
+
+    cout << "Carret : "<< Carret << endl;
+    /// A = two_first_digits - ret*currDigit
+    BigInt A = Carret;
+
+
+    for (int i = sz-prefix;i>=0;i-=2)
+    {
+        A._double_shift_right();
+        A[0] = n._digits[i - 1];
+        A[1] = n._digits[i];
+
+        Carret *= n.BASE;
+        Carret += n._digits[i];
+
+        Carret *= n.BASE;
+        Carret += n._digits[i - 1];
+
+        /// curDigit = A/a      intSqrt()
+        iSqrt_ = intSqrt(Carret);
+        cout << iSqrt_ << endl;
+        cout << "Carret : "<< Carret << endl;
+        ret._digits[i / 2] = iSqrt_;
+        cout << "i : " << i/2 << endl;
+        Carret -= iSqrt_*iSqrt_;
+        cout << "Carret : "<< Carret << endl;
+
+        A -= a * curDigit;
+    }
+
+    return ret;
+}
+
+/**
+BigInt algoSqrt(const BigInt& n){
+    BigInt A = 0;
+    BigInt curRes;
+    for (int i = amount-1;i>=0;i--)
+    {
+
+        A.Shift(2,digits[i]);
+        int curDigit = 0;
+
+        int l = 0, r = 9;
+        BigInt a = 2*curRes;
+        a.Shift(1,0);
+        while (l<=r)
+        {
+            int m = (l + r)>>1;
+            a.digits[0] = m;
+            if (a*m <= A)
+            {
+                curDigit = m;
+                l = m + 1;
+            }
+            else
+                r = m - 1;
+        }
+        curRes.Shift(1,curDigit);
+        a.digits[0] = curDigit;
+        A = A - a*curDigit;
+    }
+    return curRes;
+}
+*/
