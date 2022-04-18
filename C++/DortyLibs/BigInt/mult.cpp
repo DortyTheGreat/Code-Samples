@@ -87,6 +87,59 @@ const BigInt operator /(const BigInt& left, const int digit_){
 
     return ret;
 }
+/// guessable division
+/// "путём угадывания",
+/// left будет доделено, return вернёт результат
+int g_div(BigInt left, BigInt right){
+    right._is_negative = false;
+    const int b_sz = right._digits.size();
+    if (b_sz == 1){left = left / right._digits[0]; return left._digits[0];} /// т.к. g div гарантирует возврат контейнерного числа, то можно возвращать [0], ибо так мы всегда гарантируем данное
+
+    int curr_sz = left._digits.size();
+    if (curr_sz < b_sz){
+        /// x = 0 -> current = current - b * x; -> current -= 0 -> current не меняется
+        ///std::cout << "free itteration : " << std::endl;
+        return 0;
+    }
+
+    int x;
+    long long tfb = right._digits.back();
+    tfb *= left.BASE;
+    tfb += right._digits[b_sz - 2];
+
+    long long two_from_left = left._digits.back();
+    two_from_left *= left.BASE;
+    two_from_left += left._digits[curr_sz - 2];
+
+
+
+    if (curr_sz == b_sz){
+        x = (two_from_left/tfb);
+    }else{
+        /// тут надо применить хитрость, ибо в таком случае надо делить
+        /// (два_числа_из_куррент*Base) / два_числа_из_б
+        /// однако три числа не поменщаются в long long, при максимальном пакинге...
+        /// приходится "хитрить" и делать "псевдо-длинку" на лишние биты
+        long double d = two_from_left;
+        d *= left.BASE;
+        d /= tfb;
+        x = d;
+    }
+
+    left -= right*x;
+    if (left._is_negative){
+        left += right;
+        return (x - 1);
+    }
+
+    if (left >= right){
+        left -= right;
+        return (x + 1);
+    }
+    return x;
+
+}
+
 
 // делит два числа
 const BigInt operator /(const BigInt& left, const BigInt& right) {

@@ -16,7 +16,7 @@ int main()
     ifstream fin("input.txt");
 	ofstream fout("output.txt");
     AppBuild();
-    BigInt a(12345);
+    BigInt a(138384);
     ///fin >> a;
 
 
@@ -25,7 +25,7 @@ int main()
         sqrt(a);
     }
     */
-    cout << handSqrt(a) << endl;
+    cout << algoSqrt(a) << endl;
 
 
 

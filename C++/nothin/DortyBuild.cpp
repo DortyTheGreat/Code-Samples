@@ -23,7 +23,7 @@ int main()
     ifstream fin("input.txt");
 	ofstream fout("output.txt");
     AppBuild();
-    BigInt a(12345);
+    BigInt a(138384);
     ///fin >> a;
 
 
@@ -32,7 +32,7 @@ int main()
         sqrt(a);
     }
     */
-    cout << handSqrt(a) << endl;
+    cout << algoSqrt(a) << endl;
 
 
 
@@ -118,6 +118,7 @@ class BigInt {
 
 	void _remove_leading_zeros();
 	void _shift_right();
+	void _double_shift_right();
 
 public:
     static const int BASE = total_base;
@@ -143,6 +144,9 @@ public:
 	BigInt(unsigned long);
 	BigInt(signed long long);
 	BigInt(unsigned long long);
+
+    friend BigInt handSqrt(const BigInt& n);
+    friend BigInt algoSqrt(const BigInt& n);
 
 	friend std::ostream& operator <<(std::ostream&, const BigInt&);
 	friend std::istream& operator >>(std::istream&, BigInt&);
@@ -176,6 +180,9 @@ public:
 	void operator -=(BigInt);
 	friend const BigInt operator *(const BigInt&, const BigInt&);
 	BigInt& operator *=(const BigInt&);
+
+	friend int g_div(BigInt left, BigInt right);
+
 	friend const BigInt operator /(const BigInt&, const int);
 	friend const BigInt operator /(const BigInt&, const BigInt&);
 
@@ -214,13 +221,29 @@ BigInt::BigInt(std::string str) {
 
 // сдвигает все разряды на 1 вправо (домножает на BASE)
 void BigInt::_shift_right() {
-	if (_digits.size() == 0) {
-		_digits.push_back(0);
-		return;
-	}
+
+    /// removed exceptions
+
 	_digits.push_back(_digits[_digits.size() - 1]);
 	for (size_t i = _digits.size() - 2; i > 0; --i) _digits[i] = _digits[i - 1];
 	_digits[0] = 0;
+}
+
+// сдвигает все разряды на 1 вправо (домножает на BASE)
+void BigInt::_double_shift_right() {
+
+    /// removed exceptions
+
+    if (_digits.size() == 1){
+        _digits = {0,0,_digits[0]};
+        return;
+    }
+
+	_digits.push_back(_digits[_digits.size() - 2]);
+	_digits.push_back(_digits[_digits.size() - 2]);
+	for (size_t i = _digits.size() - 3; i > 1; --i) _digits[i] = _digits[i - 2];
+	_digits[0] = 0;
+	_digits[1] = 0;
 }
 
 // удаляет ведущие нули
@@ -712,6 +735,59 @@ const BigInt operator /(const BigInt& left, const int digit_){
 
     return ret;
 }
+/// guessable division
+/// "путём угадывания",
+/// left будет доделено, return вернёт результат
+int g_div(BigInt left, BigInt right){
+    right._is_negative = false;
+    const int b_sz = right._digits.size();
+    if (b_sz == 1){left = left / right._digits[0]; return left._digits[0];} /// т.к. g div гарантирует возврат контейнерного числа, то можно возвращать [0], ибо так мы всегда гарантируем данное
+
+    int curr_sz = left._digits.size();
+    if (curr_sz < b_sz){
+        /// x = 0 -> current = current - b * x; -> current -= 0 -> current не меняется
+        ///std::cout << "free itteration : " << std::endl;
+        return 0;
+    }
+
+    int x;
+    long long tfb = right._digits.back();
+    tfb *= left.BASE;
+    tfb += right._digits[b_sz - 2];
+
+    long long two_from_left = left._digits.back();
+    two_from_left *= left.BASE;
+    two_from_left += left._digits[curr_sz - 2];
+
+
+
+    if (curr_sz == b_sz){
+        x = (two_from_left/tfb);
+    }else{
+        /// тут надо применить хитрость, ибо в таком случае надо делить
+        /// (два_числа_из_куррент*Base) / два_числа_из_б
+        /// однако три числа не поменщаются в long long, при максимальном пакинге...
+        /// приходится "хитрить" и делать "псевдо-длинку" на лишние биты
+        long double d = two_from_left;
+        d *= left.BASE;
+        d /= tfb;
+        x = d;
+    }
+
+    left -= right*x;
+    if (left._is_negative){
+        left += right;
+        return (x - 1);
+    }
+
+    if (left >= right){
+        left -= right;
+        return (x + 1);
+    }
+    return x;
+
+}
+
 
 // делит два числа
 const BigInt operator /(const BigInt& left, const BigInt& right) {
@@ -907,17 +983,22 @@ BigInt handSqrt(const BigInt& n){
 
     ret._digits.resize(1 + (sz - prefix + 1)/2);
 
-    int iSqrt_ = intSqrt(Carret);
-    cout << "iSQRT : " << iSqrt_ << endl;
-    ret._digits.back() = iSqrt_;
-    Carret = Carret - iSqrt_*iSqrt_;
+    int curDigit = intSqrt(Carret);
+    cout << "iSQRT : " << curDigit << endl;
+    ret._digits.back() = curDigit;
+    Carret = Carret - curDigit*curDigit;
 
 
     cout << "Carret : "<< Carret << endl;
+    /// A = two_first_digits - ret*currDigit
+    BigInt A = Carret;
 
 
     for (int i = sz-prefix;i>=0;i-=2)
     {
+        A._double_shift_right();
+        A._digits[0] = n._digits[i - 1];
+        A._digits[1] = n._digits[i];
 
         Carret *= n.BASE;
         Carret += n._digits[i];
@@ -925,19 +1006,83 @@ BigInt handSqrt(const BigInt& n){
         Carret *= n.BASE;
         Carret += n._digits[i - 1];
 
+        /// curDigit = A/a      intSqrt()
 
-        iSqrt_ = intSqrt(Carret);
-        cout << iSqrt_ << endl;
+        /*
         cout << "Carret : "<< Carret << endl;
         ret._digits[i / 2] = iSqrt_;
         cout << "i : " << i/2 << endl;
         Carret -= iSqrt_*iSqrt_;
         cout << "Carret : "<< Carret << endl;
+
+        A -= a * curDigit;
+        */
     }
 
     return ret;
 }
 
+
+BigInt algoSqrt(const BigInt& n){
+    BigInt ret;
+    int prefix = 2;
+    int sz = n._digits.size();
+
+    int Carret = n._digits.back();
+
+
+    if (sz % 2 == 0){
+        Carret *= n.BASE;
+        Carret += n._digits[sz - 2];
+        prefix++;
+    }
+
+    ///ret._digits.resize(1 + (sz - prefix + 1)/2);
+
+    int curDigit = intSqrt(Carret);
+    cout << "iSQRT : " << curDigit << endl;
+    ///ret._digits.back() = curDigit;
+
+    ret = curDigit;
+
+    Carret = Carret - curDigit*curDigit;
+
+
+    cout << "Carret : "<< Carret << endl;
+    /// A = two_first_digits - ret*currDigit
+    BigInt A = Carret, a;
+
+    for (int i = sz-prefix;i>=0;i-=2)
+    {
+
+        cout << "i : " << i << endl;
+
+        A._double_shift_right();
+
+        A._digits[0] = n._digits[i - 1];
+        A._digits[1] = n._digits[i];
+        cout <<"ABef : " <<A << endl;
+
+        a = ret * 2;
+
+
+        cout << A << " " << a << endl;
+
+        curDigit = sqrt(A / a)._digits[0]; ///(g. div)
+
+        cout << curDigit << endl;
+
+        ret._shift_right();
+        ret._digits[0] = curDigit;
+
+        a._shift_right();
+        a._digits[0] = curDigit;
+        cout << "A1 " << A << endl;
+        A -= a*curDigit;
+        cout << "A2 " << A << endl;
+    }
+    return ret;
+}
 
 
 
@@ -953,7 +1098,7 @@ int main()
     ifstream fin("input.txt");
 	ofstream fout("output.txt");
      
-    BigInt a(12345);
+    BigInt a(138384);
     ///fin >> a;
 
 
@@ -962,7 +1107,7 @@ int main()
         sqrt(a);
     }
     */
-    cout << handSqrt(a) << endl;
+    cout << algoSqrt(a) << endl;
 
 
 

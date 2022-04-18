@@ -31,11 +31,12 @@ void BigInt::_double_shift_right() {
 
     if (_digits.size() == 1){
         _digits = {0,0,_digits[0]};
+        return;
     }
 
 	_digits.push_back(_digits[_digits.size() - 2]);
 	_digits.push_back(_digits[_digits.size() - 2]);
-	for (size_t i = _digits.size() - 4; i > 0; --i) _digits[i] = _digits[i - 2];
+	for (size_t i = _digits.size() - 3; i > 1; --i) _digits[i] = _digits[i - 2];
 	_digits[0] = 0;
 	_digits[1] = 0;
 }

@@ -62,7 +62,8 @@ public:
 	BigInt(signed long long);
 	BigInt(unsigned long long);
 
-    BigInt handSqrt(const BigInt& n);
+    friend BigInt handSqrt(const BigInt& n);
+    friend BigInt algoSqrt(const BigInt& n);
 
 	friend std::ostream& operator <<(std::ostream&, const BigInt&);
 	friend std::istream& operator >>(std::istream&, BigInt&);
@@ -96,6 +97,9 @@ public:
 	void operator -=(BigInt);
 	friend const BigInt operator *(const BigInt&, const BigInt&);
 	BigInt& operator *=(const BigInt&);
+
+	friend int g_div(BigInt left, BigInt right);
+
 	friend const BigInt operator /(const BigInt&, const int);
 	friend const BigInt operator /(const BigInt&, const BigInt&);
 
