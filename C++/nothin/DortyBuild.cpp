@@ -938,8 +938,11 @@ const BigInt BigInt::pow(BigInt n) const {
 
     const int _0_sz = min(s_sz, fh);
 
-    L0._digits.resize(fh);
-    L1._digits.resize(sh);
+    L0._digits = vector<CONT_TYPE>(left._digits.begin(),left._digits.begin() + fh);
+    L1._digits = vector<CONT_TYPE>(left._digits.begin() + fh,left._digits.end());
+
+    ///cout << L0 << " " << L1 << endl;
+
     R0._digits.resize(_0_sz);
     BigInt Z0;
     BigInt Z1;
@@ -949,9 +952,7 @@ const BigInt BigInt::pow(BigInt n) const {
 
 
 
-    for(int i = 0;i<fh;++i){
-        L0._digits[i] = left._digits[i];
-    }
+
 
 
 
@@ -962,9 +963,6 @@ const BigInt BigInt::pow(BigInt n) const {
 
 
 
-    for(int i = 0;i<sh;++i){
-        L1._digits[i] = left._digits[fh + i];
-    }
 
 
 
