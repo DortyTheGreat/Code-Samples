@@ -1,68 +1,44 @@
+#pragma GCC target ("avx2") /// говно для ноута
+#pragma GCC optimization ("O3") /// немножко ускоряет карацубу
+#pragma GCC optimization ("unroll-loops")
 
-#include <iostream>
+#include "../DortyLibs/AdvancedStream.h"
+
 #include <cmath>
 using namespace std;
-
+#include <stdio.h>
 #include "../DortyLibs/BigIntLib.h"
 
 #include "../DortyLibs/DortyBuild.h"
-#include <fstream>
+
+
+#define file_read 1
 
 
 
 int main()
 {
 
-    ifstream fin("input.txt");
-	ofstream fout("output.txt");
+    #if file_read
+
+    freopen ("input.txt","r",stdin);
+
+    #endif // file_read
     AppBuild();
-    BigInt a(138384);
-    ///fin >> a;
 
+    BigInt a,b,c;
 
-    /*
-    for(int i = 0;i < 100;++i){
-        sqrt(a);
+    cin >> a;
+    for(int i = 0;i<1000;++i){
+        c = k_mul(a,a);
     }
-    */
-    cout << algoSqrt(a) << endl;
 
+    ///a = k_mul(a,b);
 
-
+    //a += 1;
+    //fout << c << " " << a - b*c;
 
     return 0;
-
-    //BigInt a(-13);
-
-    //a -= BigInt(-15);
-
-    //cout << a << endl;
-    //int b;
-    //cin >> b;
-
-
-
-    //for(int test = 0;test < 100000; test++){
-
-        //BigInt a(test);
-        //if (test % 10000 == 0){cout << "test : " << test << endl;}
-        //if (sqrt(a) != BigInt(intSqrt(test))){
-        //    cout << test << " " << sqrt(a) << " " << test << " " << intSqrt(test) <<endl;
-        //}
-    //}
-
-
-
-	//BigInt n1;
-	//fin >> n1;
-
-
-
-  //BigInt ans = sqrt(n1);
-  //cout << "CALCULATED" << endl;
-  //fout << ans << endl << n1 - ans * ans;
-
-  //1return 0;
 }
 
 

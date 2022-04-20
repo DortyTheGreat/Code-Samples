@@ -99,8 +99,8 @@ bool BigInt::even() const {
 /// [5,4,3,2,1](12345) (length=3)-> [0,0,0,5,4,3,2,1](12345000)
 /// Следует Улучшить. Ужасно плохо реализованно
 void inline BigInt::_appendZeros(int length){
-    std::vector<long long> v1(length);
-    std::vector<long long> tmp = _digits;
+    std::vector<CONT_TYPE> v1(length);
+    std::vector<CONT_TYPE> tmp = _digits;
     _digits.clear();
     std::merge(v1.begin(), v1.end(), tmp.begin(), tmp.end(), std::back_inserter(_digits));
 }

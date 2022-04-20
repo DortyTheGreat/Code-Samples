@@ -6,7 +6,9 @@
 
 #define default_base 10
 
-#define big_container 0
+#define CONT_TYPE long long
+
+#define big_container 1
 
 #if big_container
 
@@ -39,7 +41,7 @@ class BigInt {
 
 public:
     static const int BASE = total_base;
-    std::vector<long long> _digits;
+    std::vector<CONT_TYPE> _digits;
 
 
     // основание системы счисления (1 000 000 000)
@@ -75,6 +77,12 @@ public:
     void _mult(const int number);
     const friend BigInt operator *(BigInt,const int);
     void operator *=(int);
+
+
+    //bool split(BigInt* liFront, BigInt* liBack, int iSplit) const;
+    //friend BigInt* karatsuba(const BigInt& liOne, const BigInt& liTwo);
+
+    friend BigInt k_mul(const BigInt&, const BigInt&);
 
 	const BigInt operator +() const;
 	const BigInt operator -() const;

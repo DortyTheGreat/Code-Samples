@@ -2,11 +2,15 @@
 #include "core.cpp" /// примитивнейшие операции
 #include "io.cpp" /// ввод-вывод
 
+/// School Arithmetic
 #include "compare.cpp"
 #include "add.cpp"
 #include "mult.cpp"
 #include "exponential.cpp"
 
+
+/// Advanced Stuff
+#include "complicated_M.cpp"
 
 long long  intSqrt(long long arg){
     return (long long)(sqrt(arg));

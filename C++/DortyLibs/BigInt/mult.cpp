@@ -143,7 +143,7 @@ int g_div(BigInt left, BigInt right){
 
 // делит два числа
 const BigInt operator /(const BigInt& left, const BigInt& right) {
-    ///std::cout << "Called div" << std::endl;
+
 	if (right == 0) throw BigInt::divide_by_zero();
 	const int b_sz = right._digits.size();
     if (b_sz == 1){return left / right._digits[0];}
@@ -152,7 +152,7 @@ const BigInt operator /(const BigInt& left, const BigInt& right) {
 
 
 	b._is_negative = false;
-	BigInt result, current;
+	BigInt result, current(0);
 	result._digits.resize(left._digits.size());
     result._is_negative = left._is_negative != right._is_negative;
 
@@ -163,10 +163,17 @@ const BigInt operator /(const BigInt& left, const BigInt& right) {
 
     const long long two_from_b = tfb;
 
+
+
 	int x,curr_sz;
 
+
+
 	for (long long i = static_cast<long long>(left._digits.size()) - 1; i >= 0; --i) {
+
 		current._shift_right();
+
+
 		current._digits[0] = left._digits[i];
 		current._remove_leading_zeros();
 
@@ -178,6 +185,8 @@ const BigInt operator /(const BigInt& left, const BigInt& right) {
             result._digits[i] = 0;
             continue;
         }
+
+
 
         /// curr.size >= b.size
         /// b_sz != 1 (т.к. выше было это исключено)
@@ -202,6 +211,8 @@ const BigInt operator /(const BigInt& left, const BigInt& right) {
             d /= two_from_b;
             x = d;
 		}
+
+
 
 
 		current -= b*x;
