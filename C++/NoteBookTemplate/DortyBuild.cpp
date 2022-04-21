@@ -5,86 +5,72 @@ For More Information ask:
 Discord: Тесла#9030 
 ---Original---Code---
 
+#pragma GCC target ("avx2") /// РіРѕРІРЅРѕ РґР»СЏ РЅРѕСѓС‚Р°
+//#pragma GCC optimization ("O3") /// РЅРµРјРЅРѕР¶РєРѕ СѓСЃРєРѕСЂСЏРµС‚ РєР°СЂР°С†СѓР±Сѓ
+//#pragma GCC optimization ("unroll-loops")
 
+#include "../DortyLibs/AdvancedStream.h"
 
-
-#include <iostream>
 #include <cmath>
 using namespace std;
-
+#include <stdio.h>
 #include "../DortyLibs/BigIntLib.h"
 
 #include "../DortyLibs/DortyBuild.h"
-#include <fstream>
 
-#include "../enviroment.h"
+
+#define file_read 1
+
+
 
 int main()
 {
 
-    stringstream ss;
-    ss << "123 22";
+    #if file_read
 
+    freopen ("input.txt","r",stdin);
 
-    ///std::streambuf *cinbuf = std::cin.rdbuf(); //save old buf
-    cin.rdbuf(ss.rdbuf());
+    #endif // file_read
     AppBuild();
-    int a;
-    cout << "here" << endl;
+
+    BigInt a,b,c;
+
     cin >> a;
-    cout << "cinned" << endl;
-    cout << factorial(a) << endl;
 
+    for (int i = 0;i<1000000000;++i){
 
+    }
 
-    //ifstream fin("input.txt");
-	//ofstream fout("output.txt");
+    for(int i = 0;i<100;++i){
+        //c = k_mul(a,a);
+    }
+
+    ///a = k_mul(a,b);
+
+    //a += 1;
+    //fout << c << " " << a - b*c;
+
     return 0;
-
-    //BigInt a(-13);
-
-    //a -= BigInt(-15);
-
-    //cout << a << endl;
-    //int b;
-    //cin >> b;
-
-
-
-    //for(int test = 0;test < 100000; test++){
-
-        //BigInt a(test);
-        //if (test % 10000 == 0){cout << "test : " << test << endl;}
-        //if (sqrt(a) != BigInt(intSqrt(test))){
-        //    cout << test << " " << sqrt(a) << " " << test << " " << intSqrt(test) <<endl;
-        //}
-    //}
-
-
-
-	//BigInt n1;
-	//fin >> n1;
-
-
-
-  //BigInt ans = sqrt(n1);
-  //cout << "CALCULATED" << endl;
-  //fout << ans << endl << n1 - ans * ans;
-
-  //1return 0;
 }
 
 
 
 
 */
-
-
+#pragma GCC target ("avx2") /// РіРѕРІРЅРѕ РґР»СЏ РЅРѕСѓС‚Р°
+//#pragma GCC optimization ("O3") /// РЅРµРјРЅРѕР¶РєРѕ СѓСЃРєРѕСЂСЏРµС‚ РєР°СЂР°С†СѓР±Сѓ
+//#pragma GCC optimization ("unroll-loops")
 
 #include <iostream>
+#include <fstream>
+
+std::ifstream fin("input.txt");
+std::ofstream fout("output.txt");
+
+
 #include <cmath>
 using namespace std;
-
+#include <stdio.h>
 //#pragma GCC target ("avx2")
 //#pragma GCC optimization ("O3")
 //#pragma GCC optimization ("unroll-loops")
@@ -92,6 +78,8 @@ using namespace std;
 #include <bits/stdc++.h>
 
 #define default_base 10
+
+#define CONT_TYPE long long
 
 #define big_container 1
 
@@ -122,10 +110,11 @@ class BigInt {
 
 	void _remove_leading_zeros();
 	void _shift_right();
+	void _double_shift_right();
 
 public:
     static const int BASE = total_base;
-    std::vector<long long> _digits;
+    std::vector<CONT_TYPE> _digits;
 
 
     // основание системы счисления (1 000 000 000)
@@ -148,6 +137,9 @@ public:
 	BigInt(signed long long);
 	BigInt(unsigned long long);
 
+    friend BigInt handSqrt(const BigInt& n);
+    friend BigInt algoSqrt(const BigInt& n);
+
 	friend std::ostream& operator <<(std::ostream&, const BigInt&);
 	friend std::istream& operator >>(std::istream&, BigInt&);
 	operator std::string() const;
@@ -158,6 +150,12 @@ public:
     void _mult(const int number);
     const friend BigInt operator *(BigInt,const int);
     void operator *=(int);
+
+
+    //bool split(BigInt* liFront, BigInt* liBack, int iSplit) const;
+    //friend BigInt* karatsuba(const BigInt& liOne, const BigInt& liTwo);
+
+    friend BigInt k_mul(const BigInt&, const BigInt&);
 
 	const BigInt operator +() const;
 	const BigInt operator -() const;
@@ -180,6 +178,9 @@ public:
 	void operator -=(BigInt);
 	friend const BigInt operator *(const BigInt&, const BigInt&);
 	BigInt& operator *=(const BigInt&);
+
+	friend int g_div(BigInt left, BigInt right);
+
 	friend const BigInt operator /(const BigInt&, const int);
 	friend const BigInt operator /(const BigInt&, const BigInt&);
 
@@ -218,13 +219,29 @@ BigInt::BigInt(std::string str) {
 
 // сдвигает все разряды на 1 вправо (домножает на BASE)
 void BigInt::_shift_right() {
-	if (_digits.size() == 0) {
-		_digits.push_back(0);
-		return;
-	}
+
+    /// removed exceptions
+
 	_digits.push_back(_digits[_digits.size() - 1]);
 	for (size_t i = _digits.size() - 2; i > 0; --i) _digits[i] = _digits[i - 1];
 	_digits[0] = 0;
+}
+
+// сдвигает все разряды на 1 вправо (домножает на BASE)
+void BigInt::_double_shift_right() {
+
+    /// removed exceptions
+
+    if (_digits.size() == 1){
+        _digits = {0,0,_digits[0]};
+        return;
+    }
+
+	_digits.push_back(_digits[_digits.size() - 2]);
+	_digits.push_back(_digits[_digits.size() - 2]);
+	for (size_t i = _digits.size() - 3; i > 1; --i) _digits[i] = _digits[i - 2];
+	_digits[0] = 0;
+	_digits[1] = 0;
 }
 
 // удаляет ведущие нули
@@ -285,8 +302,8 @@ bool BigInt::even() const {
 /// [5,4,3,2,1](12345) (length=3)-> [0,0,0,5,4,3,2,1](12345000)
 /// Следует Улучшить. Ужасно плохо реализованно
 void inline BigInt::_appendZeros(int length){
-    std::vector<long long> v1(length);
-    std::vector<long long> tmp = _digits;
+    std::vector<CONT_TYPE> v1(length);
+    std::vector<CONT_TYPE> tmp = _digits;
     _digits.clear();
     std::merge(v1.begin(), v1.end(), tmp.begin(), tmp.end(), std::back_inserter(_digits));
 }
@@ -384,6 +401,7 @@ std::istream& operator>>(std::istream& in, BigInt &bi) {
 }
 
 
+/// School Arithmetic
 /// Обработка сравнения двух положительных чисел (0 => второе больше, 1 => равны, 2 => наше больше)
 short inline compare(const BigInt &left, const BigInt &right){
     size_t sz = left._digits.size();
@@ -654,10 +672,9 @@ void BigInt::_mult(const int number){
 }
 
 // домножает текущее число на указанное
-void BigInt::operator *=(int number) {
+void BigInt::operator *=(const int number) {
     _is_negative ^= (number<0);
-    number = abs(number);
-    _mult(number);
+    _mult(abs(number));
 }
 
 const BigInt operator *(BigInt bi, int number){
@@ -669,16 +686,18 @@ const BigInt operator *(BigInt bi, int number){
 const BigInt operator *(const BigInt& left, const BigInt& right) {
     //cout << "called y" << endl;
 	BigInt result;
-	result._digits.resize(left._digits.size() + right._digits.size());
-	for (size_t i = 0; i < left._digits.size(); ++i) {
-		int carry = 0;
-		for (size_t j = 0; j < right._digits.size() || carry != 0; ++j) {
-			long long cur = result._digits[i + j] +
-				left._digits[i] * 1LL * (j < right._digits.size() ? right._digits[j] : 0) + carry;
-			result._digits[i + j] = static_cast<int>(cur % left.BASE);
-			carry = static_cast<int>(cur / left.BASE);
-		}
-	}
+	int n = left._digits.size(), m = right._digits.size();
+	result._digits.resize(n + m);
+	for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < m; ++j) {
+                CONT_TYPE& pts = result._digits[i + j]; /// такая передача по ссылке чуть-чуть ускоряет умножение
+                pts += left._digits[i]*right._digits[i];
+                if (pts >= left.BASE){
+                    pts -= left.BASE;
+                    ++result._digits[i + j + 1];
+                }
+            }
+        }
 
 	result._is_negative = left._is_negative != right._is_negative;
 	result._remove_leading_zeros();
@@ -716,10 +735,63 @@ const BigInt operator /(const BigInt& left, const int digit_){
 
     return ret;
 }
+/// guessable division
+/// "путём угадывания",
+/// left будет доделено, return вернёт результат
+int g_div(BigInt left, BigInt right){
+    right._is_negative = false;
+    const int b_sz = right._digits.size();
+    if (b_sz == 1){left = left / right._digits[0]; return left._digits[0];} /// т.к. g div гарантирует возврат контейнерного числа, то можно возвращать [0], ибо так мы всегда гарантируем данное
+
+    int curr_sz = left._digits.size();
+    if (curr_sz < b_sz){
+        /// x = 0 -> current = current - b * x; -> current -= 0 -> current не меняется
+        ///std::cout << "free itteration : " << std::endl;
+        return 0;
+    }
+
+    int x;
+    long long tfb = right._digits.back();
+    tfb *= left.BASE;
+    tfb += right._digits[b_sz - 2];
+
+    long long two_from_left = left._digits.back();
+    two_from_left *= left.BASE;
+    two_from_left += left._digits[curr_sz - 2];
+
+
+
+    if (curr_sz == b_sz){
+        x = (two_from_left/tfb);
+    }else{
+        /// тут надо применить хитрость, ибо в таком случае надо делить
+        /// (два_числа_из_куррент*Base) / два_числа_из_б
+        /// однако три числа не поменщаются в long long, при максимальном пакинге...
+        /// приходится "хитрить" и делать "псевдо-длинку" на лишние биты
+        long double d = two_from_left;
+        d *= left.BASE;
+        d /= tfb;
+        x = d;
+    }
+
+    left -= right*x;
+    if (left._is_negative){
+        left += right;
+        return (x - 1);
+    }
+
+    if (left >= right){
+        left -= right;
+        return (x + 1);
+    }
+    return x;
+
+}
+
 
 // делит два числа
 const BigInt operator /(const BigInt& left, const BigInt& right) {
-    ///std::cout << "Called div" << std::endl;
+
 	if (right == 0) throw BigInt::divide_by_zero();
 	const int b_sz = right._digits.size();
     if (b_sz == 1){return left / right._digits[0];}
@@ -728,7 +800,7 @@ const BigInt operator /(const BigInt& left, const BigInt& right) {
 
 
 	b._is_negative = false;
-	BigInt result, current;
+	BigInt result, current(0);
 	result._digits.resize(left._digits.size());
     result._is_negative = left._is_negative != right._is_negative;
 
@@ -739,10 +811,17 @@ const BigInt operator /(const BigInt& left, const BigInt& right) {
 
     const long long two_from_b = tfb;
 
+
+
 	int x,curr_sz;
 
+
+
 	for (long long i = static_cast<long long>(left._digits.size()) - 1; i >= 0; --i) {
+
 		current._shift_right();
+
+
 		current._digits[0] = left._digits[i];
 		current._remove_leading_zeros();
 
@@ -754,6 +833,8 @@ const BigInt operator /(const BigInt& left, const BigInt& right) {
             result._digits[i] = 0;
             continue;
         }
+
+
 
         /// curr.size >= b.size
         /// b_sz != 1 (т.к. выше было это исключено)
@@ -778,6 +859,8 @@ const BigInt operator /(const BigInt& left, const BigInt& right) {
             d /= two_from_b;
             x = d;
 		}
+
+
 
 
 		current -= b*x;
@@ -829,6 +912,230 @@ const BigInt BigInt::pow(BigInt n) const {
 	return result;
 }
 
+
+
+/// Advanced Stuff
+#define KAR_TRESH 50
+
+/* Grade school multiplication, ignoring the signs.
+ * Returns the absolute value of the product, or NULL if error.
+ */
+ /*
+static BigInt *
+x_mul(BigInt *a, BigInt *b)
+{
+    BigInt *z;
+    int size_a = a->_digits.size();
+    int size_b = a->_digits.size();
+    int i;
+
+    z->_digits.resize(size_a + size_b);
+
+    ///memset(z->ob_digit, 0, Py_SIZE(z) * sizeof(digit));
+
+
+    for (i = 0; i < size_a; ++i) {
+        long long carry = 0;
+        long long f = a->_digits[i];
+        auto pz = z->_digits[i];
+        auto pb = b->_digits[0];
+        auto pbend = b->_digits[size_b];
+
+        SIGCHECK({
+                Py_DECREF(z);
+                return NULL;
+            });
+
+        while (pb < pbend) {
+            carry += *pz + *pb++ * f;
+            *pz++ = (digit)(carry & PyLong_MASK);
+            carry >>= PyLong_SHIFT;
+            assert(carry <= PyLong_MASK);
+        }
+        if (carry)
+            *pz += (digit)(carry & PyLong_MASK);
+        assert((carry >> PyLong_SHIFT) == 0);
+    }
+
+    return long_normalize(z);
+}
+
+*/
+ BigInt k_mul(const BigInt& left,const BigInt& right) {
+
+
+
+    const int n = left._digits.size(); /// size of biggest num
+
+    if (n < right._digits.size()){
+        return k_mul(right,left);
+    }
+
+    /// число мелкое, умножаем, как обычно
+    if (n < KAR_TRESH){return left*right;}
+
+    const int fh = (n+1) / 2;   // First half Data (take more)
+    const int sh = (n - fh); // Second half of Data
+
+    // Find the first half and second half of first string.
+
+
+
+    BigInt L0, L1, R0;
+
+    const int s_sz = right._digits.size();
+
+    const int _0_sz = min(s_sz, fh);
+
+    L0._digits.resize(fh);
+    L1._digits.resize(sh);
+    R0._digits.resize(_0_sz);
+    BigInt Z0;
+    BigInt Z1;
+
+
+
+
+
+
+    for(int i = 0;i<fh;++i){
+        L0._digits[i] = left._digits[i];
+    }
+
+
+
+    /// tut oshibka
+    for(int i = 0;i<_0_sz;++i){
+        R0._digits[i] = right._digits[i];
+    }
+
+
+
+    for(int i = 0;i<sh;++i){
+        L1._digits[i] = left._digits[fh + i];
+    }
+
+
+
+
+    Z0 = k_mul(L0,R0);
+    const int _1_sz = s_sz - _0_sz;
+    if (_1_sz == 0){
+        /// Z2 = 0
+        Z1 = k_mul(L1,R0); /// no swap
+
+        Z1._appendZeros(fh);
+
+
+        return Z1+Z0;
+    }else{
+        BigInt R1;
+        R1._digits.resize(_1_sz);
+
+
+
+        for(int i = 0;i<_1_sz;++i){
+            R1._digits[i] = right._digits[fh + i];
+        }
+
+        BigInt Z2 = k_mul(L1,R1); /// no swap
+
+
+        Z1 = k_mul(L0+L1, R0+R1);
+
+        Z1 -= (Z0+Z2);
+
+        ///if ( !(Z1.data.size() == 1 && Z1.data[0] == 0) )
+            Z1._appendZeros(fh);
+
+        ///if ( !(Z2.data.size() == 1 && Z2.data[0] == 0) )
+            Z2._appendZeros(fh * 2);
+
+        return Z2 + Z1 + Z0;
+    }
+
+}
+/*
+bool BigInt::split(BigInt* liFront, BigInt* liBack, int iSplit) const {
+	// Split the current BigInt into 2 bits at the point specified by iSplit
+
+	if (iSplit >= _digits.size()) {
+		(*liFront) = (*this);
+		*liBack = 0;
+		return false;
+	}
+
+	// Put the first half of the current BigInt in liFront
+
+	liFront->_digits = vector<CONT_TYPE>(_digits.begin(),_digits.begin() + iSplit);
+	liFront->_is_negative = _is_negative;
+
+	// Put the second half in liBack
+
+
+	liBack->_digits = vector<CONT_TYPE>(_digits.begin() + iSplit,_digits.end());
+	liBack->_is_negative = _is_negative;
+
+	return true;
+}
+
+BigInt* karatsuba(const BigInt& liOne, const BigInt& liTwo)
+{
+	if ((liOne._digits.size() < KAR_TRESH) && (liTwo._digits.size() < KAR_TRESH))
+	{
+
+		return new BigInt (liOne * liTwo);
+	}
+
+	// Determine the size of the numbers, so we know where to split them
+	int iSize = (liOne._digits.size() > liTwo._digits.size()) ? liOne._digits.size() : liTwo._digits.size();
+	int iHalfSize = iSize / 2;
+
+	// Split the digit sequences about the middle
+	BigInt* liHighOne = new BigInt();
+	BigInt* liLowOne = new BigInt();
+	BigInt* liHighTwo = new BigInt();
+	BigInt* liLowTwo = new BigInt();
+	liOne.split(liLowOne, liHighOne, iHalfSize);
+	liTwo.split(liLowTwo, liHighTwo, iHalfSize);
+
+	BigInt* liZ0;
+	BigInt* liZ1;
+	BigInt* liZ2;
+
+
+
+		// 3 calls made to numbers approximately half the size
+		liZ0 = karatsuba(*liLowOne, *liLowTwo);
+		liZ1 = karatsuba((*liLowOne + *liHighOne), (*liLowTwo + *liHighTwo));
+		liZ2 = karatsuba(*liHighOne, *liHighTwo);
+
+	// The next step is this calculation:
+	// return (z2*10^(2*m2))+((z1-z2-z0)*10^(m2))+(z0)
+	// This calc is in base 10 whereas we are in base BASEVAL, which is the size of 1 byte
+	// The numbers are represented internally as a byte array
+	// So we will start with most complex bit - z1-z2-z0 * BASEVAL^(halfsize)
+	// We will do the sums, then move liZ1 left by halfsize bytes
+	(*liZ1) -= (*liZ2);
+	(*liZ1) -= (*liZ0);
+	liZ1->_appendZeros(iHalfSize);
+	// Then move liZ2 left by iSize bytes
+	liZ2->_appendZeros(iHalfSize * 2);
+	// Then we add liZ0, liZ1 and liZ2 together
+
+	BigInt* returnValue = new BigInt((*liZ2) + (*liZ1) + (*liZ0));
+
+	delete liLowOne;
+	delete liLowTwo;
+	delete liHighOne;
+	delete liHighTwo;
+	delete liZ0;
+	delete liZ1;
+	delete liZ2;
+
+	return returnValue;
+}
+*/
 
 
 long long  intSqrt(long long arg){
@@ -895,121 +1202,161 @@ BigInt sqrt(BigInt n) {
 }
 
 
+BigInt handSqrt(const BigInt& n){
+    BigInt ret;
+    int prefix = 2;
+    int sz = n._digits.size();
+
+    int Carret = n._digits.back();
 
 
-
-#include <fstream>
-
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <stdio.h>
-using namespace std;
-
-
-
-void preRun(){
-
-    ifstream std_file_ifstream("input.txt");
-    ofstream std_file_ofstream("output.txt");
-    if ( std_file_ifstream.fail() == 0 ){
-        cout << "INPUT_FILE_EXISTS" << endl;
-        freopen("input.txt", "r", stdin);
-    }else{
-        cout << "INPUT FILE WAS NOT FOUND";
+    if (sz % 2 == 0){
+        Carret *= n.BASE;
+        Carret += n._digits[sz - 2];
+        prefix++;
     }
 
-    ///print_state(cout);
-    /*
-    string a;
-    try{
-        cin >> a;
-    }
-    catch( ... ){
-        cout << "Oops..";
-    }
-    */
-}
+    ret._digits.resize(1 + (sz - prefix + 1)/2);
 
-class PreLauncher{
-public:
+    int curDigit = intSqrt(Carret);
+    cout << "iSQRT : " << curDigit << endl;
+    ret._digits.back() = curDigit;
+    Carret = Carret - curDigit*curDigit;
 
-    void (*destruct_f)();
 
-    PreLauncher(void (*func)(),void (*endel)()){
-        destruct_f = endel;
-        func();
-    }
+    cout << "Carret : "<< Carret << endl;
+    /// A = two_first_digits - ret*currDigit
+    BigInt A = Carret;
 
-    ~PreLauncher()
+
+    for (int i = sz-prefix;i>=0;i-=2)
     {
-        destruct_f();
-    }
-};
+        A._double_shift_right();
+        A._digits[0] = n._digits[i - 1];
+        A._digits[1] = n._digits[i];
 
-void post_launching2(){
-    cout << "after launch" << endl;
+        Carret *= n.BASE;
+        Carret += n._digits[i];
+
+        Carret *= n.BASE;
+        Carret += n._digits[i - 1];
+
+        /// curDigit = A/a      intSqrt()
+
+        /*
+        cout << "Carret : "<< Carret << endl;
+        ret._digits[i / 2] = iSqrt_;
+        cout << "i : " << i/2 << endl;
+        Carret -= iSqrt_*iSqrt_;
+        cout << "Carret : "<< Carret << endl;
+
+        A -= a * curDigit;
+        */
+    }
+
+    return ret;
+}
+
+
+BigInt algoSqrt(const BigInt& n){
+    BigInt ret;
+    int prefix = 2;
+    int sz = n._digits.size();
+
+    int Carret = n._digits.back();
+
+
+    if (sz % 2 == 0){
+        Carret *= n.BASE;
+        Carret += n._digits[sz - 2];
+        prefix++;
+    }
+
+    ///ret._digits.resize(1 + (sz - prefix + 1)/2);
+
+    int curDigit = intSqrt(Carret);
+    cout << "iSQRT : " << curDigit << endl;
+    ///ret._digits.back() = curDigit;
+
+    ret = curDigit;
+
+    Carret = Carret - curDigit*curDigit;
+
+
+    cout << "Carret : "<< Carret << endl;
+    /// A = two_first_digits - ret*currDigit
+    BigInt A = Carret, a;
+
+    for (int i = sz-prefix;i>=0;i-=2)
+    {
+
+        cout << "i : " << i << endl;
+
+        A._double_shift_right();
+
+        A._digits[0] = n._digits[i - 1];
+        A._digits[1] = n._digits[i];
+        cout <<"ABef : " <<A << endl;
+
+        a = ret * 2;
+
+
+        cout << A << " " << a << endl;
+
+        curDigit = sqrt(A / a)._digits[0]; ///(g. div)
+
+        cout << curDigit << endl;
+
+        ret._shift_right();
+        ret._digits[0] = curDigit;
+
+        a._shift_right();
+        a._digits[0] = curDigit;
+        cout << "A1 " << A << endl;
+        A -= a*curDigit;
+        cout << "A2 " << A << endl;
+    }
+    return ret;
 }
 
 
 
-///PreLauncher __Dorty_Pre_Launch([]() -> void {cout << "abobus" << endl;});
-PreLauncher __Dorty_Pre_Launch(preRun,post_launching2);
+
+
+
+
+#define file_read 1
+
 
 
 int main()
 {
 
-    stringstream ss;
-    ss << "123 22";
+    #if file_read
 
+    freopen ("input.txt","r",stdin);
 
-    ///std::streambuf *cinbuf = std::cin.rdbuf(); //save old buf
-    cin.rdbuf(ss.rdbuf());
+    #endif // file_read
      
-    int a;
-    cout << "here" << endl;
+
+    BigInt a,b,c;
+
     cin >> a;
-    cout << "cinned" << endl;
-    cout << factorial(a) << endl;
 
+    for (int i = 0;i<1000000000;++i){
 
+    }
 
-    //ifstream fin("input.txt");
-	//ofstream fout("output.txt");
+    for(int i = 0;i<100;++i){
+        //c = k_mul(a,a);
+    }
+
+    ///a = k_mul(a,b);
+
+    //a += 1;
+    //fout << c << " " << a - b*c;
+
     return 0;
-
-    //BigInt a(-13);
-
-    //a -= BigInt(-15);
-
-    //cout << a << endl;
-    //int b;
-    //cin >> b;
-
-
-
-    //for(int test = 0;test < 100000; test++){
-
-        //BigInt a(test);
-        //if (test % 10000 == 0){cout << "test : " << test << endl;}
-        //if (sqrt(a) != BigInt(intSqrt(test))){
-        //    cout << test << " " << sqrt(a) << " " << test << " " << intSqrt(test) <<endl;
-        //}
-    //}
-
-
-
-	//BigInt n1;
-	//fin >> n1;
-
-
-
-  //BigInt ans = sqrt(n1);
-  //cout << "CALCULATED" << endl;
-  //fout << ans << endl << n1 - ans * ans;
-
-  //1return 0;
 }
 
 

@@ -25,10 +25,9 @@ void BigInt::_mult(const int number){
 }
 
 // домножает текущее число на указанное
-void BigInt::operator *=(int number) {
+void BigInt::operator *=(const int number) {
     _is_negative ^= (number<0);
-    number = abs(number);
-    _mult(number);
+    _mult(abs(number));
 }
 
 const BigInt operator *(BigInt bi, int number){
@@ -40,16 +39,18 @@ const BigInt operator *(BigInt bi, int number){
 const BigInt operator *(const BigInt& left, const BigInt& right) {
     //cout << "called y" << endl;
 	BigInt result;
-	result._digits.resize(left._digits.size() + right._digits.size());
-	for (size_t i = 0; i < left._digits.size(); ++i) {
-		int carry = 0;
-		for (size_t j = 0; j < right._digits.size() || carry != 0; ++j) {
-			long long cur = result._digits[i + j] +
-				left._digits[i] * 1LL * (j < right._digits.size() ? right._digits[j] : 0) + carry;
-			result._digits[i + j] = static_cast<int>(cur % left.BASE);
-			carry = static_cast<int>(cur / left.BASE);
-		}
-	}
+	int n = left._digits.size(), m = right._digits.size();
+	result._digits.resize(n + m);
+	for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < m; ++j) {
+                CONT_TYPE& pts = result._digits[i + j]; /// такая передача по ссылке чуть-чуть ускоряет умножение
+                pts += left._digits[i]*right._digits[i];
+                if (pts >= left.BASE){
+                    pts -= left.BASE;
+                    ++result._digits[i + j + 1];
+                }
+            }
+        }
 
 	result._is_negative = left._is_negative != right._is_negative;
 	result._remove_leading_zeros();
