@@ -60,17 +60,12 @@ for (int i = 0; i < NMAX; ++i) {
 */
 
 namespace {
-    template<int n, int m, int BASE, typename T>
+    template<int n, typename T>
     void mult(const T *__restrict a, const T *__restrict b, T *__restrict res) {
         if (n <= 4) {
-            for (int i = 0; i < n; ++i) {
-                for (int j = 0; j < m; ++j) {
-                    T& pts = res[i + j];
-                    pts += a[i]*b[i];
-                    if (pts >= BASE){
-                        pts -= BASE;
-                        ++res[i+j+1];
-                    }
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    res[i + j] += a[i] * b[j];
                 }
             }
         } else {
@@ -111,7 +106,7 @@ int main() {
             c[2 * i + 1] = 0;
     }
 
-    /// max num in container ==
+
 
     for(int k = 0;k<1000;++k){
         c = new ll[sz_2];
@@ -128,7 +123,7 @@ int main() {
         }
         */
 
-        mult<NMAX, NMAX, BASE>(a,b,c);
+        mult<NMAX>(a,b,c);
     }
     ll sum = 0;
 
