@@ -59,17 +59,23 @@ for (int i = 0; i < NMAX; ++i) {
 
 */
 
+/// n >= m
 namespace {
-    template<int n, typename T>
+    template<int n, int m, int BASE, typename T>
     void mult(const T *__restrict a, const T *__restrict b, T *__restrict res) {
         if (n <= 4) {
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    res[i + j] += a[i] * b[j];
+            for (int i = 0; i < n; ++i) {
+                for (int j = 0; j < m; ++j) {
+                    T& pts = res[i + j];
+                    pts += a[i]*b[i];
+                    if (pts >= BASE){
+                        pts -= BASE;
+                        ++res[i+j+1];
+                    }
                 }
             }
         } else {
-            const int mid = n / 2;
+            const int mid_up = n / 2;
             alignas(align) T* btmp = new T[n], E[n] = {};
             auto atmp = btmp + mid;
             for (int i = 0; i < mid; i++) {
@@ -123,7 +129,7 @@ int main() {
         }
         */
 
-        mult<NMAX>(a,b,c);
+        mult<NMAX, NMAX, BASE>(a,b,c);
     }
     ll sum = 0;
 
