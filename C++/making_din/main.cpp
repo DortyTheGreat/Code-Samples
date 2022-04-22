@@ -26,11 +26,17 @@ int main()
     #endif // file_read
     AppBuild();
 
-    BigUnsigned a(""),b,c;
+    BigUnsigned a,b,c;
 
-    cin >> a >> b;
+    cin >> a;
+    ///cout << a <<endl;
+    ///cout << a << " " << b << endl;
 
-    cout << a << " " << b << endl;
+    for(int i = 0;i<1000;++i){
+        x_mul(a,a);
+    }
+
+    ///cout << x_mul(a,a);
 
 
     //cin >> a;

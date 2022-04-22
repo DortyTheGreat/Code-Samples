@@ -1,5 +1,44 @@
+/**
 
+Оператор полного присваивания (копирования). Дольше, чем ->
 
+Придётся ещё ебаться с нулями, которые могут лежать в памяти(точнее как раз не лежать в памяти)
+
+Есть 2 варианта
+
+1) Всё-таки заполнять нулями
+2) Ебаться отдельно во всех других функциях.
+
+*/
+void BigUnsigned::operator =(const BigUnsigned& bu){
+    if (bu.real_size > alloc_size){
+        alloc_size = next_power_of_two(bu.real_size);
+        _digits = new CONT_TYPE[alloc_size]; /// new CONT_TYPE[alloc_size]{0} ИЛИ new CONT_TYPE[alloc_size]()
+    }
+    real_size = bu.real_size;
+    memcpy(_digits,bu._digits,sizeof(CONT_TYPE) * real_size);
+}
+
+void BigUnsigned::alloc_with_zeros(const int sz){
+    alloc_size = sz;
+    _digits = new CONT_TYPE[sz]{0};
+
+}
+
+/**
+
+Тоже самое, что и оператор=, но можно указать количество памяти для аллокации
+
+ПЕРЕПИСАТЬ НА МЕМ_СЕТ http://cppstudio.com/post/673/
+
+*/
+void BigUnsigned::assign_from_BU(const int alloc_space, const BigUnsigned& bu){
+    alloc_with_zeros(alloc_space);
+    real_size = bu.real_size;
+    memcpy(_digits,bu._digits,real_size * sizeof(CONT_TYPE));
+}
+
+/*
 int intlog(double base, double x) {
     return (int)(log(x) / log(base));
 }
@@ -108,6 +147,7 @@ void inline BigInt::_appendZeros(int length){
 const int BigInt::get_real_size() const{
     return (_digits.size()-1)*container_stack + intlog(default_base,_digits[_digits.size() - 1]) + 1;
 }
+*/
 
 
 

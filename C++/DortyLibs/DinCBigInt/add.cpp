@@ -72,9 +72,53 @@ void BigUnsigned::operator +=(const BigUnsigned& right) {
 
 }
 
+/**
+
+ѕрибавл€ет второе число к основному. ќднако оно об€зано помещатьс€ в него.
+
+*/
+void BigUnsigned::_add(const BigUnsigned& right) {
+
+    for(int i = 0;i < right.real_size; ++i){
+        _digits[i] += right._digits[i];
+        if (_digits[i] >= BASE){
+            _digits[i] -= BASE;
+            ++_digits[i + 1];
+        }
+    }
+
+    /// ’очетс€, то, что ниже сделать дл€ флекса, но так тоже +- ничего
+    CONT_TYPE *p = &_digits[right.real_size];
+    while (*p >= BASE){
+        *p -= BASE;
+        ++p;
+        ++(*p);
+    }
+
+
+    /*
+    CONT_TYPE &p = _digits[right.real_size];
+    while (p >= BASE){
+        p -= BASE;
+        (&p)++;
+        ++(p);
+    }
+    */
+
+    /// Ёто тоже следует улучшить
+    real_size = max(real_size, right.real_size);
+    if (real_size != alloc_size){
+        if (_digits[real_size] != 0){
+            ++real_size;
+        }
+    }
+
+
+}
 
 
 
+/*
 /// ¬ерный оператор (с учЄтом знаков и прочего)
 void BigInt::operator-=(BigInt right){
 
@@ -96,6 +140,7 @@ void BigInt::operator-=(BigInt right){
     }
 
 }
+*/
 
 
 
@@ -113,11 +158,32 @@ const BigInt BigInt::operator -() const {
 	return copy;
 }
 */
-// складывает два числа
-const BigInt operator +(BigInt left, const BigInt& right) {
-	left += right;
-	return left;
+
+
+/**
+
+—кладывает и помещает новое число в новое место в пам€ти (веро€тнее всего присваивать его мы захотим через ->)
+
+*/
+const BigUnsigned operator +(const BigUnsigned& left, const BigUnsigned& right) {
+
+    if (left.real_size < right.real_size){
+        return right+left;
+    }
+
+
+
+    BigUnsigned ret;
+    ret.assign_from_BU(left.real_size+1,left);
+
+
+
+
+    ret._add(right);
+
+	return ret;
 }
+
 
 /*
 // префиксный инкремент
@@ -144,12 +210,12 @@ const BigInt BigInt::operator --(int) {
 }
 
 */
-
+/*
 // вычитает два числа
 const BigInt operator -(BigInt left, const BigInt& right) {
 	left -= right;
 	return left;
 }
 
-
+*/
 

@@ -58,9 +58,7 @@ std::istream& operator>>(std::istream& in, BigUnsigned &bi) {
 
     ubi_szt carret_r_sz = stream_.size();
     bi.real_size = (carret_r_sz+cnt_stack-1)/cnt_stack;
-
-
-    bi._digits = new CONT_TYPE[next_power_of_two( bi.real_size)];
+    bi.alloc_with_zeros(next_power_of_two( bi.real_size));
 
     CONT_TYPE Carret;
 

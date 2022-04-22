@@ -35,6 +35,17 @@ int main()
 
     BigUnsigned a,b,c;
 
+    cin >> a;
+    ///cout << a <<endl;
+    ///cout << a << " " << b << endl;
+
+    for(int i = 0;i<1000;++i){
+        x_mul(a,a);
+    }
+
+    ///cout << x_mul(a,a);
+
+
     //cin >> a;
     //for(int i = 0;i<1000;++i){
     //    c = k_mul(a,a);
@@ -72,10 +83,15 @@ using namespace std;
 
 ///#include <bits/stdc++.h>
 
+#include <cstdint> ///
+#include <cstring> /// для memcpy
+
 #define default_base 10
 
 #define CONT_TYPE unsigned int
-#define ubi_szt int /// Unsigned Big Int SiZe Type
+#define DOUBLE_CONT_TYPE unsigned long long /// Двойной РАЗМЕР
+#define ubi_szt int /// Unsigned Big Int SiZe Type, пока обязан быть знаковым -_-
+
 
 #define big_container 1
 
@@ -94,27 +110,37 @@ using namespace std;
 #endif
 
 
-template <const int def_base = default_base, int BASE = total_base, const int container_stack = cnt_stack>
+//template <const int def_base = default_base, int BASE = total_base, const int container_stack = cnt_stack>
 class BigUnsigned{
 private:
     CONT_TYPE* _digits;
-    const int ui = 10;
+    const unsigned int BASE = total_base;
 public:
 
-    ubi_szt size;
+    ubi_szt real_size; /// РЕАЛЬНАЯ Длинна числа
+    ubi_szt alloc_size; /// Для упрощения реализации alloc_size - всегда степень двойка, так можно будет удобно делить массив на две\\четыре равные части.
 
-    BigUnsigned(){
+    BigUnsigned(){}
 
-    cout << ui;
+    /// мемори стафф
+    void alloc_with_zeros(const int sz);
+    void assign_from_BU(const int alloc_space, const BigUnsigned& bu);
 
-    }
+    friend std::ostream& operator << (std::ostream&, const BigUnsigned&);
+	friend std::istream& operator >> (std::istream&, BigUnsigned&);
 
-    //friend std::ostream& operator << < >(std::ostream&, const BigUnsigned&);
-	//friend std::istream& operator >> < >(std::istream&, BigUnsigned&);
+	friend const BigUnsigned operator +(const BigUnsigned&, const BigUnsigned&);
+	void operator +=(const BigUnsigned&);
+
+    friend BigUnsigned x_mul(const BigUnsigned& a, const BigUnsigned& b);
+
+	void operator =(const BigUnsigned&);
+
+	void _add(const BigUnsigned&);
 };
 
 
-
+#include <algorithm> /// для реверса string
 
 char FromIntToChar(int a){
     if (a >= 0 && a <= 10){
@@ -139,21 +165,17 @@ std::ostream& operator <<(std::ostream& os, const BigUnsigned& bi) {
     }
     */
 
-    int sz = bi._digits.size();
-    if (bi._is_negative){os << '-';}
-    int Carret;
+
+
+    CONT_TYPE Carret;
     std::string buff = "";
-    for(int i = 0;i<sz;++i){
+    for(int i = 0;i<bi.real_size;++i){
         Carret = bi._digits[i];
-        for(int j = 0; j < container_stack;++j){
+        for(int j = 0; j < cnt_stack;++j){
             buff += FromIntToChar(Carret % default_base);
             Carret /= default_base;
         }
 
-    }
-
-    while(buff.back() == '0'){
-        buff.pop_back();
     }
 
     reverse(buff.begin(),buff.end());
@@ -161,23 +183,30 @@ std::ostream& operator <<(std::ostream& os, const BigUnsigned& bi) {
 	return os;
 }
 
-std::istream& operator>>(std::istream& in, BigInt &bi) {
+int next_power_of_two(int n) {
+    int i = 0;
+    for (--n; n > 0; n >>= 1) {
+        i++;
+    }
+    return 1 << i;
+}
+
+std::istream& operator>>(std::istream& in, BigUnsigned &bi) {
 
 
     std::string stream_;
     in >> stream_;
 
-    int sz = stream_.size();
-    int rsz = sz;
-    sz = (sz+container_stack-1)/container_stack; /// /= по ceil
-    bi._digits.resize(sz);
+    ubi_szt carret_r_sz = stream_.size();
+    bi.real_size = (carret_r_sz+cnt_stack-1)/cnt_stack;
+    bi.alloc_with_zeros(next_power_of_two( bi.real_size));
 
-    int Carret;
+    CONT_TYPE Carret;
 
-    for(int i = 0;i<sz;++i){
+    for(ubi_szt i = 0;i<bi.real_size;++i){
         Carret = 0;
-        for(int j = 0; j < container_stack;++j){
-            int index = rsz - (i+1)*container_stack + j;
+        for(ubi_szt j = 0; j < cnt_stack;++j){
+            int index = carret_r_sz - (i+1)*cnt_stack + j;
             if (index > -1){
                 Carret *= default_base;
                 Carret += FromCharToInt(stream_[index]);
@@ -187,10 +216,431 @@ std::istream& operator>>(std::istream& in, BigInt &bi) {
         bi._digits[i] = Carret;
     }
 
-    bi._remove_leading_zeros();
+    /// мб тут надо регистрировать "лидирующие" нули, но хз
 
     return in;
 
+}
+
+/*
+/// Сложение двух положительных (исключительно контейнеров)
+void BigInt::_add(const BigInt& right) {
+    size_t extra_size = 1;
+
+    size_t an_sz = right._digits.size();
+
+    if (an_sz > _digits.size()){
+        extra_size = an_sz - _digits.size() + 1;
+    }
+
+    for(size_t i = 0;i < extra_size; i++){
+        _digits.push_back(0);
+    }
+    /// Заполняем контейнер нулями, чтобы было место под новые возможные числа(aka разряды)
+
+    for(size_t i = 0; i < an_sz;i++){
+        _digits[i] += right._digits[i];
+        if (_digits[i] >= BASE){
+            _digits[i] -= BASE;
+            _digits[i+1]++;
+        }
+    }
+
+    while(_digits[an_sz] >= BASE){
+        _digits[an_sz] -= BASE;
+        an_sz++;
+        _digits[an_sz]++;
+    }
+
+
+
+    _remove_leading_zeros();
+}
+
+/// Обработка вычитания двух положительных чисел (работает, если второе меньше первого)
+void BigInt::_subtract(const BigInt &another){
+
+    size_t an_sz = another._digits.size();
+
+    for(size_t i = 0; i < an_sz;i++){
+        _digits[i] -= another._digits[i];
+        if (_digits[i] < 0){
+            _digits[i] += BASE;
+            _digits[i+1]--;
+        }
+    }
+
+    while(_digits[an_sz] < 0){
+        _digits[an_sz] += BASE;
+        an_sz++;
+        _digits[an_sz]--;
+    }
+
+
+
+    _remove_leading_zeros();
+}
+*/
+void BigUnsigned::operator +=(const BigUnsigned& right) {
+    if (right.alloc_size > alloc_size){
+        /// точно переполнение
+        return;
+    }
+
+    if (right.alloc_size < alloc_size){
+        if (_digits[alloc_size - 1] == (BASE-1) ){
+            /// Может произойти переполнение
+        }
+    }
+
+
+}
+
+/**
+
+Прибавляет второе число к основному. Однако оно обязано помещаться в него.
+
+*/
+void BigUnsigned::_add(const BigUnsigned& right) {
+
+    for(int i = 0;i < right.real_size; ++i){
+        _digits[i] += right._digits[i];
+        if (_digits[i] >= BASE){
+            _digits[i] -= BASE;
+            ++_digits[i + 1];
+        }
+    }
+
+    /// Хочется, то, что ниже сделать для флекса, но так тоже +- ничего
+    CONT_TYPE *p = &_digits[right.real_size];
+    while (*p >= BASE){
+        *p -= BASE;
+        ++p;
+        ++(*p);
+    }
+
+
+    /*
+    CONT_TYPE &p = _digits[right.real_size];
+    while (p >= BASE){
+        p -= BASE;
+        (&p)++;
+        ++(p);
+    }
+    */
+
+    /// Это тоже следует улучшить
+    real_size = max(real_size, right.real_size);
+    if (real_size != alloc_size){
+        if (_digits[real_size] != 0){
+            ++real_size;
+        }
+    }
+
+
+}
+
+
+
+/*
+/// Верный оператор (с учётом знаков и прочего)
+void BigInt::operator-=(BigInt right){
+
+    ///std::cout << *this << " " << right << " "<<(compare(*this,right)) << std::endl;
+    bool comp_ = !(compare(*this,right));
+    if ( comp_){
+        ///std::cout << "second is hisher" << std::endl;
+        swap(right,*this);
+        _is_negative = !_is_negative;
+    }
+
+
+    if ( (_is_negative == right._is_negative) ^ (comp_) ) {
+        // Одинаковы по знаку
+        _subtract(right);
+    }else{
+        // Разные по знаку.
+        _add(right);
+    }
+
+}
+*/
+
+
+
+
+
+// возвращает копию переданного числа
+//const BigInt BigInt::operator +() const {
+//	return BigInt(*this);
+//}
+/*
+// возвращает переданное число с другим знаком
+const BigInt BigInt::operator -() const {
+	BigInt copy(*this);
+	copy._is_negative = !copy._is_negative;
+	return copy;
+}
+*/
+
+
+/**
+
+Складывает и помещает новое число в новое место в памяти (вероятнее всего присваивать его мы захотим через ->)
+
+*/
+const BigUnsigned operator +(const BigUnsigned& left, const BigUnsigned& right) {
+
+    if (left.real_size < right.real_size){
+        return right+left;
+    }
+
+
+
+    BigUnsigned ret;
+    ret.assign_from_BU(left.real_size+1,left);
+
+
+
+
+    ret._add(right);
+
+	return ret;
+}
+
+
+/*
+// префиксный инкремент
+const BigInt BigInt::operator++() {
+	return (*this += 1);
+}
+
+// постфиксный инкремент
+const BigInt BigInt::operator ++(int) {
+	*this += 1;
+	return *this - 1;
+}
+
+// префиксный декремент
+const BigInt BigInt::operator --() {
+	return *this -= 1;
+}
+
+
+// постфиксный декремент
+const BigInt BigInt::operator --(int) {
+	*this -= 1;
+	return *this + 1;
+}
+
+*/
+/*
+// вычитает два числа
+const BigInt operator -(BigInt left, const BigInt& right) {
+	left -= right;
+	return left;
+}
+
+*/
+
+
+/**
+
+Оператор полного присваивания (копирования). Дольше, чем ->
+
+Придётся ещё ебаться с нулями, которые могут лежать в памяти(точнее как раз не лежать в памяти)
+
+Есть 2 варианта
+
+1) Всё-таки заполнять нулями
+2) Ебаться отдельно во всех других функциях.
+
+*/
+void BigUnsigned::operator =(const BigUnsigned& bu){
+    if (bu.real_size > alloc_size){
+        alloc_size = next_power_of_two(bu.real_size);
+        _digits = new CONT_TYPE[alloc_size]; /// new CONT_TYPE[alloc_size]{0} ИЛИ new CONT_TYPE[alloc_size]()
+    }
+    real_size = bu.real_size;
+    memcpy(_digits,bu._digits,sizeof(CONT_TYPE) * real_size);
+}
+
+void BigUnsigned::alloc_with_zeros(const int sz){
+    alloc_size = sz;
+    _digits = new CONT_TYPE[sz]{0};
+
+}
+
+/**
+
+Тоже самое, что и оператор=, но можно указать количество памяти для аллокации
+
+ПЕРЕПИСАТЬ НА МЕМ_СЕТ http://cppstudio.com/post/673/
+
+*/
+void BigUnsigned::assign_from_BU(const int alloc_space, const BigUnsigned& bu){
+    alloc_with_zeros(alloc_space);
+    real_size = bu.real_size;
+    memcpy(_digits,bu._digits,real_size * sizeof(CONT_TYPE));
+}
+
+/*
+int intlog(double base, double x) {
+    return (int)(log(x) / log(base));
+}
+
+// создает длинное целое число со значением 0
+BigInt::BigInt() {
+	this->_is_negative = false;
+}
+
+// создает длинное целое число из C++-строки
+BigInt::BigInt(std::string str) {
+	/// to_do
+}
+
+// сдвигает все разряды на 1 вправо (домножает на BASE)
+void BigInt::_shift_right() {
+
+    /// removed exceptions
+
+	_digits.push_back(_digits[_digits.size() - 1]);
+	for (size_t i = _digits.size() - 2; i > 0; --i) _digits[i] = _digits[i - 1];
+	_digits[0] = 0;
+}
+
+// сдвигает все разряды на 1 вправо (домножает на BASE)
+void BigInt::_double_shift_right() {
+
+    /// removed exceptions
+
+    if (_digits.size() == 1){
+        _digits = {0,0,_digits[0]};
+        return;
+    }
+
+	_digits.push_back(_digits[_digits.size() - 2]);
+	_digits.push_back(_digits[_digits.size() - 2]);
+	for (size_t i = _digits.size() - 3; i > 1; --i) _digits[i] = _digits[i - 2];
+	_digits[0] = 0;
+	_digits[1] = 0;
+}
+
+// удаляет ведущие нули
+void BigInt::_remove_leading_zeros() {
+	while (this->_digits.size() > 1 && this->_digits.back() == 0) {
+		this->_digits.pop_back();
+	}
+
+	if (this->_digits.size() == 1 && this->_digits[0] == 0) this->_is_negative = false;
+}
+
+// преобразует число к строке
+BigInt::operator std::string() const {
+	std::stringstream ss;
+	ss << *this;
+	return ss.str();
+}
+
+BigInt::BigInt(long long num){
+    _is_negative = (num < 0);
+    num = abs(num);
+    while(num != 0){
+        _digits.push_back(num % BASE);
+        num /= BASE;
+    }
+
+    if (_digits.size() == 0){
+        _digits.push_back(0);
+    }
+}
+
+
+BigInt::BigInt(int num){
+    _is_negative = (num < 0);
+    num = abs(num);
+    while(num != 0){
+        _digits.push_back(num % BASE);
+        num /= BASE;
+    }
+
+    if (_digits.size() == 0){
+        _digits.push_back(0);
+    }
+}
+
+// проверяет, является ли текущее число нечетным
+bool BigInt::odd() const {
+	if (this->_digits.size() == 0) return false;
+	return this->_digits[0] & 1;
+}
+
+// проверяет, является ли текущее число четным
+bool BigInt::even() const {
+	return !this->odd();
+}
+
+
+/// [5,4,3,2,1](12345) (length=3)-> [0,0,0,5,4,3,2,1](12345000)
+/// Следует Улучшить. Ужасно плохо реализованно
+void inline BigInt::_appendZeros(int length){
+    std::vector<CONT_TYPE> v1(length);
+    std::vector<CONT_TYPE> tmp = _digits;
+    _digits.clear();
+    std::merge(v1.begin(), v1.end(), tmp.begin(), tmp.end(), std::back_inserter(_digits));
+}
+
+const int BigInt::get_real_size() const{
+    return (_digits.size()-1)*container_stack + intlog(default_base,_digits[_digits.size() - 1]) + 1;
+}
+*/
+
+
+
+
+/* Grade school multiplication, ignoring the signs.
+ * Returns the absolute value of the product, or NULL if error.
+ */
+ /// Алгоритм Школьного Умножения (взято с доков Питона -> см. https://hg.python.org/cpython/file/b514339e41ef/Objects/longobject.c#l2694)
+ /// Не работает правильно с нулём
+BigUnsigned
+x_mul(const BigUnsigned& a, const BigUnsigned& b)
+{
+    BigUnsigned z;
+    const ubi_szt size_a = a.real_size;
+    const ubi_szt size_b = b.real_size;
+    ubi_szt i;
+    z.alloc_with_zeros(size_a + size_b);
+
+
+
+    ///memset(z->ob_digit, 0, Py_SIZE(z) * sizeof(digit));
+
+    for (i = 0; i < size_a; ++i) {
+        DOUBLE_CONT_TYPE carry = 0;
+        DOUBLE_CONT_TYPE f = a._digits[i];
+        CONT_TYPE *pz = z._digits + i;
+        CONT_TYPE *pb = b._digits;
+        CONT_TYPE *pbend = b._digits + size_b;
+
+        /// SIGCHECK ???
+
+        while (pb < pbend) {
+            carry += *pz + *pb++ * f;
+            *pz++ = (CONT_TYPE)(carry % a.BASE);
+            carry /= a.BASE;
+        }
+        if (carry)
+            *pz += (CONT_TYPE)(carry % a.BASE);
+    }
+
+    if (z._digits[z.alloc_size - 1] == 0){
+         z.real_size = z.alloc_size - 1;
+    }else{
+         z.real_size = z.alloc_size;
+    }
+
+    return z;
 }
 
 
@@ -214,6 +664,17 @@ int main()
      
 
     BigUnsigned a,b,c;
+
+    cin >> a;
+    ///cout << a <<endl;
+    ///cout << a << " " << b << endl;
+
+    for(int i = 0;i<1000;++i){
+        x_mul(a,a);
+    }
+
+    ///cout << x_mul(a,a);
+
 
     //cin >> a;
     //for(int i = 0;i<1000;++i){
