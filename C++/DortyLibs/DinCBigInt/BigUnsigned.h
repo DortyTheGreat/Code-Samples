@@ -53,7 +53,7 @@ public:
 	friend const BigUnsigned operator +(const BigUnsigned&, const BigUnsigned&);
 	void operator +=(const BigUnsigned&);
 
-    static BigUnsigned * x_mul( BigUnsigned * a, BigUnsigned * b);
+    friend BigUnsigned x_mul(const BigUnsigned& a,const BigUnsigned& b);
 
 	void operator =(const BigUnsigned&);
 
