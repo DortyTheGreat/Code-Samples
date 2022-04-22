@@ -42,7 +42,7 @@ int main()
     ///cout << a << " " << b << endl;
 
     for(int i = 0;i<1000;++i){
-        x_mul(a,a);
+        BigUnsigned::x_mul(&a,&a);
         //a._add(b);
     }
 
@@ -135,7 +135,7 @@ public:
 	friend const BigUnsigned operator +(const BigUnsigned&, const BigUnsigned&);
 	void operator +=(const BigUnsigned&);
 
-    friend BigUnsigned x_mul(const BigUnsigned& a, const BigUnsigned& b);
+    static BigUnsigned * x_mul( BigUnsigned * a, BigUnsigned * b);
 
 	void operator =(const BigUnsigned&);
 
@@ -606,16 +606,19 @@ const int BigInt::get_real_size() const{
  */
  /// Алгоритм Школьного Умножения (взято с доков Питона -> см. https://hg.python.org/cpython/file/b514339e41ef/Objects/longobject.c#l2694)
  /// Не работает правильно с нулём
-BigUnsigned
-x_mul(const BigUnsigned& a, const BigUnsigned& b)
+BigUnsigned *
+BigUnsigned::x_mul( BigUnsigned * a, BigUnsigned * b)
 {
-    BigUnsigned z;
-    const ubi_szt size_a = a.real_size;
-    const ubi_szt size_b = b.real_size;
+    //cout << "HERE" << endl;
+    BigUnsigned* z = new BigUnsigned;
+    //cout << "HERE" << endl;
+    const ubi_szt size_a = a->real_size;
+    const ubi_szt size_b = b->real_size;
 
-    static const CONT_TYPE BASE = a.BASE;
-
-    z.alloc_with_zeros(size_a + size_b);
+    static const CONT_TYPE BASE = a->BASE;
+    //cout << "HERE" << endl;
+    z->alloc_with_zeros(size_a + size_b);
+    //cout << "HERE" << endl;
 
     ubi_szt i;
 
@@ -624,26 +627,26 @@ x_mul(const BigUnsigned& a, const BigUnsigned& b)
 
     for (i = 0; i < size_a; ++i) {
         DOUBLE_CONT_TYPE carry = 0;
-        DOUBLE_CONT_TYPE f = a._digits[i];
-        CONT_TYPE *pz = z._digits + i;
-        CONT_TYPE *pb = b._digits;
-        CONT_TYPE *pbend = b._digits + size_b;
+        DOUBLE_CONT_TYPE f = a->_digits[i];
+        CONT_TYPE *pz = z->_digits + i;
+        CONT_TYPE *pb = b->_digits;
+        CONT_TYPE *pbend = b->_digits + size_b;
 
         /// SIGCHECK ???
 
         while (pb < pbend) {
             carry += *pz + *pb++ * f;
-            *pz++ = (CONT_TYPE)(carry % a.BASE);
-            carry /= a.BASE;
+            *pz++ = (CONT_TYPE)(carry % BASE);
+            carry /= BASE;
         }
         if (carry)
-            *pz += (CONT_TYPE)(carry % a.BASE);
+            *pz += (CONT_TYPE)(carry % BASE);
     }
 
-    if (z._digits[z.alloc_size - 1] == 0){
-         z.real_size = z.alloc_size - 1;
+    if (z->_digits[z->alloc_size - 1] == 0){
+         z->real_size = z->alloc_size - 1;
     }else{
-         z.real_size = z.alloc_size;
+         z->real_size = z->alloc_size;
     }
 
     return z;
@@ -724,7 +727,7 @@ int main()
     ///cout << a << " " << b << endl;
 
     for(int i = 0;i<1000;++i){
-        x_mul(a,a);
+        BigUnsigned::x_mul(&a,&a);
         //a._add(b);
     }
 

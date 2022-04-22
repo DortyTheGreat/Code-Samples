@@ -35,7 +35,7 @@ int main()
     ///cout << a << " " << b << endl;
 
     for(int i = 0;i<1000;++i){
-        x_mul(a,a);
+        BigUnsigned::x_mul(&a,&a);
         //a._add(b);
     }
 
