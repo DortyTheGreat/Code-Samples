@@ -54,6 +54,7 @@ public:
 	void operator +=(const BigUnsigned&);
 
     friend BigUnsigned x_mul(const BigUnsigned& a,const BigUnsigned& b);
+    friend BigUnsigned k_mul(const BigUnsigned& left,const BigUnsigned& right);
 
 	void operator =(const BigUnsigned&);
 
