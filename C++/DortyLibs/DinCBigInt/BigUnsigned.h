@@ -35,7 +35,7 @@
 class BigUnsigned{
 private:
     CONT_TYPE* _digits;
-    const unsigned int BASE = total_base;
+    static const unsigned int BASE = total_base;
 public:
 
     ubi_szt real_size; /// –≈јЋ№Ќјя ƒлинна числа

@@ -36,11 +36,14 @@ int main()
     BigUnsigned a,b,c;
 
     cin >> a;
+    b = a;
+    b.real_size -= 100;
     ///cout << a <<endl;
     ///cout << a << " " << b << endl;
 
     for(int i = 0;i<1000;++i){
         x_mul(a,a);
+        //a._add(b);
     }
 
     ///cout << x_mul(a,a);
@@ -114,7 +117,7 @@ using namespace std;
 class BigUnsigned{
 private:
     CONT_TYPE* _digits;
-    const unsigned int BASE = total_base;
+    static const unsigned int BASE = total_base;
 public:
 
     ubi_szt real_size; /// –≈јЋ№Ќјя ƒлинна числа
@@ -609,9 +612,12 @@ x_mul(const BigUnsigned& a, const BigUnsigned& b)
     BigUnsigned z;
     const ubi_szt size_a = a.real_size;
     const ubi_szt size_b = b.real_size;
-    ubi_szt i;
+
+    static const CONT_TYPE BASE = a.BASE;
+
     z.alloc_with_zeros(size_a + size_b);
 
+    ubi_szt i;
 
 
     ///memset(z->ob_digit, 0, Py_SIZE(z) * sizeof(digit));
@@ -644,6 +650,52 @@ x_mul(const BigUnsigned& a, const BigUnsigned& b)
 }
 
 
+/* A helper for Karatsuba multiplication (k_mul).
+   Takes a long "n" and an integer "size" representing the place to
+   split, and sets low and high such that abs(n) == (high << size) + low,
+   viewing the shift as being by digits.  The sign bit is ignored, and
+   the return values are >= 0.
+   Returns 0 on success, -1 on failure.
+*/
+/**
+/// бла-бла-бла. ѕитоновцы придумали конечно...
+static int
+kmul_split(BigUnsigned *n,
+           ubi_szt size,
+           BigUnsigned **high,
+           BigUnsigned **low)
+{
+    BigUnsigned *hi, *lo;
+    ubi_szt size_lo, size_hi;
+    const ubi_szt size_n = n.real_size;
+
+    size_lo = MIN(size_n, size);
+    size_hi = size_n - size_lo;
+
+    if ((hi = _PyLong_New(size_hi)) == NULL)
+        return -1;
+    if ((lo = _PyLong_New(size_lo)) == NULL) {
+        Py_DECREF(hi);
+        return -1;
+    }
+
+    memcpy(lo->ob_digit, n->ob_digit, size_lo * sizeof(digit));
+    memcpy(hi->ob_digit, n->ob_digit + size_lo, size_hi * sizeof(digit));
+
+    *high = long_normalize(hi);
+    *low = long_normalize(lo);
+    return 0;
+}
+
+*/
+///static BigUnsigned *k_lopsided_mul(BigUnsigned *a, BigUnsigned *b);
+
+/* Karatsuba multiplication.  Ignores the input signs, and returns the
+ * absolute value of the product (or NULL if error).
+ * See Knuth Vol. 2 Chapter 4.3.3 (Pp. 294-295).
+ */
+
+
 
 
 
@@ -666,11 +718,14 @@ int main()
     BigUnsigned a,b,c;
 
     cin >> a;
+    b = a;
+    b.real_size -= 100;
     ///cout << a <<endl;
     ///cout << a << " " << b << endl;
 
     for(int i = 0;i<1000;++i){
         x_mul(a,a);
+        //a._add(b);
     }
 
     ///cout << x_mul(a,a);

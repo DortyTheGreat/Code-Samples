@@ -29,11 +29,14 @@ int main()
     BigUnsigned a,b,c;
 
     cin >> a;
+    b = a;
+    b.real_size -= 100;
     ///cout << a <<endl;
     ///cout << a << " " << b << endl;
 
     for(int i = 0;i<1000;++i){
         x_mul(a,a);
+        //a._add(b);
     }
 
     ///cout << x_mul(a,a);
