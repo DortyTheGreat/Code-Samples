@@ -203,6 +203,9 @@ std::ostream& operator <<(std::ostream& os, const BigUnsigned& bi) {
     }
 
     reverse(buff.begin(),buff.end());
+    if (buff.empty()){
+        buff = "0";
+    }
     os << buff;
 	return os;
 }
@@ -808,7 +811,7 @@ BigUnsigned k_mul(const BigUnsigned& left,const BigUnsigned& right) {
 */
 
 void mult(const CONT_TYPE *__restrict a, CONT_TYPE *__restrict b, CONT_TYPE *__restrict res, const ubi_szt n) {
-    cout << "ss" <<endl;
+
     if (n <= KAR_TRESH) {
 
             /*
@@ -820,24 +823,22 @@ void mult(const CONT_TYPE *__restrict a, CONT_TYPE *__restrict b, CONT_TYPE *__r
         */
 
         x_mul(a,b,res,n);
-        cout << "e" <<endl;
 
 
     } else {
-        cout << "go h" << endl;
+
         const ubi_szt fh = (n+1) / 2;   // First half Data (take more)
         const ubi_szt sh = (n - fh); // Second half of Data
 
-        cout << "ememd" << " " << fh << endl;
+
 
         /// alignas(align) ???
 
-        cout << "+1 " << fh+1 << endl;
 
         CONT_TYPE* first = new CONT_TYPE[fh + 1];
-        cout << "here" << endl;
+
          first[fh] = 0;
-        cout << "here" << endl;
+
         CONT_TYPE* second = new CONT_TYPE[fh + 1]; second[fh] = 0;
 
 
@@ -880,33 +881,25 @@ void mult(const CONT_TYPE *__restrict a, CONT_TYPE *__restrict b, CONT_TYPE *__r
         mult(a + 0, b + 0, res, fh);
         mult(a + fh, b + fh, res + fh*2, sh);
         CONT_TYPE * we_need_to_optimize_memory = new CONT_TYPE[2* (fh + 1)]{0};
-        cout << "first & second : " << endl;
 
-        for(int i =0 ;i<fh + 1;++i){
-            cout << first[i] << " ";
-        }
-        cout << endl;
 
         mult(first, second, we_need_to_optimize_memory, fh + 1);
 
         for(ubi_szt i = 0; i < 2 * sh; ++i){
-            cout << we_need_to_optimize_memory[i] << " <- b4" << endl;
+
             we_need_to_optimize_memory[i] -= (res[i] + res[2 * fh + i]);
-            cout << "f : " << res[i] << endl;
-            cout << "s : " << res[2 * fh + i] << endl;
-            cout << we_need_to_optimize_memory[i] << " <- after" << endl;
+
         }
-        cout << endl;
+
         if (sh != fh){
-                cout << "here" << endl;
-            cout << sh << " " << fh << endl;
+
             we_need_to_optimize_memory[2 * sh] -= res[2 * sh];
             we_need_to_optimize_memory[2 * sh + 1] -= res[2 * sh + 1];
         }
 
         /// Это тоже ужасное вычитание !!
         for(ubi_szt i = 0; i < 2 * fh + 2;++i){
-            cout << we_need_to_optimize_memory[i] << " ";
+
             res[fh + i] += we_need_to_optimize_memory[i];
             if (res[fh + i]  >= BASE){
                 res[fh + i] -= BASE;
@@ -919,7 +912,6 @@ void mult(const CONT_TYPE *__restrict a, CONT_TYPE *__restrict b, CONT_TYPE *__r
             }
         }
 
-        cout << endl;
 
 
 
@@ -937,6 +929,8 @@ void mult(const CONT_TYPE *__restrict a, CONT_TYPE *__restrict b, CONT_TYPE *__r
 
 
 /// Пока Карацуба Думает, что у чисел одинаковый размер
+
+/// Не до конца доделано, размер real_size обкуренный -> при умножении на нуль делает Пиво
 BigUnsigned karatsuba(BigUnsigned& left, BigUnsigned& right){
     /// Если правый больше -> тогда результат будет меньше требуемого
     if (left.alloc_size < right.real_size){
@@ -957,14 +951,13 @@ BigUnsigned karatsuba(BigUnsigned& left, BigUnsigned& right){
         //cout << right << endl;
     }
 
-    cout << left.alloc_size << " " << right.alloc_size << endl;
-    cout << left.real_size << " " << right.real_size << endl;
+
 
 
 
     BigUnsigned res;
     res.alloc_with_zeros(2 * max(left.real_size,right.real_size));
-    cout << "called mult" <<endl;
+
     mult(left._digits,right._digits,res._digits,max(left.real_size,right.real_size));
 
 

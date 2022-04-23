@@ -43,6 +43,9 @@ std::ostream& operator <<(std::ostream& os, const BigUnsigned& bi) {
     }
 
     reverse(buff.begin(),buff.end());
+    if (buff.empty()){
+        buff = "0";
+    }
     os << buff;
 	return os;
 }
