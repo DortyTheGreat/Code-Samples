@@ -218,13 +218,13 @@ void mult(const CONT_TYPE *__restrict a, CONT_TYPE *__restrict b, CONT_TYPE *__r
 
 
 
-        memcpy(first,a,fh);
-        memcpy(second,b,fh);
+        memcpy(first,a,fh * sizeof(CONT_TYPE));
+        memcpy(second,b,fh * sizeof(CONT_TYPE));
 
 
 
         /// Сто проц можно ускорить сложение
-        for (int i = 0; i < sh; i++) {
+        for (ubi_szt i = 0; i < sh; i++) {
             first[i] += a[i + fh];
 
             if (first[i] >= BASE){
@@ -255,8 +255,54 @@ void mult(const CONT_TYPE *__restrict a, CONT_TYPE *__restrict b, CONT_TYPE *__r
 
         mult(a + 0, b + 0, res, fh);
         mult(a + fh, b + fh, res + fh*2, sh);
+        CONT_TYPE * we_need_to_optimize_memory = new CONT_TYPE[2* (fh + 1)]{0};
+        cout << "first & second : " << endl;
 
-        mult(first, second, res + fh + 1, fh + 1);
+        for(int i =0 ;i<fh + 1;++i){
+            cout << first[i] << " ";
+        }
+        cout << endl;
+
+        mult(first, second, we_need_to_optimize_memory, fh + 1);
+
+        for(ubi_szt i = 0; i < 2 * sh; ++i){
+            cout << we_need_to_optimize_memory[i] << " <- b4" << endl;
+            we_need_to_optimize_memory[i] -= (res[i] + res[2 * fh + i]);
+            cout << "f : " << res[i] << endl;
+            cout << "s : " << res[2 * fh + i] << endl;
+            cout << we_need_to_optimize_memory[i] << " <- after" << endl;
+        }
+        cout << endl;
+        if (sh != fh){
+                cout << "here" << endl;
+            cout << sh << " " << fh << endl;
+            we_need_to_optimize_memory[2 * sh] -= res[2 * sh];
+            we_need_to_optimize_memory[2 * sh + 1] -= res[2 * sh + 1];
+        }
+
+        /// Это тоже ужасное вычитание !!
+        for(ubi_szt i = 0; i < 2 * fh + 2;++i){
+            cout << we_need_to_optimize_memory[i] << " ";
+            res[fh + i] += we_need_to_optimize_memory[i];
+            if (res[fh + i]  >= BASE){
+                res[fh + i] -= BASE;
+                ++res[fh + 1 + i];
+            }else{
+                while (res[fh + i]  < 0){
+                    res[fh + i] += BASE;
+                    --res[fh + 1 + i];
+                }
+            }
+        }
+
+        cout << endl;
+
+
+
+
+
+        /// Не забыть не только отпимизирвать память, но и размеры
+
 
 
     }
@@ -293,7 +339,7 @@ BigUnsigned karatsuba(BigUnsigned& left, BigUnsigned& right){
 
 
     BigUnsigned res;
-    res.alloc_with_zeros(left.real_size + right.real_size);
+    res.alloc_with_zeros(2 * max(left.real_size,right.real_size));
     cout << "called mult" <<endl;
     mult(left._digits,right._digits,res._digits,max(left.real_size,right.real_size));
 

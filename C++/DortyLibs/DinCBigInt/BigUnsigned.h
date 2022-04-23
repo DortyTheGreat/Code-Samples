@@ -9,8 +9,8 @@
 
 #define default_base 10
 
-#define CONT_TYPE unsigned int
-#define DOUBLE_CONT_TYPE unsigned long long /// Двойной РАЗМЕР
+#define CONT_TYPE int
+#define DOUBLE_CONT_TYPE long long /// Двойной РАЗМЕР
 #define ubi_szt int /// Unsigned Big Int SiZe Type, пока обязан быть знаковым -_-
 
 

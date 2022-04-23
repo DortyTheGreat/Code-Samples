@@ -21,7 +21,7 @@ int main()
 
     #if file_read
 
-    freopen ("break.txt","r",stdin);
+    ///freopen ("break.txt","r",stdin);
 
     #endif // file_read
     AppBuild();
