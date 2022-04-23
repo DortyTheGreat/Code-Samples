@@ -21,7 +21,7 @@ int main()
 
     #if file_read
 
-    ///freopen ("break.txt","r",stdin);
+    ///freopen ("million.txt","r",stdin);
 
     #endif // file_read
     AppBuild();
@@ -29,22 +29,27 @@ int main()
     BigUnsigned a,b,c;
 
     cin >> a >> b;
+    ///b = a;
     //cout << a <<endl;
     ///cout << a << " " << b << endl;
 
     ///c.alloc_with_zeros(1000);
 
+    /// 100k memcpy of 100k ints (aka 1 million decimal places) in 5 s
+    /// -> 100 allocs in 5 ms
+    /// -> 1 alloc in 0.05 ms (INSANELY QUICKLY!)
     for(int i = 0;i<1;++i){
 
-
-
-         cout << karatsuba(a,b);
+        ///b = a;
+        //CONT_TYPE * d = new CONT_TYPE[100000];
+        cout << karatsuba(a,b);
 
 
 
         ///x_mul(a,a);
 
     }
+
 
 
 

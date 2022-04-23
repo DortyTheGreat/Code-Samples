@@ -85,7 +85,7 @@ void x_mul(const CONT_TYPE *__restrict a, CONT_TYPE *__restrict b, CONT_TYPE *__
 
 }
 
-#define KAR_TRESH 5
+#define KAR_TRESH 20
 /*
 BigUnsigned k_mul(const BigUnsigned& left,const BigUnsigned& right) {
 
@@ -180,6 +180,14 @@ BigUnsigned k_mul(const BigUnsigned& left,const BigUnsigned& right) {
 поместить результат умножени€ (место должо быть заранее выделено и заполнено нул€ми)
 
 (вообще он в третий контейнер как бы добавл€ет числа, так что если надо добавл€ть то милости прошу, эта  арацуба это по факту и делает)
+
+TO-DO:
+
+1) —жатие пам€ти в одну переменную (вместо двух)
+2) ...
+3) ѕочинить "растущие" размеры
+4) починить долгий минус
+
 
 */
 
@@ -290,6 +298,7 @@ void mult(const CONT_TYPE *__restrict a, CONT_TYPE *__restrict b, CONT_TYPE *__r
 
 
 
+
         /// Ќе забыть не только отпимизирвать пам€ть, но и размеры
 
 
@@ -330,7 +339,6 @@ BigUnsigned karatsuba(BigUnsigned& left, BigUnsigned& right){
 
     BigUnsigned res;
     res.alloc_with_zeros(2 * max(left.real_size,right.real_size));
-
     mult(left._digits,right._digits,res._digits,max(left.real_size,right.real_size));
 
 

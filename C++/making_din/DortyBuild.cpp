@@ -28,7 +28,7 @@ int main()
 
     #if file_read
 
-    ///freopen ("break.txt","r",stdin);
+    ///freopen ("million.txt","r",stdin);
 
     #endif // file_read
     AppBuild();
@@ -36,22 +36,27 @@ int main()
     BigUnsigned a,b,c;
 
     cin >> a >> b;
+    ///b = a;
     //cout << a <<endl;
     ///cout << a << " " << b << endl;
 
     ///c.alloc_with_zeros(1000);
 
+    /// 100k memcpy of 100k ints (aka 1 million decimal places) in 5 s
+    /// -> 100 allocs in 5 ms
+    /// -> 1 alloc in 0.05 ms (INSANELY QUICKLY!)
     for(int i = 0;i<1;++i){
 
-
-
-         cout << karatsuba(a,b);
+        ///b = a;
+        //CONT_TYPE * d = new CONT_TYPE[100000];
+        cout << karatsuba(a,b);
 
 
 
         ///x_mul(a,a);
 
     }
+
 
 
 
@@ -105,7 +110,7 @@ using namespace std;
 #define ubi_szt int /// Unsigned Big Int SiZe Type, пока об€зан быть знаковым -_-
 
 
-#define big_container 0
+#define big_container 1
 
 #if big_container
 
@@ -712,7 +717,7 @@ void x_mul(const CONT_TYPE *__restrict a, CONT_TYPE *__restrict b, CONT_TYPE *__
 
 }
 
-#define KAR_TRESH 5
+#define KAR_TRESH 20
 /*
 BigUnsigned k_mul(const BigUnsigned& left,const BigUnsigned& right) {
 
@@ -807,6 +812,14 @@ BigUnsigned k_mul(const BigUnsigned& left,const BigUnsigned& right) {
 поместить результат умножени€ (место должо быть заранее выделено и заполнено нул€ми)
 
 (вообще он в третий контейнер как бы добавл€ет числа, так что если надо добавл€ть то милости прошу, эта  арацуба это по факту и делает)
+
+TO-DO:
+
+1) —жатие пам€ти в одну переменную (вместо двух)
+2) ...
+3) ѕочинить "растущие" размеры
+4) починить долгий минус
+
 
 */
 
@@ -917,6 +930,7 @@ void mult(const CONT_TYPE *__restrict a, CONT_TYPE *__restrict b, CONT_TYPE *__r
 
 
 
+
         /// Ќе забыть не только отпимизирвать пам€ть, но и размеры
 
 
@@ -957,7 +971,6 @@ BigUnsigned karatsuba(BigUnsigned& left, BigUnsigned& right){
 
     BigUnsigned res;
     res.alloc_with_zeros(2 * max(left.real_size,right.real_size));
-
     mult(left._digits,right._digits,res._digits,max(left.real_size,right.real_size));
 
 
@@ -1025,7 +1038,7 @@ int main()
 
     #if file_read
 
-    ///freopen ("break.txt","r",stdin);
+    ///freopen ("million.txt","r",stdin);
 
     #endif // file_read
      
@@ -1033,22 +1046,27 @@ int main()
     BigUnsigned a,b,c;
 
     cin >> a >> b;
+    ///b = a;
     //cout << a <<endl;
     ///cout << a << " " << b << endl;
 
     ///c.alloc_with_zeros(1000);
 
+    /// 100k memcpy of 100k ints (aka 1 million decimal places) in 5 s
+    /// -> 100 allocs in 5 ms
+    /// -> 1 alloc in 0.05 ms (INSANELY QUICKLY!)
     for(int i = 0;i<1;++i){
 
-
-
-         cout << karatsuba(a,b);
+        ///b = a;
+        //CONT_TYPE * d = new CONT_TYPE[100000];
+        cout << karatsuba(a,b);
 
 
 
         ///x_mul(a,a);
 
     }
+
 
 
 
