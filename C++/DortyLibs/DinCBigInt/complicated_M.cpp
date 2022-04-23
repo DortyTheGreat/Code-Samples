@@ -46,8 +46,47 @@ BigUnsigned x_mul(const BigUnsigned& a,const BigUnsigned& b)
     return z;
 }
 
-#define KAR_TRESH 70
 
+/// это для карацубы, не трогать!
+/**
+
+А вообще это для перемножение двух чисел одинакойо длинны, но сразу через массивы.
+
+*/
+void x_mul(const CONT_TYPE *__restrict a, CONT_TYPE *__restrict b, CONT_TYPE *__restrict res,const ubi_szt n)
+{
+
+    ubi_szt i;
+
+
+
+
+    ///memset(z->ob_digit, 0, Py_SIZE(z) * sizeof(digit));
+
+    for (i = 0; i < n; ++i) {
+        DOUBLE_CONT_TYPE carry = 0;
+        DOUBLE_CONT_TYPE f = a[i];
+        CONT_TYPE *pz = res + i;
+        CONT_TYPE *pb = b;
+        CONT_TYPE *pbend = b + n;
+
+        /// SIGCHECK ???
+
+        while (pb < pbend) {
+            carry += *pz + *pb++ * f;
+            *pz++ = (carry % BASE);
+            carry /= BASE;
+        }
+        if (carry)
+            *pz += (carry % BASE);
+    }
+
+
+
+}
+
+#define KAR_TRESH 5
+/*
 BigUnsigned k_mul(const BigUnsigned& left,const BigUnsigned& right) {
 
 
@@ -130,6 +169,147 @@ BigUnsigned k_mul(const BigUnsigned& left,const BigUnsigned& right) {
     }
 
 }
+*/
+
+
+
+/**
+
+Годная Карацуба.
+Требует: 2 "блока" памяти равной длины, (длину блока соответсвенно тоже требует), и место в памяти, куда
+поместить результат умножения (место должо быть заранее выделено и заполнено нулями)
+
+(вообще он в третий контейнер как бы добавляет числа, так что если надо добавлять то милости прошу, эта Карацуба это по факту и делает)
+
+*/
+
+void mult(const CONT_TYPE *__restrict a, CONT_TYPE *__restrict b, CONT_TYPE *__restrict res, const ubi_szt n) {
+    cout << "ss" <<endl;
+    if (n <= KAR_TRESH) {
+
+            /*
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                res[i + j] += a[i] * b[j];
+            }
+        }
+        */
+
+        x_mul(a,b,res,n);
+        cout << "e" <<endl;
+
+
+    } else {
+        cout << "go h" << endl;
+        const ubi_szt fh = (n+1) / 2;   // First half Data (take more)
+        const ubi_szt sh = (n - fh); // Second half of Data
+
+        cout << "ememd" << " " << fh << endl;
+
+        /// alignas(align) ???
+
+        cout << "+1 " << fh+1 << endl;
+
+        CONT_TYPE* first = new CONT_TYPE[fh + 1];
+        cout << "here" << endl;
+         first[fh] = 0;
+        cout << "here" << endl;
+        CONT_TYPE* second = new CONT_TYPE[fh + 1]; second[fh] = 0;
+
+
+
+        memcpy(first,a,fh);
+        memcpy(second,b,fh);
+
+
+
+        /// Сто проц можно ускорить сложение
+        for (int i = 0; i < sh; i++) {
+            first[i] += a[i + fh];
+
+            if (first[i] >= BASE){
+                first[i] -= BASE;
+                ++first[i+1];
+            }
+
+            second[i] += b[i + fh];
+            if (second[i] >= BASE){
+                second[i] -= BASE;
+                ++second[i+1];
+            }
+        }
+        /// Доп. чек на переволнение последнего контейнера
+        if (first[fh - 1] >= BASE){
+                first[fh - 1] -= BASE;
+                ++first[fh];
+            }
+        if (second[fh - 1] >= BASE){
+            second[fh - 1] -= BASE;
+            ++second[fh];
+        }
+
+
+        //mult(first, second, res + fh, fh + 1);
+        //delete first;
+        //delete second;
+
+        mult(a + 0, b + 0, res, fh);
+        mult(a + fh, b + fh, res + fh*2, sh);
+
+        mult(first, second, res + fh + 1, fh + 1);
+
+
+    }
+
+
+}
+
+
+
+/// Пока Карацуба Думает, что у чисел одинаковый размер
+BigUnsigned karatsuba(BigUnsigned& left, BigUnsigned& right){
+    /// Если правый больше -> тогда результат будет меньше требуемого
+    if (left.alloc_size < right.real_size){
+        CONT_TYPE *remem = left._digits;
+        left.alloc_with_zeros(right.real_size);
+
+        memcpy(left._digits, remem, left.real_size * sizeof(CONT_TYPE));
+    }
+
+
+    /// Если левый больше -> входим в неаллокейтед память
+    if (right.alloc_size < left.real_size){
+        //cout << right << endl;
+        CONT_TYPE *remem = right._digits;
+        right.alloc_with_zeros(left.real_size);
+
+        memcpy(right._digits, remem, right.real_size * sizeof(CONT_TYPE));
+        //cout << right << endl;
+    }
+
+    cout << left.alloc_size << " " << right.alloc_size << endl;
+    cout << left.real_size << " " << right.real_size << endl;
+
+
+
+    BigUnsigned res;
+    res.alloc_with_zeros(left.real_size + right.real_size);
+    cout << "called mult" <<endl;
+    mult(left._digits,right._digits,res._digits,max(left.real_size,right.real_size));
+
+
+
+    if (res._digits[res.alloc_size - 1] == 0){
+         res.real_size = res.alloc_size - 1;
+    }else{
+         res.real_size = res.alloc_size;
+    }
+
+
+
+    return res;
+
+}
 
 
 
@@ -142,6 +322,7 @@ BigUnsigned k_mul(const BigUnsigned& left,const BigUnsigned& right) {
    the return values are >= 0.
    Returns 0 on success, -1 on failure.
 */
+/*
 void kmul_split(const BigUnsigned& n,
            ubi_szt size,
            BigUnsigned& high,
@@ -164,3 +345,4 @@ void kmul_split(const BigUnsigned& n,
     *low = long_normalize(lo);
     return 0;
 }
+*/

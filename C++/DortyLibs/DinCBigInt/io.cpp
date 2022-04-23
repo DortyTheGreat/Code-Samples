@@ -37,6 +37,11 @@ std::ostream& operator <<(std::ostream& os, const BigUnsigned& bi) {
 
     }
 
+    /// Убрать лидирующие нули
+    while(buff.back() == '0'){
+        buff.pop_back();
+    }
+
     reverse(buff.begin(),buff.end());
     os << buff;
 	return os;

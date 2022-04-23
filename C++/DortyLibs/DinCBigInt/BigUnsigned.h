@@ -14,7 +14,7 @@
 #define ubi_szt int /// Unsigned Big Int SiZe Type, пока об€зан быть знаковым -_-
 
 
-#define big_container 1
+#define big_container 0
 
 #if big_container
 
@@ -30,12 +30,14 @@
 
 #endif
 
+const CONT_TYPE BASE = total_base;
+
 
 //template <const int def_base = default_base, int BASE = total_base, const int container_stack = cnt_stack>
 class BigUnsigned{
 private:
     CONT_TYPE* _digits;
-    static const unsigned int BASE = total_base;
+    static const CONT_TYPE BASE = total_base;
 public:
 
     ubi_szt real_size; /// –≈јЋ№Ќјя ƒлинна числа
@@ -55,6 +57,10 @@ public:
 
     friend BigUnsigned x_mul(const BigUnsigned& a,const BigUnsigned& b);
     friend BigUnsigned k_mul(const BigUnsigned& left,const BigUnsigned& right);
+
+
+    ///  арацуба, кстати мен€ет контейнерный размер чиселок...
+    friend BigUnsigned karatsuba(BigUnsigned& left,BigUnsigned& right);
 
 	void operator =(const BigUnsigned&);
 

@@ -21,22 +21,32 @@ int main()
 
     #if file_read
 
-    freopen ("input.txt","r",stdin);
+    freopen ("break.txt","r",stdin);
 
     #endif // file_read
     AppBuild();
 
     BigUnsigned a,b,c;
 
-    cin >> a;
-    ///cout << a <<endl;
+    cin >> a >> b;
+    //cout << a <<endl;
     ///cout << a << " " << b << endl;
 
-    for(int i = 0;i<1000;++i){
+    ///c.alloc_with_zeros(1000);
 
-        x_mul(a,a);
+    for(int i = 0;i<1;++i){
+
+
+
+         cout << karatsuba(a,b);
+
+
+
+        ///x_mul(a,a);
 
     }
+
+
 
     ///cout << x_mul(a,a);
 
