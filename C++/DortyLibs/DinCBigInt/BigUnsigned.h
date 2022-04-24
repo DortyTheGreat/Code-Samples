@@ -62,6 +62,9 @@ public:
     /// Карацуба, кстати меняет контейнерный размер чиселок...
     friend BigUnsigned karatsuba(BigUnsigned& left,BigUnsigned& right);
 
+    friend BigUnsigned Reciprocal(const BigUnsigned& bu,int precision);
+
+
 	void operator =(const BigUnsigned&);
 
 	void _add(const BigUnsigned&);
