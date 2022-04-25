@@ -96,20 +96,22 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 
         /// aprox = 2*approx - minus
         for (int cou = 0;cou < i * 2;cou++){
-
-            CONT_TYPE& r = approx[cool_num - cou - 1];
-            cout << r << " " << minus[i*4 - cou - 2];
-            r = r*2 - minus[i*4 - cou - 2];
+                approx[cool_num - cou - 1] *= 2;
+        }
+        for (int cou = 0;cou < i * 2;cou++){
+            CONT_TYPE& r = approx[cool_num - i*2 + cou];
+            cout << r << " " << minus[i*2 + cou - 1];
+            r -= minus[i*2 + cou - 1];
 
             cout << " " << r << endl;
 
             if (r  >= BASE){
                 r -= BASE;
-                ++approx[cool_num - cou];
+                ++approx[cool_num - i*2 + cou + 1];
             }else{
                 if (r  < 0){
                     r += BASE;
-                    --approx[cool_num - cou];
+                    --approx[cool_num - i*2 + cou + 1];
                 }
             }
 
