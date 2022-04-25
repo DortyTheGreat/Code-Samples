@@ -35,7 +35,7 @@ int main()
 
     BigUnsigned a,b,c;
 
-    cin >> a;
+    cin >> a >> b;
 
     /// 100k memcpy of 100k ints (aka 1 million decimal places) in 5 s
     /// -> 100 allocs in 5 ms
@@ -45,7 +45,11 @@ int main()
         ///b = a;
         //CONT_TYPE * d = new CONT_TYPE[100000];
         ///cout << karatsuba(a,b);
-        cout << Reciprocal(a,4);
+        /// Почему-то... ПОЧЕМУ только половина знаков будет значима..
+        cout << Reciprocal(a,4) << endl;
+        BigUnsigned r =Reciprocal(b,4);
+        cout << "r  :" << r <<endl;
+        ///cout << karatsuba(a,r) << endl;
 
 
         ///x_mul(a,a);
@@ -1197,7 +1201,7 @@ int main()
 
     BigUnsigned a,b,c;
 
-    cin >> a;
+    cin >> a >> b;
 
     /// 100k memcpy of 100k ints (aka 1 million decimal places) in 5 s
     /// -> 100 allocs in 5 ms
@@ -1207,7 +1211,11 @@ int main()
         ///b = a;
         //CONT_TYPE * d = new CONT_TYPE[100000];
         ///cout << karatsuba(a,b);
-        cout << Reciprocal(a,4);
+        /// Почему-то... ПОЧЕМУ только половина знаков будет значима..
+        cout << Reciprocal(a,4) << endl;
+        BigUnsigned r =Reciprocal(b,4);
+        cout << "r  :" << r <<endl;
+        ///cout << karatsuba(a,r) << endl;
 
 
         ///x_mul(a,a);
