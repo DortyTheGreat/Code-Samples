@@ -1090,7 +1090,7 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 
 
     // Do the interation to fullfil the precision
-    for (int i = 1; i != 1 << 2; i <<= 1)
+    for (int i = 1; i != cool_num; i <<= 1)
     {
         memset(sqr, 0, (cool_num) * sizeof(CONT_TYPE));
         memset(minus, 0, (2 * cool_num) * sizeof(CONT_TYPE));
@@ -1110,8 +1110,8 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
         for (int cou = 0;cou < i * 2;cou++){
 
             CONT_TYPE& r = approx[cool_num - cou - 1];
-            cout << r << " " << minus[i*2 - cou - 1 + 1];
-            r = r*2 - minus[i*2 - cou - 1 + 1];
+            cout << r << " " << minus[i*4 - cou - 2];
+            r = r*2 - minus[i*4 - cou - 2];
 
             cout << " " << r << endl;
 
