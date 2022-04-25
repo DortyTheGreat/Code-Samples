@@ -75,7 +75,7 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 
 
     // Do the interation to fullfil the precision
-    for (int i = 1; i != 1 << 1; i <<= 1)
+    for (int i = 1; i != 1 << 2; i <<= 1)
     {
         memset(sqr, 0, (cool_num) * sizeof(CONT_TYPE));
         memset(minus, 0, (2 * cool_num) * sizeof(CONT_TYPE));
@@ -84,7 +84,7 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 
         print(sqr, i * 3);
         /// Теперь sqr имеет размер 2n, minus -> 4n, но следует truncatenut' до 2n
-        mult(sqr, expanded + cool_num - 2*i, minus ,i*2 );
+        mult(sqr, expanded + cool_num - 2*i + 1, minus ,i*2 );
 
         print(minus, i * 5);
 
@@ -94,17 +94,17 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
             CONT_TYPE& r = approx[cool_num - cou - 1];
 
             r = r*2 - minus[i*2 - cou - 1];
-            /*
-            if (res[fh + i]  >= BASE){
-                res[fh + i] -= BASE;
-                ++res[fh + 1 + i];
+
+            if (r  >= BASE){
+                r -= BASE;
+                ++approx[cool_num - cou];
             }else{
-                while (res[fh + i]  < 0){
-                    res[fh + i] += BASE;
-                    --res[fh + 1 + i];
+                if (r  < 0){
+                    r += BASE;
+                    --approx[cool_num - cou];
                 }
             }
-            */
+
 
         }
 
