@@ -1100,6 +1100,28 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 
         print(minus, i * 5);
 
+        /// aprox = 2*approx - minus
+        for (int cou = 0;cou < i * 2;cou++){
+
+            CONT_TYPE& r = approx[cool_num - cou - 1];
+
+            r = r*2 - minus[i*2 - cou - 1];
+            /*
+            if (res[fh + i]  >= BASE){
+                res[fh + i] -= BASE;
+                ++res[fh + 1 + i];
+            }else{
+                while (res[fh + i]  < 0){
+                    res[fh + i] += BASE;
+                    --res[fh + 1 + i];
+                }
+            }
+            */
+
+        }
+
+
+
         /// a = 2*a - truncated_bits(n*a*a)
         ///write_to.Interate(*this, precision);
         ///cout << "InCycle " << write_to << endl;
