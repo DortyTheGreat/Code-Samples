@@ -20,15 +20,21 @@ void print(T* a, int n ){
 
 BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 {
+
     ubi_szt mx_sz = intlog(BASE, INT_MAXI);
     ubi_szt sz = bu.real_size;
     ubi_szt len{ (sz > (mx_sz - 1)) ? (mx_sz) : sz };
 
     DOUBLE_CONT_TYPE divisor = 0;
+
+
     BigUnsigned res;
 
+    ubi_szt cool_num = 1 << precision;
+
     /// Сколько нулей давать я хз
-    res.alloc_with_zeros(1 << precision);
+    res.alloc_with_zeros(cool_num);
+
 
 
 
@@ -51,7 +57,15 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 
     /// Кароче, это типо... Ускоряет вычисления, ибо обращение часто по ссылке происходит или тип того ...
     CONT_TYPE* & approx = res._digits;
-    //CONT_TYPE* sqr = new CONT_TYPE[1 << precision]{0};
+
+    /// Кароче... Надо расширить оригинальное число типа... но немножко обкуренно ...
+    CONT_TYPE * expanded = new CONT_TYPE[cool_num]{0};
+
+    memcpy(expanded + (cool_num - bu.real_size), bu._digits, bu.real_size );
+
+    CONT_TYPE* sqr = new CONT_TYPE[cool_num]{0};
+    CONT_TYPE* minus = new CONT_TYPE[cool_num * 2]{0};
+
 
     approx[res.alloc_size - 1] = dividend;
 
@@ -63,10 +77,16 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
     // Do the interation to fullfil the precision
     for (int i = 1; i != 1 << 1; i <<= 1)
     {
-        //memset(sqr, 0, (1 << precision) * sizeof(CONT_TYPE));
-        //mult(approx,approx,sqr,i);
+        memset(sqr, 0, (cool_num) * sizeof(CONT_TYPE));
+        memset(minus, 0, (2 * cool_num) * sizeof(CONT_TYPE));
 
-        //print(sqr, i);
+        mult(approx + cool_num - i,approx + cool_num - i,sqr,i);
+
+        print(sqr, i * 3);
+        /// Теперь sqr имеет размер 2n, minus -> 4n, но следует truncatenut' до 2n
+        mult(sqr, expanded + cool_num - 2*i, minus ,i*2 );
+
+        print(minus, i * 5);
 
         /// a = 2*a - truncated_bits(n*a*a)
         ///write_to.Interate(*this, precision);
