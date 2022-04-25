@@ -28,12 +28,7 @@ int main()
 
     BigUnsigned a,b,c;
 
-    cin >> a >> b;
-    ///b = a;
-    //cout << a <<endl;
-    ///cout << a << " " << b << endl;
-
-    ///c.alloc_with_zeros(1000);
+    cin >> a;
 
     /// 100k memcpy of 100k ints (aka 1 million decimal places) in 5 s
     /// -> 100 allocs in 5 ms
@@ -42,8 +37,8 @@ int main()
 
         ///b = a;
         //CONT_TYPE * d = new CONT_TYPE[100000];
-        cout << karatsuba(a,b);
-
+        ///cout << karatsuba(a,b);
+        cout << Reciprocal(a,4);
 
 
         ///x_mul(a,a);
@@ -53,18 +48,7 @@ int main()
 
 
 
-    ///cout << x_mul(a,a);
 
-
-    //cin >> a;
-    //for(int i = 0;i<1000;++i){
-    //    c = k_mul(a,a);
-    //}
-
-    ///a = k_mul(a,b);
-
-    //a += 1;
-    //fout << c << " " << a - b*c;
 
     return 0;
 }

@@ -10,17 +10,25 @@ int inline intSqrt(long long arg){
     return (long long)(sqrt(arg));
 }
 
+template <typename T>
+void print(T* a, int n ){
+    for(int i = 0;i<n;i++){
+        cout << a[i] << " ";
+    }
+    cout << endl;
+}
+
 BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 {
-    int mx_sz = intlog(BASE, INT_MAXI);
-    int sz = bu.real_size;
-    size_t len{ (sz > (mx_sz - 1)) ? (mx_sz) : sz };
+    ubi_szt mx_sz = intlog(BASE, INT_MAXI);
+    ubi_szt sz = bu.real_size;
+    ubi_szt len{ (sz > (mx_sz - 1)) ? (mx_sz) : sz };
 
-    int divisor = 0;
+    DOUBLE_CONT_TYPE divisor = 0;
     BigUnsigned res;
 
     /// Сколько нулей давать я хз
-    res.alloc_with_zeros(2 << precision);
+    res.alloc_with_zeros(1 << precision);
 
 
 
@@ -34,32 +42,43 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
     for(int i = 0;i<len;++i){
         dividend *= BASE;
     }
+
+    dividend = dividend / divisor;
+
+    while ( dividend >= BASE){
+        dividend /= BASE;
+    }
+
     /// Кароче, это типо... Ускоряет вычисления, ибо обращение часто по ссылке происходит или тип того ...
     CONT_TYPE* & approx = res._digits;
+    //CONT_TYPE* sqr = new CONT_TYPE[1 << precision]{0};
 
-    ///cout << dividend << endl << divisor << endl;
-    // Extra condition for initial guess is: x(i) < 2R/b
+    approx[res.alloc_size - 1] = dividend;
 
-    /// В некоторый бит следует записать dividend / divisor (это типо мы записываем аппроксимизацию)
-
-    write_to = dividend / divisor;
-    write_to._appendZeros(precision - sz);
+    ///write_to = dividend / divisor;
+    ///write_to._appendZeros(precision - sz);
 
 
 
     // Do the interation to fullfil the precision
-    int end{ (int)(std::log2(precision)) + 4 };
-    for (int i = 0; i < end; i++)
+    for (int i = 1; i != 1 << 1; i <<= 1)
     {
+        //memset(sqr, 0, (1 << precision) * sizeof(CONT_TYPE));
+        //mult(approx,approx,sqr,i);
+
+        //print(sqr, i);
+
         /// a = 2*a - truncated_bits(n*a*a)
-        write_to.Interate(*this, precision);
+        ///write_to.Interate(*this, precision);
         ///cout << "InCycle " << write_to << endl;
     }
+    cout << res.alloc_size << endl;
+    res.real_size = res.alloc_size;
 
 
-
+    return res;
 }
-
+/**
     void inline _DivUnrefined( BigInt &divisor, size_t precision, BigInt &write_to)
     {
 
@@ -87,3 +106,4 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
         minus_._mult(divisor,minus_);
         rem_write_to._subtract(minus_);
     }
+    */
