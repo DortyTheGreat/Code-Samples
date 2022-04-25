@@ -34,7 +34,7 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 
     /// Сколько нулей давать я хз
     res.alloc_with_zeros(cool_num);
-
+    res.real_size = res.alloc_size;
 
 
 
@@ -61,14 +61,17 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
     /// Кароче... Надо расширить оригинальное число типа... но немножко обкуренно ...
     CONT_TYPE * expanded = new CONT_TYPE[cool_num]{0};
 
-    memcpy(expanded + (cool_num - bu.real_size), bu._digits, bu.real_size );
+    memcpy(expanded + (cool_num - bu.real_size), bu._digits, bu.real_size * sizeof(CONT_TYPE));
+
+    cout << "expanded " << endl;
+    print(expanded, cool_num);
 
     CONT_TYPE* sqr = new CONT_TYPE[cool_num]{0};
     CONT_TYPE* minus = new CONT_TYPE[cool_num * 2]{0};
 
 
     approx[res.alloc_size - 1] = dividend;
-
+    cout << "dividend " << dividend << endl;
     ///write_to = dividend / divisor;
     ///write_to._appendZeros(precision - sz);
 
@@ -82,18 +85,23 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 
         mult(approx + cool_num - i,approx + cool_num - i,sqr,i);
 
-        print(sqr, i * 3);
+        print(sqr, i * 2);
         /// Теперь sqr имеет размер 2n, minus -> 4n, но следует truncatenut' до 2n
-        mult(sqr, expanded + cool_num - 2*i + 1, minus ,i*2 );
 
-        print(minus, i * 5);
+        print(expanded + cool_num - 2*i , i*2);
+
+        mult(sqr, expanded + cool_num - 2*i , minus ,i*2 );
+
+        print(minus, i * 4);
 
         /// aprox = 2*approx - minus
         for (int cou = 0;cou < i * 2;cou++){
 
             CONT_TYPE& r = approx[cool_num - cou - 1];
+            cout << r << " " << minus[i*2 - cou - 1 + 1];
+            r = r*2 - minus[i*2 - cou - 1 + 1];
 
-            r = r*2 - minus[i*2 - cou - 1];
+            cout << " " << r << endl;
 
             if (r  >= BASE){
                 r -= BASE;
@@ -106,7 +114,10 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
             }
 
 
+
+
         }
+        cout << res << endl << endl;
 
 
 
@@ -115,7 +126,7 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
         ///cout << "InCycle " << write_to << endl;
     }
     cout << res.alloc_size << endl;
-    res.real_size = res.alloc_size;
+
 
 
     return res;
