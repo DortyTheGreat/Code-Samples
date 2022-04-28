@@ -17,7 +17,10 @@ void print(T* a, int n ){
     }
     cout << endl;
 }
-
+/**
+Не работает для чисел типа:
+1, 10, 100, 1000, 10000 и т.д.
+*/
 BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 {
 
