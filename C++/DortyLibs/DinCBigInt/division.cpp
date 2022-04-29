@@ -23,6 +23,32 @@ void print(T* a, int n ){
 */
 BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 {
+    ubi_szt cool_num = 1 << precision;
+
+    BigUnsigned res;
+
+    /// Сколько нулей давать я хз
+    res.alloc_with_zeros(cool_num);
+    res.real_size = res.alloc_size;
+
+
+    /// следует найти более грамотный метод фикса этого бага...
+    if (bu._digits[bu.real_size - 1] == 1){
+        bool flag = 1;
+        for(int i = 0;i < bu.real_size - 1;++i){
+            if (bu._digits[i] != 0){
+                flag = 0;
+                break;
+            }
+        }
+        if (flag){
+            /// число это 1, 10, 100, 1000 и т.д.
+            res._digits[res.alloc_size - 1] = 1;
+            cout << "special case" << endl;
+
+            return res;
+        }
+    }
 
     ubi_szt mx_sz = intlog(BASE, INT_MAXI);
     ubi_szt sz = bu.real_size;
@@ -31,13 +57,9 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
     DOUBLE_CONT_TYPE divisor = 0;
 
 
-    BigUnsigned res;
 
-    ubi_szt cool_num = 1 << precision;
 
-    /// Сколько нулей давать я хз
-    res.alloc_with_zeros(cool_num);
-    res.real_size = res.alloc_size;
+
 
 
 
@@ -87,14 +109,20 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
         memset(minus, 0, (2 * cool_num) * sizeof(CONT_TYPE));
 
         mult(approx + cool_num - i,approx + cool_num - i,sqr,i);
-
+        cout << "sqr ";
         print(sqr, i * 2);
         /// Теперь sqr имеет размер 2n, minus -> 4n, но следует truncatenut' до 2n
 
+        cout << "expanded ";
         print(expanded + cool_num - 2*i , i*2);
+
+        cout << "full expanded ";
+        print(expanded , cool_num);
 
         mult(sqr, expanded + cool_num - 2*i , minus ,i*2 );
 
+
+        cout << "minus ";
         print(minus, i * 4);
 
         /// aprox = 2*approx - minus
@@ -134,6 +162,18 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 
 
 
+    return res;
+}
+
+
+BigUnsigned DivisionWithKnownRemainder(const BigUnsigned& number, const BigUnsigned& Remainder, const int shift){
+    BigUnsigned res;
+    res.alloc_with_zeros(number.real_size + Remainder.real_size);
+    res.real_size = res.alloc_size;
+    mult(number._digits, Remainder._digits + (Remainder.alloc_size - number.real_size), res._digits, number.real_size);
+    res._digits += shift;
+    res.real_size -= shift;
+    res.alloc_size -= shift;
     return res;
 }
 /**

@@ -64,6 +64,7 @@ public:
 
     friend BigUnsigned Reciprocal(const BigUnsigned& bu,int precision);
 
+    friend BigUnsigned DivisionWithKnownRemainder(const BigUnsigned& number, const BigUnsigned& Remainder, const int );
 
 	void operator =(const BigUnsigned&);
 

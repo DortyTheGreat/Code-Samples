@@ -42,7 +42,8 @@ int main()
         cout << Reciprocal(a,4) << endl;
         BigUnsigned r =Reciprocal(b,4);
         cout << "r  :" << r <<endl;
-        ///cout << karatsuba(a,r) << endl;
+        cout << "a : " << a << endl;
+        cout << DivisionWithKnownRemainder(a,r, b.real_size - 1 + a.real_size) << endl;
 
 
         ///x_mul(a,a);

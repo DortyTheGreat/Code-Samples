@@ -49,7 +49,8 @@ int main()
         cout << Reciprocal(a,4) << endl;
         BigUnsigned r =Reciprocal(b,4);
         cout << "r  :" << r <<endl;
-        ///cout << karatsuba(a,r) << endl;
+        cout << "a : " << a << endl;
+        cout << DivisionWithKnownRemainder(a,r, b.real_size - 1 + a.real_size) << endl;
 
 
         ///x_mul(a,a);
@@ -148,6 +149,7 @@ public:
 
     friend BigUnsigned Reciprocal(const BigUnsigned& bu,int precision);
 
+    friend BigUnsigned DivisionWithKnownRemainder(const BigUnsigned& number, const BigUnsigned& Remainder, const int );
 
 	void operator =(const BigUnsigned&);
 
@@ -936,6 +938,7 @@ void mult(const CONT_TYPE *__restrict a, CONT_TYPE *__restrict b, CONT_TYPE *__r
 /// Пока Карацуба Думает, что у чисел одинаковый размер
 
 /// Не до конца доделано, размер real_size обкуренный -> при умножении на нуль делает Пиво
+/// Ещё изменяет размер в добавок
 BigUnsigned karatsuba(BigUnsigned& left, BigUnsigned& right){
     /// Если правый больше -> тогда результат будет меньше требуемого
     if (left.alloc_size < right.real_size){
@@ -1033,9 +1036,38 @@ void print(T* a, int n ){
     }
     cout << endl;
 }
-
+/**
+Не работает для чисел типа:
+1, 10, 100, 1000, 10000 и т.д.
+*/
 BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 {
+    ubi_szt cool_num = 1 << precision;
+
+    BigUnsigned res;
+
+    /// Сколько нулей давать я хз
+    res.alloc_with_zeros(cool_num);
+    res.real_size = res.alloc_size;
+
+
+    /// следует найти более грамотный метод фикса этого бага...
+    if (bu._digits[bu.real_size - 1] == 1){
+        bool flag = 1;
+        for(int i = 0;i < bu.real_size - 1;++i){
+            if (bu._digits[i] != 0){
+                flag = 0;
+                break;
+            }
+        }
+        if (flag){
+            /// число это 1, 10, 100, 1000 и т.д.
+            res._digits[res.alloc_size - 1] = 1;
+            cout << "special case" << endl;
+
+            return res;
+        }
+    }
 
     ubi_szt mx_sz = intlog(BASE, INT_MAXI);
     ubi_szt sz = bu.real_size;
@@ -1044,13 +1076,9 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
     DOUBLE_CONT_TYPE divisor = 0;
 
 
-    BigUnsigned res;
 
-    ubi_szt cool_num = 1 << precision;
 
-    /// Сколько нулей давать я хз
-    res.alloc_with_zeros(cool_num);
-    res.real_size = res.alloc_size;
+
 
 
 
@@ -1100,14 +1128,20 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
         memset(minus, 0, (2 * cool_num) * sizeof(CONT_TYPE));
 
         mult(approx + cool_num - i,approx + cool_num - i,sqr,i);
-
+        cout << "sqr ";
         print(sqr, i * 2);
         /// Теперь sqr имеет размер 2n, minus -> 4n, но следует truncatenut' до 2n
 
+        cout << "expanded ";
         print(expanded + cool_num - 2*i , i*2);
+
+        cout << "full expanded ";
+        print(expanded , cool_num);
 
         mult(sqr, expanded + cool_num - 2*i , minus ,i*2 );
 
+
+        cout << "minus ";
         print(minus, i * 4);
 
         /// aprox = 2*approx - minus
@@ -1147,6 +1181,18 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 
 
 
+    return res;
+}
+
+
+BigUnsigned DivisionWithKnownRemainder(const BigUnsigned& number, const BigUnsigned& Remainder, const int shift){
+    BigUnsigned res;
+    res.alloc_with_zeros(number.real_size + Remainder.real_size);
+    res.real_size = res.alloc_size;
+    mult(number._digits, Remainder._digits + (Remainder.alloc_size - number.real_size), res._digits, number.real_size);
+    res._digits += shift;
+    res.real_size -= shift;
+    res.alloc_size -= shift;
     return res;
 }
 /**
@@ -1215,7 +1261,8 @@ int main()
         cout << Reciprocal(a,4) << endl;
         BigUnsigned r =Reciprocal(b,4);
         cout << "r  :" << r <<endl;
-        ///cout << karatsuba(a,r) << endl;
+        cout << "a : " << a << endl;
+        cout << DivisionWithKnownRemainder(a,r, b.real_size - 1 + a.real_size) << endl;
 
 
         ///x_mul(a,a);

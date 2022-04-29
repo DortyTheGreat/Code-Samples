@@ -313,6 +313,7 @@ void mult(const CONT_TYPE *__restrict a, CONT_TYPE *__restrict b, CONT_TYPE *__r
 /// Пока Карацуба Думает, что у чисел одинаковый размер
 
 /// Не до конца доделано, размер real_size обкуренный -> при умножении на нуль делает Пиво
+/// Ещё изменяет размер в добавок
 BigUnsigned karatsuba(BigUnsigned& left, BigUnsigned& right){
     /// Если правый больше -> тогда результат будет меньше требуемого
     if (left.alloc_size < right.real_size){
