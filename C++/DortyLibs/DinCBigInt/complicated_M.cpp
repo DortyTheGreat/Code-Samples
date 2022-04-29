@@ -191,7 +191,7 @@ TO-DO:
 
 */
 
-void mult(const CONT_TYPE *__restrict a, CONT_TYPE *__restrict b, CONT_TYPE *__restrict res, const ubi_szt n) {
+void mult(const CONT_TYPE * a, CONT_TYPE * b, CONT_TYPE *__restrict res, const ubi_szt n) {
 
     if (n <= KAR_TRESH) {
 

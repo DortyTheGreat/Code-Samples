@@ -195,17 +195,20 @@ std::ostream& operator <<(std::ostream& os, const BigUnsigned& bi) {
 
     }
 
+
     /// ”брать лидирующие нули
-    while(buff.back() == '0'){
+    while(buff.back() == '0' ){
         buff.pop_back();
+        if (buff.empty()){
+            return (os << "0");
+        }
     }
 
+
+
     reverse(buff.begin(),buff.end());
-    if (buff.empty()){
-        buff = "0";
-    }
-    os << buff;
-	return os;
+
+	return (os << buff);
 }
 
 int next_power_of_two(int n) {
@@ -816,7 +819,7 @@ TO-DO:
 
 */
 
-void mult(const CONT_TYPE *__restrict a, CONT_TYPE *__restrict b, CONT_TYPE *__restrict res, const ubi_szt n) {
+void mult(const CONT_TYPE * a, CONT_TYPE * b, CONT_TYPE *__restrict res, const ubi_szt n) {
 
     if (n <= KAR_TRESH) {
 
@@ -1062,7 +1065,7 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
         }
         if (flag){
             /// число это 1, 10, 100, 1000 и т.д.
-            res._digits[res.alloc_size - 1] = 1;
+            res._digits[res.alloc_size - 1] = BASE;
             cout << "special case" << endl;
 
             return res;

@@ -37,17 +37,20 @@ std::ostream& operator <<(std::ostream& os, const BigUnsigned& bi) {
 
     }
 
+
     /// Убрать лидирующие нули
-    while(buff.back() == '0'){
+    while(buff.back() == '0' ){
         buff.pop_back();
+        if (buff.empty()){
+            return (os << "0");
+        }
     }
 
+
+
     reverse(buff.begin(),buff.end());
-    if (buff.empty()){
-        buff = "0";
-    }
-    os << buff;
-	return os;
+
+	return (os << buff);
 }
 
 int next_power_of_two(int n) {

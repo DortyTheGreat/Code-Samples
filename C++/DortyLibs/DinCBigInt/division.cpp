@@ -43,7 +43,7 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
         }
         if (flag){
             /// число это 1, 10, 100, 1000 и т.д.
-            res._digits[res.alloc_size - 1] = 1;
+            res._digits[res.alloc_size - 1] = BASE;
             cout << "special case" << endl;
 
             return res;
