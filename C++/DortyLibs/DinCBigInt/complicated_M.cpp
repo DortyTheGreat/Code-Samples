@@ -193,32 +193,16 @@ TO-DO:
 
 void mult(const CONT_TYPE * a, CONT_TYPE * b, CONT_TYPE *__restrict res, const ubi_szt n) {
 
+    /// Слишком маленькое число, запускаем школьный алгоритм
     if (n <= KAR_TRESH) {
-
-            /*
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                res[i + j] += a[i] * b[j];
-            }
-        }
-        */
-
         x_mul(a,b,res,n);
-
-
     } else {
 
         const ubi_szt fh = (n+1) / 2;   // First half Data (take more)
         const ubi_szt sh = (n - fh); // Second half of Data
 
-
-
-        /// alignas(align) ???
-
-
         CONT_TYPE* first = new CONT_TYPE[fh + 1];
-
-         first[fh] = 0;
+        first[fh] = 0;
 
         CONT_TYPE* second = new CONT_TYPE[fh + 1]; second[fh] = 0;
 
@@ -253,6 +237,10 @@ void mult(const CONT_TYPE * a, CONT_TYPE * b, CONT_TYPE *__restrict res, const u
             second[fh - 1] -= BASE;
             ++second[fh];
         }
+
+
+        /// first += a offseted by fh
+        /// second += b offseted by sh
 
 
         //mult(first, second, res + fh, fh + 1);
