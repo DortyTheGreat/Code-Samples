@@ -1193,6 +1193,7 @@ BigUnsigned DivisionWithKnownRemainder(const BigUnsigned& number, const BigUnsig
     res.alloc_with_zeros(number.real_size + Remainder.real_size);
     res.real_size = res.alloc_size;
     mult(number._digits, Remainder._digits + (Remainder.alloc_size - number.real_size), res._digits, number.real_size);
+    cout << res << endl;
     res._digits += shift;
     res.real_size -= shift;
     res.alloc_size -= shift;
