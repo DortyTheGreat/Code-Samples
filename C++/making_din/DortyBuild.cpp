@@ -46,11 +46,11 @@ int main()
         //CONT_TYPE * d = new CONT_TYPE[100000];
         ///cout << karatsuba(a,b);
         /// Почему-то... ПОЧЕМУ только половина знаков будет значима..
-        cout << Reciprocal(a,4) << endl;
+        ///cout << Reciprocal(a,4) << endl;
         BigUnsigned r =Reciprocal(b,4);
-        cout << "r  :" << r <<endl;
-        cout << "a : " << a << endl;
-        cout << DivisionWithKnownRemainder(a,r, b.real_size - 1 + a.real_size) << endl;
+        ///cout << "r  :" << r <<endl;
+        ///cout << "a : " << a << endl;
+        cout << DivisionWithKnownRemainder(a,r, b, b.real_size - 1 + a.real_size) << endl;
 
 
         ///x_mul(a,a);
@@ -149,7 +149,7 @@ public:
 
     friend BigUnsigned Reciprocal(const BigUnsigned& bu,int precision);
 
-    friend BigUnsigned DivisionWithKnownRemainder(const BigUnsigned& number, const BigUnsigned& Remainder, const int );
+    friend BigUnsigned DivisionWithKnownRemainder(const BigUnsigned& number, const BigUnsigned& Remainder, BigUnsigned& div, const int );
 
 	void operator =(const BigUnsigned&);
 
@@ -1066,7 +1066,7 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
         if (flag){
             /// ����� ��� 1, 10, 100, 1000 � �.�.
             res._digits[res.alloc_size - 1] = BASE;
-            cout << "special case" << endl;
+            ///cout << "special case" << endl;
 
             return res;
         }
@@ -1110,15 +1110,15 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 
     memcpy(expanded + (cool_num - bu.real_size), bu._digits, bu.real_size * sizeof(CONT_TYPE));
 
-    cout << "expanded " << endl;
-    print(expanded, cool_num);
+    ///cout << "expanded " << endl;
+    ///print(expanded, cool_num);
 
     CONT_TYPE* sqr = new CONT_TYPE[cool_num]{0};
     CONT_TYPE* minus = new CONT_TYPE[cool_num * 2]{0};
 
 
     approx[res.alloc_size - 1] = dividend;
-    cout << "dividend " << dividend << endl;
+    ///cout << "dividend " << dividend << endl;
     ///write_to = dividend / divisor;
     ///write_to._appendZeros(precision - sz);
 
@@ -1131,21 +1131,21 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
         memset(minus, 0, (2 * cool_num) * sizeof(CONT_TYPE));
 
         mult(approx + cool_num - i,approx + cool_num - i,sqr,i);
-        cout << "sqr ";
-        print(sqr, i * 2);
+        ///cout << "sqr ";
+        ///print(sqr, i * 2);
         /// ������ sqr ����� ������ 2n, minus -> 4n, �� ������� truncatenut' �� 2n
 
-        cout << "expanded ";
-        print(expanded + cool_num - 2*i , i*2);
+        ///cout << "expanded ";
+        ///print(expanded + cool_num - 2*i , i*2);
 
-        cout << "full expanded ";
-        print(expanded , cool_num);
+        ///cout << "full expanded ";
+        ///print(expanded , cool_num);
 
         mult(sqr, expanded + cool_num - 2*i , minus ,i*2 );
 
 
-        cout << "minus ";
-        print(minus, i * 4);
+        ///cout << "minus ";
+        ///print(minus, i * 4);
 
         /// aprox = 2*approx - minus
         for (int cou = 0;cou < i * 2;cou++){
@@ -1153,10 +1153,10 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
         }
         for (int cou = 0;cou < i * 2;cou++){
             CONT_TYPE& r = approx[cool_num - i*2 + cou];
-            cout << r << " " << minus[i*2 + cou - 1];
+            ///cout << r << " " << minus[i*2 + cou - 1];
             r -= minus[i*2 + cou - 1];
 
-            cout << " " << r << endl;
+            ///cout << " " << r << endl;
 
             if (r  >= BASE){
                 r -= BASE;
@@ -1172,7 +1172,7 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 
 
         }
-        cout << res << endl << endl;
+        ///cout << res << endl << endl;
 
 
 
@@ -1180,7 +1180,7 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
         ///write_to.Interate(*this, precision);
         ///cout << "InCycle " << write_to << endl;
     }
-    cout << res.alloc_size << endl;
+    ///cout << res.alloc_size << endl;
 
 
 
@@ -1188,15 +1188,26 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 }
 
 
-BigUnsigned DivisionWithKnownRemainder(const BigUnsigned& number, const BigUnsigned& Remainder, const int shift){
+BigUnsigned DivisionWithKnownRemainder(const BigUnsigned& number, const BigUnsigned& Remainder, BigUnsigned& div, const int shift){
     BigUnsigned res;
     res.alloc_with_zeros(number.real_size + Remainder.real_size);
     res.real_size = res.alloc_size;
     mult(number._digits, Remainder._digits + (Remainder.alloc_size - number.real_size), res._digits, number.real_size);
+
+    cout << number << endl << Remainder << endl;
+
     cout << res << endl;
+
     res._digits += shift;
     res.real_size -= shift;
     res.alloc_size -= shift;
+
+    cout << res << endl;
+
+    BigUnsigned m = karatsuba(res,div);
+
+    cout << m << endl;
+
     return res;
 }
 /**
@@ -1262,11 +1273,11 @@ int main()
         //CONT_TYPE * d = new CONT_TYPE[100000];
         ///cout << karatsuba(a,b);
         /// Почему-то... ПОЧЕМУ только половина знаков будет значима..
-        cout << Reciprocal(a,4) << endl;
+        ///cout << Reciprocal(a,4) << endl;
         BigUnsigned r =Reciprocal(b,4);
-        cout << "r  :" << r <<endl;
-        cout << "a : " << a << endl;
-        cout << DivisionWithKnownRemainder(a,r, b.real_size - 1 + a.real_size) << endl;
+        ///cout << "r  :" << r <<endl;
+        ///cout << "a : " << a << endl;
+        cout << DivisionWithKnownRemainder(a,r, b, b.real_size - 1 + a.real_size) << endl;
 
 
         ///x_mul(a,a);

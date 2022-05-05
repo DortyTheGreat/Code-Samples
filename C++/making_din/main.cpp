@@ -39,11 +39,11 @@ int main()
         //CONT_TYPE * d = new CONT_TYPE[100000];
         ///cout << karatsuba(a,b);
         /// Почему-то... ПОЧЕМУ только половина знаков будет значима..
-        cout << Reciprocal(a,4) << endl;
+        ///cout << Reciprocal(a,4) << endl;
         BigUnsigned r =Reciprocal(b,4);
-        cout << "r  :" << r <<endl;
-        cout << "a : " << a << endl;
-        cout << DivisionWithKnownRemainder(a,r, b.real_size - 1 + a.real_size) << endl;
+        ///cout << "r  :" << r <<endl;
+        ///cout << "a : " << a << endl;
+        cout << DivisionWithKnownRemainder(a,r, b, b.real_size - 1 + a.real_size) << endl;
 
 
         ///x_mul(a,a);
