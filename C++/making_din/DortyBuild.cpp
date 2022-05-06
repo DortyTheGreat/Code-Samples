@@ -35,7 +35,7 @@ int main()
 
     BigUnsigned a,b,c;
 
-    cin >> a;
+    cin >> a >> b;
 
     /// 100k memcpy of 100k ints (aka 1 million decimal places) in 5 s
     /// -> 100 allocs in 5 ms
@@ -47,11 +47,11 @@ int main()
         ///cout << karatsuba(a,b);
         /// Почему-то... ПОЧЕМУ только половина знаков будет значима..
         ///cout << Reciprocal(a,4) << endl;
-        ///BigUnsigned r =Reciprocal(b,4);
+        BigUnsigned r =Reciprocal(b,4);
         ++a;
 
         cout << a <<endl;
-        ///cout << DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size) << endl;
+        cout << DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size) << endl;
 
 
         ///x_mul(a,a);
@@ -506,8 +506,7 @@ void BigUnsigned::operator++() {
     if (_digits[real_size - 1] >= BASE ){
         if (real_size == alloc_size){
             /// reallocate memory
-            ++alloc_size;
-            CONT_TYPE * new_c = new CONT_TYPE[alloc_size];
+            CONT_TYPE * new_c = new CONT_TYPE[++alloc_size];
             memcpy(new_c, _digits, real_size * sizeof(CONT_TYPE));
             new_c[real_size] = 0;
             _digits = new_c;
@@ -1372,11 +1371,11 @@ BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsi
     BigUnsigned rem = number;
     rem -= m;
 
-    /*
+
     if ( rem >= div){
         ++res;
     }
-    */
+
 
 
     cout << m << endl;
@@ -1436,7 +1435,7 @@ int main()
 
     BigUnsigned a,b,c;
 
-    cin >> a;
+    cin >> a >> b;
 
     /// 100k memcpy of 100k ints (aka 1 million decimal places) in 5 s
     /// -> 100 allocs in 5 ms
@@ -1448,11 +1447,11 @@ int main()
         ///cout << karatsuba(a,b);
         /// Почему-то... ПОЧЕМУ только половина знаков будет значима..
         ///cout << Reciprocal(a,4) << endl;
-        ///BigUnsigned r =Reciprocal(b,4);
+        BigUnsigned r =Reciprocal(b,4);
         ++a;
 
         cout << a <<endl;
-        ///cout << DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size) << endl;
+        cout << DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size) << endl;
 
 
         ///x_mul(a,a);

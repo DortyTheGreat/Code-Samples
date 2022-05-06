@@ -28,7 +28,7 @@ int main()
 
     BigUnsigned a,b,c;
 
-    cin >> a;
+    cin >> a >> b;
 
     /// 100k memcpy of 100k ints (aka 1 million decimal places) in 5 s
     /// -> 100 allocs in 5 ms
@@ -40,11 +40,11 @@ int main()
         ///cout << karatsuba(a,b);
         /// Почему-то... ПОЧЕМУ только половина знаков будет значима..
         ///cout << Reciprocal(a,4) << endl;
-        ///BigUnsigned r =Reciprocal(b,4);
+        BigUnsigned r =Reciprocal(b,4);
         ++a;
 
         cout << a <<endl;
-        ///cout << DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size) << endl;
+        cout << DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size) << endl;
 
 
         ///x_mul(a,a);
