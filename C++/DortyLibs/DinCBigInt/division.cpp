@@ -166,13 +166,13 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 }
 
 
-BigUnsigned DivisionWithKnownRemainder(const BigUnsigned& number, const BigUnsigned& Remainder, BigUnsigned& div, const int shift){
+BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsigned& Reciprocal, BigUnsigned& div, const int shift){
     BigUnsigned res;
-    res.alloc_with_zeros(number.real_size + Remainder.real_size);
+    res.alloc_with_zeros(number.real_size + Reciprocal.real_size);
     res.real_size = res.alloc_size;
-    mult(number._digits, Remainder._digits + (Remainder.alloc_size - number.real_size), res._digits, number.real_size);
+    mult(number._digits, Reciprocal._digits + (Reciprocal.alloc_size - number.real_size), res._digits, number.real_size);
 
-    cout << number << endl << Remainder << endl;
+    cout << number << endl << Reciprocal << endl;
 
     cout << res << endl;
 
@@ -183,9 +183,15 @@ BigUnsigned DivisionWithKnownRemainder(const BigUnsigned& number, const BigUnsig
     cout << res << endl;
 
     BigUnsigned m = karatsuba(res,div);
-    if ( number - m >= div){
+    BigUnsigned rem = number;
+    rem -= m;
+
+
+    if ( rem >= div){
         ++res;
     }
+
+
 
     cout << m << endl;
 

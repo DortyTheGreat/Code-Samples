@@ -71,6 +71,42 @@ void BigUnsigned::operator +=(const BigUnsigned& right) {
 
 
 }
+/**
+
+Способно отработать нормально, если ...
+
++ НЕ ЗАБУДЬ ПРО real_size
+
+*/
+void BigUnsigned::operator -=(const BigUnsigned& minus) {
+
+    for(int i = 0;i< minus.real_size; ++i){
+        _digits[i] -= minus._digits[i];
+        if (_digits[i] < 0){
+            _digits[i] += BASE;
+            --_digits[i+1];
+        }
+    }
+
+    if (minus.real_size != real_size){
+
+
+
+        /// Замечу что первый проход не имеет смысла :-)
+        for(int j = minus.real_size; _digits[j] < 0;++j){
+
+            _digits[j] += BASE;
+            --_digits[j+1];
+
+        }
+    }
+
+    _remove_leading_zeros();
+
+
+
+
+}
 
 /**
 
@@ -185,12 +221,33 @@ const BigUnsigned operator +(const BigUnsigned& left, const BigUnsigned& right) 
 }
 
 
-/*
-// префиксный инкремент
-const BigInt BigInt::operator++() {
-	return (*this += 1);
-}
 
+// префиксный инкремент
+void BigUnsigned::operator++() {
+	ubi_szt cou = 0;
+	++_digits[0];
+	for ( ; cou < real_size -1; ++cou){
+        if (_digits[cou] < BASE){ return;}
+
+        _digits[cou] -= BASE; /// можно записать = 0 в целом, если изначальное число сбалансировано
+        ++_digits[cou+1];
+	}
+
+    if (_digits[real_size - 1] >= BASE ){
+        if (real_size == alloc_size){
+            /// reallocate memory
+            CONT_TYPE * new_c = new CONT_TYPE[++alloc_size];
+            memcpy(new_c, _digits, real_size * sizeof(CONT_TYPE));
+            new_c[real_size] = 0;
+            _digits = new_c;
+        }
+
+        _digits[real_size - 1] -= BASE;
+        ++_digits[real_size++];
+
+    }
+}
+/*
 // постфиксный инкремент
 const BigInt BigInt::operator ++(int) {
 	*this += 1;

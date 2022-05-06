@@ -45,6 +45,8 @@ public:
 
     BigUnsigned(){}
 
+    void _remove_leading_zeros();
+
     /// мемори стафф
     void alloc_with_zeros(const int sz);
     void assign_from_BU(const int alloc_space, const BigUnsigned& bu);
@@ -52,8 +54,23 @@ public:
     friend std::ostream& operator << (std::ostream&, const BigUnsigned&);
 	friend std::istream& operator >> (std::istream&, BigUnsigned&);
 
+	short inline friend compare(const BigUnsigned &left, const BigUnsigned &right);
+
+    bool friend operator <(const BigUnsigned& left, const BigUnsigned& right);
+    bool friend operator ==(const BigUnsigned& left, const BigUnsigned& right);
+
+    // auto-defined
+    bool friend operator <=(const BigUnsigned& left, const BigUnsigned& right);
+    bool friend operator >(const BigUnsigned& left, const BigUnsigned& right);
+    bool friend operator >=(const BigUnsigned& left, const BigUnsigned& right);
+    bool friend operator !=(const BigUnsigned& left, const BigUnsigned& right);
+
 	friend const BigUnsigned operator +(const BigUnsigned&, const BigUnsigned&);
 	void operator +=(const BigUnsigned&);
+
+    void operator++();
+
+    void operator -=(const BigUnsigned& minus);
 
     friend BigUnsigned x_mul(const BigUnsigned& a,const BigUnsigned& b);
     friend BigUnsigned k_mul(const BigUnsigned& left,const BigUnsigned& right);
@@ -64,7 +81,7 @@ public:
 
     friend BigUnsigned Reciprocal(const BigUnsigned& bu,int precision);
 
-    friend BigUnsigned DivisionWithKnownRemainder(const BigUnsigned& number, const BigUnsigned& Remainder, BigUnsigned& div, const int );
+    friend BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsigned&, BigUnsigned& div, const int );
 
 	void operator =(const BigUnsigned&);
 

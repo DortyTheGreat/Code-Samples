@@ -38,6 +38,21 @@ void BigUnsigned::assign_from_BU(const int alloc_space, const BigUnsigned& bu){
     memcpy(_digits,bu._digits,real_size * sizeof(CONT_TYPE));
 }
 
+
+/**
+    Системная функция. Требуется для тех случаев, когда real_size выше чем "реальный" размер.
+    (просто уменьшает real_size)
+*/
+void BigUnsigned::_remove_leading_zeros(){
+    int cur = real_size - 1;
+    for( ; cur != 0 ; --cur){
+        if (_digits[cur] != 0){
+            break;
+        }
+    }
+    real_size = cur + 1;
+}
+
 /*
 int intlog(double base, double x) {
     return (int)(log(x) / log(base));

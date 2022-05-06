@@ -35,7 +35,7 @@ int main()
 
     BigUnsigned a,b,c;
 
-    cin >> a >> b;
+    cin >> a;
 
     /// 100k memcpy of 100k ints (aka 1 million decimal places) in 5 s
     /// -> 100 allocs in 5 ms
@@ -47,10 +47,11 @@ int main()
         ///cout << karatsuba(a,b);
         /// РџРѕС‡РµРјСѓ-С‚Рѕ... РџРћР§Р•РњРЈ С‚РѕР»СЊРєРѕ РїРѕР»РѕРІРёРЅР° Р·РЅР°РєРѕРІ Р±СѓРґРµС‚ Р·РЅР°С‡РёРјР°..
         ///cout << Reciprocal(a,4) << endl;
-        BigUnsigned r =Reciprocal(b,4);
-        ///cout << "r  :" << r <<endl;
-        ///cout << "a : " << a << endl;
-        cout << DivisionWithKnownRemainder(a,r, b, b.real_size - 1 + a.real_size) << endl;
+        ///BigUnsigned r =Reciprocal(b,4);
+        ++a;
+
+        cout << a <<endl;
+        ///cout << DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size) << endl;
 
 
         ///x_mul(a,a);
@@ -130,6 +131,8 @@ public:
 
     BigUnsigned(){}
 
+    void _remove_leading_zeros();
+
     /// мемори стафф
     void alloc_with_zeros(const int sz);
     void assign_from_BU(const int alloc_space, const BigUnsigned& bu);
@@ -137,8 +140,23 @@ public:
     friend std::ostream& operator << (std::ostream&, const BigUnsigned&);
 	friend std::istream& operator >> (std::istream&, BigUnsigned&);
 
+	short inline friend compare(const BigUnsigned &left, const BigUnsigned &right);
+
+    bool friend operator <(const BigUnsigned& left, const BigUnsigned& right);
+    bool friend operator ==(const BigUnsigned& left, const BigUnsigned& right);
+
+    // auto-defined
+    bool friend operator <=(const BigUnsigned& left, const BigUnsigned& right);
+    bool friend operator >(const BigUnsigned& left, const BigUnsigned& right);
+    bool friend operator >=(const BigUnsigned& left, const BigUnsigned& right);
+    bool friend operator !=(const BigUnsigned& left, const BigUnsigned& right);
+
 	friend const BigUnsigned operator +(const BigUnsigned&, const BigUnsigned&);
 	void operator +=(const BigUnsigned&);
+
+    void operator++();
+
+    void operator -=(const BigUnsigned& minus);
 
     friend BigUnsigned x_mul(const BigUnsigned& a,const BigUnsigned& b);
     friend BigUnsigned k_mul(const BigUnsigned& left,const BigUnsigned& right);
@@ -149,7 +167,7 @@ public:
 
     friend BigUnsigned Reciprocal(const BigUnsigned& bu,int precision);
 
-    friend BigUnsigned DivisionWithKnownRemainder(const BigUnsigned& number, const BigUnsigned& Remainder, BigUnsigned& div, const int );
+    friend BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsigned&, BigUnsigned& div, const int );
 
 	void operator =(const BigUnsigned&);
 
@@ -323,6 +341,42 @@ void BigUnsigned::operator +=(const BigUnsigned& right) {
 
 
 }
+/**
+
+Способно отработать нормально, если ...
+
++ НЕ ЗАБУДЬ ПРО real_size
+
+*/
+void BigUnsigned::operator -=(const BigUnsigned& minus) {
+
+    for(int i = 0;i< minus.real_size; ++i){
+        _digits[i] -= minus._digits[i];
+        if (_digits[i] < 0){
+            _digits[i] += BASE;
+            --_digits[i+1];
+        }
+    }
+
+    if (minus.real_size != real_size){
+
+
+
+        /// Замечу что первый проход не имеет смысла :-)
+        for(int j = minus.real_size; _digits[j] < 0;++j){
+
+            _digits[j] += BASE;
+            --_digits[j+1];
+
+        }
+    }
+
+    _remove_leading_zeros();
+
+
+
+
+}
 
 /**
 
@@ -437,12 +491,34 @@ const BigUnsigned operator +(const BigUnsigned& left, const BigUnsigned& right) 
 }
 
 
-/*
-// префиксный инкремент
-const BigInt BigInt::operator++() {
-	return (*this += 1);
-}
 
+// префиксный инкремент
+void BigUnsigned::operator++() {
+	ubi_szt cou = 0;
+	++_digits[0];
+	for ( ; cou < real_size -1; ++cou){
+        if (_digits[cou] < BASE){ return;}
+
+        _digits[cou] -= BASE; /// можно записать = 0 в целом, если изначальное число сбалансировано
+        ++_digits[cou+1];
+	}
+
+    if (_digits[real_size - 1] >= BASE ){
+        if (real_size == alloc_size){
+            /// reallocate memory
+            ++alloc_size;
+            CONT_TYPE * new_c = new CONT_TYPE[alloc_size];
+            memcpy(new_c, _digits, real_size * sizeof(CONT_TYPE));
+            new_c[real_size] = 0;
+            _digits = new_c;
+        }
+
+        _digits[real_size - 1] -= BASE;
+        ++_digits[real_size++];
+
+    }
+}
+/*
 // постфиксный инкремент
 const BigInt BigInt::operator ++(int) {
 	*this += 1;
@@ -510,6 +586,21 @@ void BigUnsigned::assign_from_BU(const int alloc_space, const BigUnsigned& bu){
     alloc_with_zeros(alloc_space);
     real_size = bu.real_size;
     memcpy(_digits,bu._digits,real_size * sizeof(CONT_TYPE));
+}
+
+
+/**
+    Системная функция. Требуется для тех случаев, когда real_size выше чем "реальный" размер.
+    (просто уменьшает real_size)
+*/
+void BigUnsigned::_remove_leading_zeros(){
+    int cur = real_size - 1;
+    for( ; cur != 0 ; --cur){
+        if (_digits[cur] != 0){
+            break;
+        }
+    }
+    real_size = cur + 1;
 }
 
 /*
@@ -624,6 +715,91 @@ const int BigInt::get_real_size() const{
 */
 
 
+
+
+
+
+/// Обработка сравнения двух положительных чисел (0 => второе больше, 1 => равны, 2 => наше больше)
+short inline compare(const BigUnsigned &left, const BigUnsigned &right){
+    size_t sz = left.real_size;
+    if (right.real_size != left.real_size){
+        return (left.real_size > right.real_size) << 1;
+    }
+
+
+
+    for (size_t i = 0;i<sz;i++){
+        int p = sz - i - 1;
+        if (left._digits[p] != right._digits[p]){
+            return (left._digits[p] > right._digits[p]) << 1;
+        }
+    }
+
+    return 1;
+}
+
+
+
+
+// проверяет, является ли левый операнд меньше правого
+bool operator <(const BigUnsigned& left, const BigUnsigned& right) {
+
+    size_t sz = left.real_size;
+    if (right.real_size != left.real_size){
+        return (left.real_size < right.real_size);
+    }
+
+
+
+    for (size_t i = 0;i<sz;i++){
+        int p = sz - i - 1;
+        if (left._digits[p] != right._digits[p]){
+            return (left._digits[p] < right._digits[p]);
+        }
+    }
+
+    return 0;
+}
+
+// проверяет, является ли левый операнд меньше правого
+bool operator ==(const BigUnsigned& left, const BigUnsigned& right) {
+
+    size_t sz = left.real_size;
+    if (right.real_size != left.real_size){
+        return 0;
+    }
+
+
+
+    for (size_t i = 0;i<sz;i++){
+        int p = sz - i - 1;
+        if (left._digits[p] != right._digits[p]){
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+// сравнивает два числа на неравенство
+bool operator !=(const BigUnsigned& left, const BigUnsigned& right) {
+	return !(left == right);
+}
+
+// проверяет, является ли левый операнд меньше либо равен правого
+bool operator <=(const BigUnsigned& left, const BigUnsigned& right) {
+	return !(right < left);
+}
+
+// проверяет, является ли левый операнд больше правого
+bool operator >(const BigUnsigned& left, const BigUnsigned& right) {
+	return (right < left);
+}
+
+// проверяет, является ли левый операнд больше либо равен правого
+bool operator >=(const BigUnsigned& left, const BigUnsigned& right) {
+	return !(left < right);
+}
 
 
 /* Grade school multiplication, ignoring the signs.
@@ -821,32 +997,16 @@ TO-DO:
 
 void mult(const CONT_TYPE * a, CONT_TYPE * b, CONT_TYPE *__restrict res, const ubi_szt n) {
 
+    /// Слишком маленькое число, запускаем школьный алгоритм
     if (n <= KAR_TRESH) {
-
-            /*
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                res[i + j] += a[i] * b[j];
-            }
-        }
-        */
-
         x_mul(a,b,res,n);
-
-
     } else {
 
         const ubi_szt fh = (n+1) / 2;   // First half Data (take more)
         const ubi_szt sh = (n - fh); // Second half of Data
 
-
-
-        /// alignas(align) ???
-
-
         CONT_TYPE* first = new CONT_TYPE[fh + 1];
-
-         first[fh] = 0;
+        first[fh] = 0;
 
         CONT_TYPE* second = new CONT_TYPE[fh + 1]; second[fh] = 0;
 
@@ -881,6 +1041,10 @@ void mult(const CONT_TYPE * a, CONT_TYPE * b, CONT_TYPE *__restrict res, const u
             second[fh - 1] -= BASE;
             ++second[fh];
         }
+
+
+        /// first += a offseted by fh
+        /// second += b offseted by sh
 
 
         //mult(first, second, res + fh, fh + 1);
@@ -1188,13 +1352,13 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 }
 
 
-BigUnsigned DivisionWithKnownRemainder(const BigUnsigned& number, const BigUnsigned& Remainder, BigUnsigned& div, const int shift){
+BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsigned& Reciprocal, BigUnsigned& div, const int shift){
     BigUnsigned res;
-    res.alloc_with_zeros(number.real_size + Remainder.real_size);
+    res.alloc_with_zeros(number.real_size + Reciprocal.real_size);
     res.real_size = res.alloc_size;
-    mult(number._digits, Remainder._digits + (Remainder.alloc_size - number.real_size), res._digits, number.real_size);
+    mult(number._digits, Reciprocal._digits + (Reciprocal.alloc_size - number.real_size), res._digits, number.real_size);
 
-    cout << number << endl << Remainder << endl;
+    cout << number << endl << Reciprocal << endl;
 
     cout << res << endl;
 
@@ -1205,6 +1369,15 @@ BigUnsigned DivisionWithKnownRemainder(const BigUnsigned& number, const BigUnsig
     cout << res << endl;
 
     BigUnsigned m = karatsuba(res,div);
+    BigUnsigned rem = number;
+    rem -= m;
+
+    /*
+    if ( rem >= div){
+        ++res;
+    }
+    */
+
 
     cout << m << endl;
 
@@ -1246,6 +1419,7 @@ BigUnsigned DivisionWithKnownRemainder(const BigUnsigned& number, const BigUnsig
 
 
 
+
 #define file_read 1
 
 
@@ -1262,7 +1436,7 @@ int main()
 
     BigUnsigned a,b,c;
 
-    cin >> a >> b;
+    cin >> a;
 
     /// 100k memcpy of 100k ints (aka 1 million decimal places) in 5 s
     /// -> 100 allocs in 5 ms
@@ -1274,10 +1448,11 @@ int main()
         ///cout << karatsuba(a,b);
         /// РџРѕС‡РµРјСѓ-С‚Рѕ... РџРћР§Р•РњРЈ С‚РѕР»СЊРєРѕ РїРѕР»РѕРІРёРЅР° Р·РЅР°РєРѕРІ Р±СѓРґРµС‚ Р·РЅР°С‡РёРјР°..
         ///cout << Reciprocal(a,4) << endl;
-        BigUnsigned r =Reciprocal(b,4);
-        ///cout << "r  :" << r <<endl;
-        ///cout << "a : " << a << endl;
-        cout << DivisionWithKnownRemainder(a,r, b, b.real_size - 1 + a.real_size) << endl;
+        ///BigUnsigned r =Reciprocal(b,4);
+        ++a;
+
+        cout << a <<endl;
+        ///cout << DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size) << endl;
 
 
         ///x_mul(a,a);
