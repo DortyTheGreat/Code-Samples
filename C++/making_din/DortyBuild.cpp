@@ -47,10 +47,9 @@ int main()
         ///cout << karatsuba(a,b);
         /// Почему-то... ПОЧЕМУ только половина знаков будет значима..
         ///cout << Reciprocal(a,4) << endl;
-        BigUnsigned r =Reciprocal(b,4);
-        ++a;
+        BigUnsigned r =Reciprocal(b,8);
 
-        cout << a <<endl;
+        ///cout << a <<endl;
         cout << DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size) << endl;
 
 
@@ -1357,15 +1356,15 @@ BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsi
     res.real_size = res.alloc_size;
     mult(number._digits, Reciprocal._digits + (Reciprocal.alloc_size - number.real_size), res._digits, number.real_size);
 
-    cout << number << endl << Reciprocal << endl;
+    ///cout << number << endl << Reciprocal << endl;
 
-    cout << res << endl;
+    ///cout << res << endl;
 
     res._digits += shift;
     res.real_size -= shift;
     res.alloc_size -= shift;
 
-    cout << res << endl;
+    ///cout << res << endl;
 
     BigUnsigned m = karatsuba(res,div);
     BigUnsigned rem = number;
@@ -1378,7 +1377,7 @@ BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsi
 
 
 
-    cout << m << endl;
+    ///cout << m << endl;
 
     return res;
 }
@@ -1447,10 +1446,9 @@ int main()
         ///cout << karatsuba(a,b);
         /// Почему-то... ПОЧЕМУ только половина знаков будет значима..
         ///cout << Reciprocal(a,4) << endl;
-        BigUnsigned r =Reciprocal(b,4);
-        ++a;
+        BigUnsigned r =Reciprocal(b,8);
 
-        cout << a <<endl;
+        ///cout << a <<endl;
         cout << DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size) << endl;
 
 

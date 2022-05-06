@@ -40,10 +40,9 @@ int main()
         ///cout << karatsuba(a,b);
         /// Почему-то... ПОЧЕМУ только половина знаков будет значима..
         ///cout << Reciprocal(a,4) << endl;
-        BigUnsigned r =Reciprocal(b,4);
-        ++a;
+        BigUnsigned r =Reciprocal(b,8);
 
-        cout << a <<endl;
+        ///cout << a <<endl;
         cout << DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size) << endl;
 
 
