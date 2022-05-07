@@ -11,11 +11,13 @@
 
 */
 void BigUnsigned::operator =(const BigUnsigned& bu){
+
     if (bu.real_size > alloc_size){
         alloc_size = next_power_of_two(bu.real_size);
         _digits = new CONT_TYPE[alloc_size]; /// new CONT_TYPE[alloc_size]{0} »À» new CONT_TYPE[alloc_size]()
     }
     real_size = bu.real_size;
+
     memcpy(_digits,bu._digits,sizeof(CONT_TYPE) * real_size);
 }
 

@@ -69,12 +69,13 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
         divisor += bu._digits[sz - i - 1];
     }
 
-    int dividend = 1;
+    DOUBLE_CONT_TYPE dividend = 1;
     for(int i = 0;i<len;++i){
         dividend *= BASE;
     }
 
     dividend = dividend / divisor;
+
 
     while ( dividend >= BASE){
         dividend /= BASE;
@@ -96,7 +97,7 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 
 
     approx[res.alloc_size - 1] = dividend;
-    ///cout << "dividend " << dividend << endl;
+
     ///write_to = dividend / divisor;
     ///write_to._appendZeros(precision - sz);
 
@@ -156,7 +157,6 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 
         /// a = 2*a - truncated_bits(n*a*a)
         ///write_to.Interate(*this, precision);
-        ///cout << "InCycle " << write_to << endl;
     }
     ///cout << res.alloc_size << endl;
 
@@ -174,22 +174,25 @@ BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsi
 
     ///cout << number << endl << Reciprocal << endl;
 
-    ///cout << res << endl;
 
     res._digits += shift;
     res.real_size -= shift;
     res.alloc_size -= shift;
 
-    ///cout << res << endl;
 
     BigUnsigned m = karatsuba(res,div);
-    BigUnsigned rem = number;
+    /// я не пойму что это за обкуренные заморочки, но если писать
+    /// BigUnsigned rem = number, то он возьмЄт данные напр€мую, игнориру€ мой оператор =. Ќаверное у этого есть крутое объ€снение с аллокацией пам€ти
+    /// и € +- это понимаю, но всЄ равно необычненько
+    BigUnsigned rem;
+    rem = number;
     rem -= m;
-
 
     if ( rem >= div){
         ++res;
     }
+
+
 
 
 

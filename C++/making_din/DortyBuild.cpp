@@ -28,7 +28,7 @@ int main()
 
     #if file_read
 
-    ///freopen ("million.txt","r",stdin);
+    freopen ("10_5.txt","r",stdin);
 
     #endif // file_read
     AppBuild();
@@ -36,21 +36,34 @@ int main()
     BigUnsigned a,b,c;
 
     cin >> a >> b;
-
     /// 100k memcpy of 100k ints (aka 1 million decimal places) in 5 s
     /// -> 100 allocs in 5 ms
     /// -> 1 alloc in 0.05 ms (INSANELY QUICKLY!)
-    for(int i = 0;i<1;++i){
+
+
+    /// –í–æ-–ø–µ—Ä–≤—ã—Ö: —É–º–Ω–æ–∂–µ–Ω–∏–µ –∫–∞–ø–µ—Ü –∫–∞–∫–æ–µ –¥–æ–ª–≥–æ–µ: –Ω–∞ 10–∫ * 5–∫ ~= 0.1 —Å–µ–∫—É–Ω–¥–∞ (—É —à–∫–æ–ª—å–Ω–æ–≥–æ —É–π–¥—ë—Ç –ø—Ä–∏ 10k –Ω–∞ 10k 0.3, –∫–∞–∫-—Ç–æ –º–∞–ª–æ —É–≤–µ–ª–∏—á–∏–≤–∞–µ—Ç)
+    /// –ê –î–ï–õ–ï–ù–ò–ï - –∫–∞–ø–µ—Ü –∫–∞–∫–æ–µ –¥–æ–ª–≥–æ–µ! 2 —Å–µ–∫—É–Ω–¥—ã –ø—Ä–∏ —Ç–µ—Ö –∂–µ –ø–∞—Ä–∞–º–µ—Ç—Ä–∞—Ö
+
+    BigUnsigned r =Reciprocal(b,intlog(2,a.real_size) + 2 ) ;
+    for(int i = 0;i<2;++i){
 
         ///b = a;
         //CONT_TYPE * d = new CONT_TYPE[100000];
         ///cout << karatsuba(a,b);
         /// –ü–æ—á–µ–º—É-—Ç–æ... –ü–û–ß–ï–ú–£ —Ç–æ–ª—å–∫–æ –ø–æ–ª–æ–≤–∏–Ω–∞ –∑–Ω–∞–∫–æ–≤ –±—É–¥–µ—Ç –∑–Ω–∞—á–∏–º–∞..
         ///cout << Reciprocal(a,4) << endl;
-        BigUnsigned r =Reciprocal(b,8);
 
-        ///cout << a <<endl;
-        cout << DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size) << endl;
+
+        ///cout << "a " << a << endl;
+        ///cout << "b " << b << endl;
+        ///cout << "r " <<r << endl;
+        cout << a.real_size << endl;
+        c= DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size);
+        cout << a.real_size << endl;
+        ///cout << "b : " << b << endl;
+        ///cout << b.real_size << endl;
+        ///karatsuba(a,b);
+        cout << "c: "<< c << endl;
 
 
         ///x_mul(a,a);
@@ -128,7 +141,7 @@ public:
     ubi_szt real_size; /// –≈¿À‹Õ¿ﬂ ƒÎËÌÌ‡ ˜ËÒÎ‡
     ubi_szt alloc_size; /// ƒÎˇ ÛÔÓ˘ÂÌËˇ Â‡ÎËÁ‡ˆËË alloc_size - ‚ÒÂ„‰‡ ÒÚÂÔÂÌ¸ ‰‚ÓÈÍ‡, Ú‡Í ÏÓÊÌÓ ·Û‰ÂÚ Û‰Ó·ÌÓ ‰ÂÎËÚ¸ Ï‡ÒÒË‚ Ì‡ ‰‚Â\\˜ÂÚ˚Â ‡‚Ì˚Â ˜‡ÒÚË.
 
-    BigUnsigned(){}
+    BigUnsigned(){_digits = new CONT_TYPE[1]; _digits[0] = 0; real_size = 1; alloc_size = 1;}
 
     void _remove_leading_zeros();
 
@@ -559,11 +572,13 @@ const BigInt operator -(BigInt left, const BigInt& right) {
 
 */
 void BigUnsigned::operator =(const BigUnsigned& bu){
+
     if (bu.real_size > alloc_size){
         alloc_size = next_power_of_two(bu.real_size);
         _digits = new CONT_TYPE[alloc_size]; /// new CONT_TYPE[alloc_size]{0} »À» new CONT_TYPE[alloc_size]()
     }
     real_size = bu.real_size;
+
     memcpy(_digits,bu._digits,sizeof(CONT_TYPE) * real_size);
 }
 
@@ -1253,12 +1268,13 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
         divisor += bu._digits[sz - i - 1];
     }
 
-    int dividend = 1;
+    DOUBLE_CONT_TYPE dividend = 1;
     for(int i = 0;i<len;++i){
         dividend *= BASE;
     }
 
     dividend = dividend / divisor;
+
 
     while ( dividend >= BASE){
         dividend /= BASE;
@@ -1280,7 +1296,7 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 
 
     approx[res.alloc_size - 1] = dividend;
-    ///cout << "dividend " << dividend << endl;
+
     ///write_to = dividend / divisor;
     ///write_to._appendZeros(precision - sz);
 
@@ -1340,7 +1356,6 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 
         /// a = 2*a - truncated_bits(n*a*a)
         ///write_to.Interate(*this, precision);
-        ///cout << "InCycle " << write_to << endl;
     }
     ///cout << res.alloc_size << endl;
 
@@ -1358,22 +1373,25 @@ BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsi
 
     ///cout << number << endl << Reciprocal << endl;
 
-    ///cout << res << endl;
 
     res._digits += shift;
     res.real_size -= shift;
     res.alloc_size -= shift;
 
-    ///cout << res << endl;
 
     BigUnsigned m = karatsuba(res,div);
-    BigUnsigned rem = number;
+    /// ﬂ ÌÂ ÔÓÈÏÛ ˜ÚÓ ˝ÚÓ Á‡ Ó·ÍÛÂÌÌ˚Â Á‡ÏÓÓ˜ÍË, ÌÓ ÂÒÎË ÔËÒ‡Ú¸
+    /// BigUnsigned rem = number, ÚÓ ÓÌ ‚ÓÁ¸Ï∏Ú ‰‡ÌÌ˚Â Ì‡ÔˇÏÛ˛, Ë„ÌÓËÛˇ ÏÓÈ ÓÔÂ‡ÚÓ =. Õ‡‚ÂÌÓÂ Û ˝ÚÓ„Ó ÂÒÚ¸ ÍÛÚÓÂ Ó·˙ˇÒÌÂÌËÂ Ò ‡ÎÎÓÍ‡ˆËÂÈ Ô‡ÏˇÚË
+    /// Ë ˇ +- ˝ÚÓ ÔÓÌËÏ‡˛, ÌÓ ‚Ò∏ ‡‚ÌÓ ÌÂÓ·˚˜ÌÂÌ¸ÍÓ
+    BigUnsigned rem;
+    rem = number;
     rem -= m;
-
 
     if ( rem >= div){
         ++res;
     }
+
+
 
 
 
@@ -1427,7 +1445,7 @@ int main()
 
     #if file_read
 
-    ///freopen ("million.txt","r",stdin);
+    freopen ("10_5.txt","r",stdin);
 
     #endif // file_read
      
@@ -1435,21 +1453,34 @@ int main()
     BigUnsigned a,b,c;
 
     cin >> a >> b;
-
     /// 100k memcpy of 100k ints (aka 1 million decimal places) in 5 s
     /// -> 100 allocs in 5 ms
     /// -> 1 alloc in 0.05 ms (INSANELY QUICKLY!)
-    for(int i = 0;i<1;++i){
+
+
+    /// –í–æ-–ø–µ—Ä–≤—ã—Ö: —É–º–Ω–æ–∂–µ–Ω–∏–µ –∫–∞–ø–µ—Ü –∫–∞–∫–æ–µ –¥–æ–ª–≥–æ–µ: –Ω–∞ 10–∫ * 5–∫ ~= 0.1 —Å–µ–∫—É–Ω–¥–∞ (—É —à–∫–æ–ª—å–Ω–æ–≥–æ —É–π–¥—ë—Ç –ø—Ä–∏ 10k –Ω–∞ 10k 0.3, –∫–∞–∫-—Ç–æ –º–∞–ª–æ —É–≤–µ–ª–∏—á–∏–≤–∞–µ—Ç)
+    /// –ê –î–ï–õ–ï–ù–ò–ï - –∫–∞–ø–µ—Ü –∫–∞–∫–æ–µ –¥–æ–ª–≥–æ–µ! 2 —Å–µ–∫—É–Ω–¥—ã –ø—Ä–∏ —Ç–µ—Ö –∂–µ –ø–∞—Ä–∞–º–µ—Ç—Ä–∞—Ö
+
+    BigUnsigned r =Reciprocal(b,intlog(2,a.real_size) + 2 ) ;
+    for(int i = 0;i<2;++i){
 
         ///b = a;
         //CONT_TYPE * d = new CONT_TYPE[100000];
         ///cout << karatsuba(a,b);
         /// –ü–æ—á–µ–º—É-—Ç–æ... –ü–û–ß–ï–ú–£ —Ç–æ–ª—å–∫–æ –ø–æ–ª–æ–≤–∏–Ω–∞ –∑–Ω–∞–∫–æ–≤ –±—É–¥–µ—Ç –∑–Ω–∞—á–∏–º–∞..
         ///cout << Reciprocal(a,4) << endl;
-        BigUnsigned r =Reciprocal(b,8);
 
-        ///cout << a <<endl;
-        cout << DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size) << endl;
+
+        ///cout << "a " << a << endl;
+        ///cout << "b " << b << endl;
+        ///cout << "r " <<r << endl;
+        cout << a.real_size << endl;
+        c= DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size);
+        cout << a.real_size << endl;
+        ///cout << "b : " << b << endl;
+        ///cout << b.real_size << endl;
+        ///karatsuba(a,b);
+        cout << "c: "<< c << endl;
 
 
         ///x_mul(a,a);

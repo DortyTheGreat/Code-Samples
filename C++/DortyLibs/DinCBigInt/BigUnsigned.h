@@ -43,7 +43,7 @@ public:
     ubi_szt real_size; /// –≈јЋ№Ќјя ƒлинна числа
     ubi_szt alloc_size; /// ƒл€ упрощени€ реализации alloc_size - всегда степень двойка, так можно будет удобно делить массив на две\\четыре равные части.
 
-    BigUnsigned(){}
+    BigUnsigned(){_digits = new CONT_TYPE[1]; _digits[0] = 0; real_size = 1; alloc_size = 1;}
 
     void _remove_leading_zeros();
 
