@@ -9,15 +9,17 @@ Discord: �����#9030
 //#pragma GCC optimization ("O3") /// немножко ускоряет карацубу
 //#pragma GCC optimization ("unroll-loops")
 
-#include "../DortyLibs/AdvancedStream.h"
+using namespace std;
+#include <iostream>
+///#include "../DortyLibs/AdvancedStream.h"
 
 #include <cmath>
-using namespace std;
+
 #include <stdio.h>
 #include "../DortyLibs/DinBigLib.h"
 
 #include "../DortyLibs/DortyBuild.h"
-
+#include "../DortyLibs/DortyTime.h"
 
 #define file_read 1
 
@@ -25,17 +27,23 @@ using namespace std;
 
 int main()
 {
-
+    Clock cl;
+    cl.tick();
+    ///cout << "here2 " << endl;
     #if file_read
 
     freopen ("10_5.txt","r",stdin);
 
     #endif // file_read
     AppBuild();
-
+    cout << "here" << endl;
     BigUnsigned a,b,c;
 
     cin >> a >> b;
+    cout << "var c : " << c << endl;
+    ///cout << a << " " << b << endl;
+    /// то нихуя работать не будет, будет какой-то пиздец
+
     /// 100k memcpy of 100k ints (aka 1 million decimal places) in 5 s
     /// -> 100 allocs in 5 ms
     /// -> 1 alloc in 0.05 ms (INSANELY QUICKLY!)
@@ -58,7 +66,11 @@ int main()
         ///cout << "b " << b << endl;
         ///cout << "r " <<r << endl;
         cout << a.real_size << endl;
-        c= DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size);
+        cl.tick();
+        cout << "here" << endl;
+        c = DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size);
+        cout << "here smt" << endl;
+        ///cl.tick();
         cout << a.real_size << endl;
         ///cout << "b : " << b << endl;
         ///cout << b.real_size << endl;
@@ -86,6 +98,8 @@ int main()
 //#pragma GCC optimization ("O3") /// немножко ускоряет карацубу
 //#pragma GCC optimization ("unroll-loops")
 
+using namespace std;
+#include <iostream>
 #include <iostream>
 #include <fstream>
 
@@ -94,7 +108,7 @@ std::ofstream fout("output.txt");
 
 
 #include <cmath>
-using namespace std;
+
 #include <stdio.h>
 //#pragma GCC target ("avx2")
 //#pragma GCC optimization ("O3")
@@ -184,6 +198,11 @@ public:
 	void operator =(const BigUnsigned&);
 
 	void _add(const BigUnsigned&);
+
+	~BigUnsigned (){
+	    _digits = NULL;
+        delete[] _digits;
+	}
 };
 
 
@@ -572,14 +591,18 @@ const BigInt operator -(BigInt left, const BigInt& right) {
 
 */
 void BigUnsigned::operator =(const BigUnsigned& bu){
-
+    cout << "started equality" << endl;
     if (bu.real_size > alloc_size){
-        alloc_size = next_power_of_two(bu.real_size);
-        _digits = new CONT_TYPE[alloc_size]; /// new CONT_TYPE[alloc_size]{0} ��� new CONT_TYPE[alloc_size]()
+        alloc_size = bu.alloc_size;
+        _digits = new CONT_TYPE[alloc_size];
+
+
+        ///_digits = (CONT_TYPE*)(ptr); /// new CONT_TYPE[alloc_size]{0} ��� new CONT_TYPE[alloc_size]()
     }
     real_size = bu.real_size;
 
-    memcpy(_digits,bu._digits,sizeof(CONT_TYPE) * real_size);
+    memcpy(_digits,bu._digits,sizeof(CONT_TYPE) * bu.alloc_size);
+    cout << "finished equality" << endl;
 }
 
 void BigUnsigned::alloc_with_zeros(const int sz){
@@ -1367,17 +1390,23 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 
 BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsigned& Reciprocal, BigUnsigned& div, const int shift){
     BigUnsigned res;
+    cout << number.real_size << " " << Reciprocal.real_size << endl;
     res.alloc_with_zeros(number.real_size + Reciprocal.real_size);
     res.real_size = res.alloc_size;
     mult(number._digits, Reciprocal._digits + (Reciprocal.alloc_size - number.real_size), res._digits, number.real_size);
-
+    cout << "here3" << endl;
     ///cout << number << endl << Reciprocal << endl;
 
 
     res._digits += shift;
+
     res.real_size -= shift;
+    res._remove_leading_zeros();
     res.alloc_size -= shift;
 
+    cout << res.real_size << "<- rsz" << endl;
+
+    print(res._digits, res.real_size);
 
     BigUnsigned m = karatsuba(res,div);
     /// � �� ����� ��� ��� �� ���������� ���������, �� ���� ������
@@ -1387,16 +1416,20 @@ BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsi
     rem = number;
     rem -= m;
 
+    cout << "here5" << endl;
+
     if ( rem >= div){
         ++res;
     }
 
 
+    cout << "here6" << endl;
 
 
 
+    cout << res.real_size << " " << res.alloc_size << endl;
     ///cout << m << endl;
-
+    cout << "ret : " << res << endl;
     return res;
 }
 /**
@@ -1434,6 +1467,33 @@ BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsi
 
 
 
+#include <iostream>
+#include <iomanip>
+#include <vector>
+#include <numeric>
+#include <chrono>
+
+class Clock{
+private:
+    long long start_prog_time;
+    long long last_time;
+
+
+
+public:
+
+    Clock(){
+        start_prog_time = chrono::high_resolution_clock::now().time_since_epoch().count();
+        last_time = chrono::high_resolution_clock::now().time_since_epoch().count();
+    }
+
+  void tick() {
+      long long time = chrono::high_resolution_clock::now().time_since_epoch().count();
+      ///cout << CLOCKS_PER_SEC << endl;
+      cout << (time - start_prog_time) << " (+" <<time-last_time << ")" << endl;
+      last_time = time;
+    }
+};
 
 
 #define file_read 1
@@ -1442,17 +1502,23 @@ BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsi
 
 int main()
 {
-
+    Clock cl;
+    cl.tick();
+    ///cout << "here2 " << endl;
     #if file_read
 
     freopen ("10_5.txt","r",stdin);
 
     #endif // file_read
      
-
+    cout << "here" << endl;
     BigUnsigned a,b,c;
 
     cin >> a >> b;
+    cout << "var c : " << c << endl;
+    ///cout << a << " " << b << endl;
+    /// то нихуя работать не будет, будет какой-то пиздец
+
     /// 100k memcpy of 100k ints (aka 1 million decimal places) in 5 s
     /// -> 100 allocs in 5 ms
     /// -> 1 alloc in 0.05 ms (INSANELY QUICKLY!)
@@ -1475,7 +1541,11 @@ int main()
         ///cout << "b " << b << endl;
         ///cout << "r " <<r << endl;
         cout << a.real_size << endl;
-        c= DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size);
+        cl.tick();
+        cout << "here" << endl;
+        c = DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size);
+        cout << "here smt" << endl;
+        ///cl.tick();
         cout << a.real_size << endl;
         ///cout << "b : " << b << endl;
         ///cout << b.real_size << endl;

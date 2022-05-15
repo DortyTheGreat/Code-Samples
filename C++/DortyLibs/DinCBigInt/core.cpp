@@ -11,14 +11,18 @@
 
 */
 void BigUnsigned::operator =(const BigUnsigned& bu){
-
+    cout << "started equality" << endl;
     if (bu.real_size > alloc_size){
-        alloc_size = next_power_of_two(bu.real_size);
-        _digits = new CONT_TYPE[alloc_size]; /// new CONT_TYPE[alloc_size]{0} »À» new CONT_TYPE[alloc_size]()
+        alloc_size = bu.alloc_size;
+        _digits = new CONT_TYPE[alloc_size];
+
+
+        ///_digits = (CONT_TYPE*)(ptr); /// new CONT_TYPE[alloc_size]{0} »À» new CONT_TYPE[alloc_size]()
     }
     real_size = bu.real_size;
 
-    memcpy(_digits,bu._digits,sizeof(CONT_TYPE) * real_size);
+    memcpy(_digits,bu._digits,sizeof(CONT_TYPE) * bu.alloc_size);
+    cout << "finished equality" << endl;
 }
 
 void BigUnsigned::alloc_with_zeros(const int sz){

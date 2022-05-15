@@ -2,15 +2,17 @@
 //#pragma GCC optimization ("O3") /// немножко ускоряет карацубу
 //#pragma GCC optimization ("unroll-loops")
 
-#include "../DortyLibs/AdvancedStream.h"
+using namespace std;
+#include <iostream>
+///#include "../DortyLibs/AdvancedStream.h"
 
 #include <cmath>
-using namespace std;
+
 #include <stdio.h>
 #include "../DortyLibs/DinBigLib.h"
 
 #include "../DortyLibs/DortyBuild.h"
-
+#include "../DortyLibs/DortyTime.h"
 
 #define file_read 1
 
@@ -18,19 +20,21 @@ using namespace std;
 
 int main()
 {
-
+    Clock cl;
+    cl.tick();
+    ///cout << "here2 " << endl;
     #if file_read
 
     freopen ("10_5.txt","r",stdin);
 
     #endif // file_read
     AppBuild();
-
+    cout << "here" << endl;
     BigUnsigned a,b,c;
 
     cin >> a >> b;
-
-    /// если я вот сюда запишу cout << a << " " << b << endl;
+    cout << "var c : " << c << endl;
+    ///cout << a << " " << b << endl;
     /// то нихуя работать не будет, будет какой-то пиздец
 
     /// 100k memcpy of 100k ints (aka 1 million decimal places) in 5 s
@@ -55,7 +59,11 @@ int main()
         ///cout << "b " << b << endl;
         ///cout << "r " <<r << endl;
         cout << a.real_size << endl;
-        c= DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size);
+        cl.tick();
+        cout << "here" << endl;
+        c = DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size);
+        cout << "here smt" << endl;
+        ///cl.tick();
         cout << a.real_size << endl;
         ///cout << "b : " << b << endl;
         ///cout << b.real_size << endl;

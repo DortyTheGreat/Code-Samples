@@ -86,6 +86,11 @@ public:
 	void operator =(const BigUnsigned&);
 
 	void _add(const BigUnsigned&);
+
+	~BigUnsigned (){
+	    _digits = NULL;
+        delete[] _digits;
+	}
 };
 
 #include "BigUnsigned.cpp"
