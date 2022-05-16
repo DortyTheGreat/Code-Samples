@@ -60,9 +60,7 @@ int main()
         ///cout << "r " <<r << endl;
         cout << a.real_size << endl;
         cl.tick();
-        cout << "here" << endl;
         c = DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size);
-        cout << "here smt" << endl;
         ///cl.tick();
         cout << a.real_size << endl;
         ///cout << "b : " << b << endl;

@@ -168,11 +168,10 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 
 BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsigned& Reciprocal, BigUnsigned& div, const int shift){
     BigUnsigned res;
-    cout << number.real_size << " " << Reciprocal.real_size << endl;
     res.alloc_with_zeros(number.real_size + Reciprocal.real_size);
     res.real_size = res.alloc_size;
     mult(number._digits, Reciprocal._digits + (Reciprocal.alloc_size - number.real_size), res._digits, number.real_size);
-    cout << "here3" << endl;
+
     ///cout << number << endl << Reciprocal << endl;
 
 
@@ -182,9 +181,7 @@ BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsi
     res._remove_leading_zeros();
     res.alloc_size -= shift;
 
-    cout << res.real_size << "<- rsz" << endl;
 
-    print(res._digits, res.real_size);
 
     BigUnsigned m = karatsuba(res,div);
     /// Я не пойму что это за обкуренные заморочки, но если писать
@@ -194,20 +191,13 @@ BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsi
     rem = number;
     rem -= m;
 
-    cout << "here5" << endl;
+
 
     if ( rem >= div){
         ++res;
     }
 
 
-    cout << "here6" << endl;
-
-
-
-    cout << res.real_size << " " << res.alloc_size << endl;
-    ///cout << m << endl;
-    cout << "ret : " << res << endl;
     return res;
 }
 /**

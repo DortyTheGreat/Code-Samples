@@ -67,9 +67,7 @@ int main()
         ///cout << "r " <<r << endl;
         cout << a.real_size << endl;
         cl.tick();
-        cout << "here" << endl;
         c = DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size);
-        cout << "here smt" << endl;
         ///cl.tick();
         cout << a.real_size << endl;
         ///cout << "b : " << b << endl;
@@ -196,11 +194,12 @@ public:
     friend BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsigned&, BigUnsigned& div, const int );
 
 	void operator =(const BigUnsigned&);
+	///void operator =(BigUnsigned&& bu);
 
 	void _add(const BigUnsigned&);
 
 	~BigUnsigned (){
-	    _digits = NULL;
+	    //_digits = NULL;
         delete[] _digits;
 	}
 };
@@ -602,8 +601,15 @@ void BigUnsigned::operator =(const BigUnsigned& bu){
     real_size = bu.real_size;
 
     memcpy(_digits,bu._digits,sizeof(CONT_TYPE) * bu.alloc_size);
-    cout << "finished equality" << endl;
 }
+
+/*
+void BigUnsigned::operator =(BigUnsigned&& bu){
+    real_size = bu.real_size;
+    alloc_size = bu.alloc_size;
+    _digits = bu._digits;
+}
+*/
 
 void BigUnsigned::alloc_with_zeros(const int sz){
     alloc_size = sz;
@@ -1390,11 +1396,10 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 
 BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsigned& Reciprocal, BigUnsigned& div, const int shift){
     BigUnsigned res;
-    cout << number.real_size << " " << Reciprocal.real_size << endl;
     res.alloc_with_zeros(number.real_size + Reciprocal.real_size);
     res.real_size = res.alloc_size;
     mult(number._digits, Reciprocal._digits + (Reciprocal.alloc_size - number.real_size), res._digits, number.real_size);
-    cout << "here3" << endl;
+
     ///cout << number << endl << Reciprocal << endl;
 
 
@@ -1404,9 +1409,7 @@ BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsi
     res._remove_leading_zeros();
     res.alloc_size -= shift;
 
-    cout << res.real_size << "<- rsz" << endl;
 
-    print(res._digits, res.real_size);
 
     BigUnsigned m = karatsuba(res,div);
     /// Я не пойму что это за обкуренные заморочки, но если писать
@@ -1416,20 +1419,13 @@ BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsi
     rem = number;
     rem -= m;
 
-    cout << "here5" << endl;
+
 
     if ( rem >= div){
         ++res;
     }
 
 
-    cout << "here6" << endl;
-
-
-
-    cout << res.real_size << " " << res.alloc_size << endl;
-    ///cout << m << endl;
-    cout << "ret : " << res << endl;
     return res;
 }
 /**
@@ -1542,9 +1538,7 @@ int main()
         ///cout << "r " <<r << endl;
         cout << a.real_size << endl;
         cl.tick();
-        cout << "here" << endl;
         c = DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size);
-        cout << "here smt" << endl;
         ///cl.tick();
         cout << a.real_size << endl;
         ///cout << "b : " << b << endl;

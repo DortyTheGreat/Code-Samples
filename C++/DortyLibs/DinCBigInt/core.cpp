@@ -22,8 +22,15 @@ void BigUnsigned::operator =(const BigUnsigned& bu){
     real_size = bu.real_size;
 
     memcpy(_digits,bu._digits,sizeof(CONT_TYPE) * bu.alloc_size);
-    cout << "finished equality" << endl;
 }
+
+/*
+void BigUnsigned::operator =(BigUnsigned&& bu){
+    real_size = bu.real_size;
+    alloc_size = bu.alloc_size;
+    _digits = bu._digits;
+}
+*/
 
 void BigUnsigned::alloc_with_zeros(const int sz){
     alloc_size = sz;

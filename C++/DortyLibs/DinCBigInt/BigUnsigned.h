@@ -84,6 +84,7 @@ public:
     friend BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsigned&, BigUnsigned& div, const int );
 
 	void operator =(const BigUnsigned&);
+	///void operator =(BigUnsigned&& bu);
 
 	void _add(const BigUnsigned&);
 
