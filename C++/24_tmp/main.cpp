@@ -10,6 +10,9 @@ int main()
     ifstream fin("in.txt");
     string str;
     fin >> str;
+    BigUnsigned test;
+
+    BigUnsigned e2(test);
 
     for(int i =0 ;i< str.size();i++){
         mp[str[i]]++;

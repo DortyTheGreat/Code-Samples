@@ -29,6 +29,12 @@ int main()
 
     #endif // file_read
     AppBuild();
+
+    BigUnsigned test;
+
+
+
+
     cout << "here" << endl;
     BigUnsigned a,b,c;
 

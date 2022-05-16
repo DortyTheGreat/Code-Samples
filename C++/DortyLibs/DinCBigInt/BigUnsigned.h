@@ -5,13 +5,13 @@
 ///#include <bits/stdc++.h>
 
 #include <cstdint> ///
-#include <cstring> /// для memcpy
+#include <cstring> /// Г¤Г«Гї memcpy
 
 #define default_base 10
 
 #define CONT_TYPE int
-#define DOUBLE_CONT_TYPE long long /// Двойной РАЗМЕР
-#define ubi_szt int /// Unsigned Big Int SiZe Type, пока обязан быть знаковым -_-
+#define DOUBLE_CONT_TYPE long long /// Г„ГўГ®Г©Г­Г®Г© ГђГЂГ‡ГЊГ…Гђ
+#define ubi_szt int /// Unsigned Big Int SiZe Type, ГЇГ®ГЄГ  Г®ГЎГїГ§Г Г­ ГЎГ»ГІГј Г§Г­Г ГЄГ®ГўГ»Г¬ -_-
 
 
 #define big_container 0
@@ -40,14 +40,47 @@ private:
     static const CONT_TYPE BASE = total_base;
 public:
 
-    ubi_szt real_size; /// РЕАЛЬНАЯ Длинна числа
-    ubi_szt alloc_size; /// Для упрощения реализации alloc_size - всегда степень двойка, так можно будет удобно делить массив на две\\четыре равные части.
+    ubi_szt real_size; /// ГђГ…ГЂГ‹ГњГЌГЂГџ Г„Г«ГЁГ­Г­Г  Г·ГЁГ±Г«Г 
+    ubi_szt alloc_size; /// Г„Г«Гї ГіГЇГ°Г®Г№ГҐГ­ГЁГї Г°ГҐГ Г«ГЁГ§Г Г¶ГЁГЁ alloc_size - ГўГ±ГҐГЈГ¤Г  Г±ГІГҐГЇГҐГ­Гј Г¤ГўГ®Г©ГЄГ , ГІГ ГЄ Г¬Г®Г¦Г­Г® ГЎГіГ¤ГҐГІ ГіГ¤Г®ГЎГ­Г® Г¤ГҐГ«ГЁГІГј Г¬Г Г±Г±ГЁГў Г­Г  Г¤ГўГҐ\\Г·ГҐГІГ»Г°ГҐ Г°Г ГўГ­Г»ГҐ Г·Г Г±ГІГЁ.
 
-    BigUnsigned(){_digits = new CONT_TYPE[1]; _digits[0] = 0; real_size = 1; alloc_size = 1;}
+    BigUnsigned()
+        : _digits( new CONT_TYPE[1])
+        , real_size(1)
+        , alloc_size(1)
+    {_digits[0] = 0;}
+
+    void operator= (BigUnsigned&& bu)
+        : _digits( bu._digits  )
+        , real_size( bu.real_size )
+        , alloc_size( bu.alloc_size )
+    {
+        cout << "called move" << endl;
+        bu._digits = NULL;
+    }
+
+
+
+
+
+    void operator= (const BigUnsigned& bu){
+        cout << "started equality" << endl;
+        if (bu.real_size > alloc_size){
+            alloc_size = bu.alloc_size;
+            _digits = new CONT_TYPE[alloc_size];
+
+
+            ///_digits = (CONT_TYPE*)(ptr); /// new CONT_TYPE[alloc_size]{0} РР›Р new CONT_TYPE[alloc_size]()
+        }
+        real_size = bu.real_size;
+
+        memcpy(_digits,bu._digits,sizeof(CONT_TYPE) * bu.alloc_size);
+    }
+
+
 
     void _remove_leading_zeros();
 
-    /// мемори стафф
+    /// Г¬ГҐГ¬Г®Г°ГЁ Г±ГІГ ГґГґ
     void alloc_with_zeros(const int sz);
     void assign_from_BU(const int alloc_space, const BigUnsigned& bu);
 
@@ -76,15 +109,12 @@ public:
     friend BigUnsigned k_mul(const BigUnsigned& left,const BigUnsigned& right);
 
 
-    /// Карацуба, кстати меняет контейнерный размер чиселок...
+    /// ГЉГ Г°Г Г¶ГіГЎГ , ГЄГ±ГІГ ГІГЁ Г¬ГҐГ­ГїГҐГІ ГЄГ®Г­ГІГҐГ©Г­ГҐГ°Г­Г»Г© Г°Г Г§Г¬ГҐГ° Г·ГЁГ±ГҐГ«Г®ГЄ...
     friend BigUnsigned karatsuba(BigUnsigned& left,BigUnsigned& right);
 
     friend BigUnsigned Reciprocal(const BigUnsigned& bu,int precision);
 
     friend BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsigned&, BigUnsigned& div, const int );
-
-	void operator =(const BigUnsigned&);
-	///void operator =(BigUnsigned&& bu);
 
 	void _add(const BigUnsigned&);
 

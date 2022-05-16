@@ -10,7 +10,14 @@
 2) Ебаться отдельно во всех других функциях.
 
 */
-void BigUnsigned::operator =(const BigUnsigned& bu){
+
+/*
+
+BigUnsigned::BigUnsigned (BigUnsigned&& ){
+
+}
+
+BigUnsigned::BigUnsigned (const BigUnsigned& bu){
     cout << "started equality" << endl;
     if (bu.real_size > alloc_size){
         alloc_size = bu.alloc_size;
@@ -23,6 +30,8 @@ void BigUnsigned::operator =(const BigUnsigned& bu){
 
     memcpy(_digits,bu._digits,sizeof(CONT_TYPE) * bu.alloc_size);
 }
+
+*/
 
 /*
 void BigUnsigned::operator =(BigUnsigned&& bu){
