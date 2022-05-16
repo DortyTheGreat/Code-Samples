@@ -4,6 +4,7 @@
 
 using namespace std;
 #include <iostream>
+#include "../DortyLibs/DortyTime.h"
 ///#include "../DortyLibs/AdvancedStream.h"
 
 #include <cmath>
@@ -12,7 +13,7 @@ using namespace std;
 #include "../DortyLibs/DinBigLib.h"
 
 #include "../DortyLibs/DortyBuild.h"
-#include "../DortyLibs/DortyTime.h"
+
 
 #define file_read 1
 
@@ -20,17 +21,14 @@ using namespace std;
 
 int main()
 {
-    Clock cl;
-    cl.tick();
+
     ///cout << "here2 " << endl;
     #if file_read
 
-    freopen ("10_5.txt","r",stdin);
+    freopen ("double_10k.txt","r",stdin);
 
     #endif // file_read
     AppBuild();
-
-    BigUnsigned test;
 
 
 
@@ -51,23 +49,18 @@ int main()
     /// Во-первых: умножение капец какое долгое: на 10к * 5к ~= 0.1 секунда (у школьного уйдёт при 10k на 10k 0.3, как-то мало увеличивает)
     /// А ДЕЛЕНИЕ - капец какое долгое! 2 секунды при тех же параметрах
 
-    BigUnsigned r =Reciprocal(b,intlog(2,a.real_size) + 2 ) ;
+    BigUnsigned r;
+    r = Reciprocal(b,intlog(2,a.real_size) + 2 ) ;
+
+    cout << "r size " << r.real_size << endl;
+
     for(int i = 0;i<2;++i){
 
-        ///b = a;
-        //CONT_TYPE * d = new CONT_TYPE[100000];
-        ///cout << karatsuba(a,b);
-        /// Почему-то... ПОЧЕМУ только половина знаков будет значима..
-        ///cout << Reciprocal(a,4) << endl;
 
-
-        ///cout << "a " << a << endl;
-        ///cout << "b " << b << endl;
-        ///cout << "r " <<r << endl;
         cout << a.real_size << endl;
-        cl.tick();
+        MainClock.tick();
         c = DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size);
-        ///cl.tick();
+        MainClock.tick();
         cout << a.real_size << endl;
         ///cout << "b : " << b << endl;
         ///cout << b.real_size << endl;

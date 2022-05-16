@@ -50,11 +50,22 @@ public:
     {_digits[0] = 0;}
 
     void operator= (BigUnsigned&& bu)
+    {
+        cout << "called move equality" << endl;
+        _digits = ( bu._digits  );
+        real_size = ( bu.real_size );
+        alloc_size = ( bu.alloc_size );
+
+
+        bu._digits = NULL;
+    }
+
+    BigUnsigned (BigUnsigned&& bu)
         : _digits( bu._digits  )
         , real_size( bu.real_size )
         , alloc_size( bu.alloc_size )
     {
-        cout << "called move" << endl;
+        cout << "called constructor" << endl;
         bu._digits = NULL;
     }
 
@@ -63,7 +74,7 @@ public:
 
 
     void operator= (const BigUnsigned& bu){
-        cout << "started equality" << endl;
+        cout << "called copy equality" << endl;
         if (bu.real_size > alloc_size){
             alloc_size = bu.alloc_size;
             _digits = new CONT_TYPE[alloc_size];
@@ -75,6 +86,21 @@ public:
 
         memcpy(_digits,bu._digits,sizeof(CONT_TYPE) * bu.alloc_size);
     }
+    /*
+    BigUnsigned (const BigUnsigned& bu)
+        : real_size(bu.real_size)
+    {
+        cout << "called copy constructor" << endl;
+        if (bu.real_size > alloc_size){
+            alloc_size = bu.alloc_size;
+            _digits = new CONT_TYPE[alloc_size];
+            ///_digits = (CONT_TYPE*)(ptr); /// new CONT_TYPE[alloc_size]{0} ИЛИ new CONT_TYPE[alloc_size]()
+        }
+        real_size = bu.real_size;
+
+        memcpy(_digits,bu._digits,sizeof(CONT_TYPE) * bu.alloc_size);
+    }
+    */
 
 
 

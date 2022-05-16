@@ -11,6 +11,7 @@ Discord: Тесла#9030
 
 using namespace std;
 #include <iostream>
+#include "../DortyLibs/DortyTime.h"
 ///#include "../DortyLibs/AdvancedStream.h"
 
 #include <cmath>
@@ -19,7 +20,7 @@ using namespace std;
 #include "../DortyLibs/DinBigLib.h"
 
 #include "../DortyLibs/DortyBuild.h"
-#include "../DortyLibs/DortyTime.h"
+
 
 #define file_read 1
 
@@ -27,19 +28,16 @@ using namespace std;
 
 int main()
 {
-    Clock cl;
-    cl.tick();
+
     ///cout << "here2 " << endl;
     #if file_read
 
-    freopen ("10_5.txt","r",stdin);
+    freopen ("double_10k.txt","r",stdin);
 
     #endif // file_read
     AppBuild();
 
-    BigUnsigned test;
 
-    BigUnsigned e2(test);
 
 
     cout << "here" << endl;
@@ -58,23 +56,18 @@ int main()
     /// Р’Рѕ-РїРµСЂРІС‹С…: СѓРјРЅРѕР¶РµРЅРёРµ РєР°РїРµС† РєР°РєРѕРµ РґРѕР»РіРѕРµ: РЅР° 10Рє * 5Рє ~= 0.1 СЃРµРєСѓРЅРґР° (Сѓ С€РєРѕР»СЊРЅРѕРіРѕ СѓР№РґС‘С‚ РїСЂРё 10k РЅР° 10k 0.3, РєР°Рє-С‚Рѕ РјР°Р»Рѕ СѓРІРµР»РёС‡РёРІР°РµС‚)
     /// Рђ Р”Р•Р›Р•РќРР• - РєР°РїРµС† РєР°РєРѕРµ РґРѕР»РіРѕРµ! 2 СЃРµРєСѓРЅРґС‹ РїСЂРё С‚РµС… Р¶Рµ РїР°СЂР°РјРµС‚СЂР°С…
 
-    BigUnsigned r =Reciprocal(b,intlog(2,a.real_size) + 2 ) ;
+    BigUnsigned r;
+    r = Reciprocal(b,intlog(2,a.real_size) + 2 ) ;
+
+    cout << "r size " << r.real_size << endl;
+
     for(int i = 0;i<2;++i){
 
-        ///b = a;
-        //CONT_TYPE * d = new CONT_TYPE[100000];
-        ///cout << karatsuba(a,b);
-        /// РџРѕС‡РµРјСѓ-С‚Рѕ... РџРћР§Р•РњРЈ С‚РѕР»СЊРєРѕ РїРѕР»РѕРІРёРЅР° Р·РЅР°РєРѕРІ Р±СѓРґРµС‚ Р·РЅР°С‡РёРјР°..
-        ///cout << Reciprocal(a,4) << endl;
 
-
-        ///cout << "a " << a << endl;
-        ///cout << "b " << b << endl;
-        ///cout << "r " <<r << endl;
         cout << a.real_size << endl;
-        cl.tick();
+        MainClock.tick();
         c = DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size);
-        ///cl.tick();
+        MainClock.tick();
         cout << a.real_size << endl;
         ///cout << "b : " << b << endl;
         ///cout << b.real_size << endl;
@@ -104,6 +97,43 @@ int main()
 
 using namespace std;
 #include <iostream>
+#include <iostream>
+#include <iomanip>
+#include <vector>
+#include <numeric>
+#include <chrono>
+
+class Clock{
+private:
+    long long start_prog_time;
+    long long last_time;
+
+
+
+public:
+
+    Clock(){
+        start_prog_time = chrono::high_resolution_clock::now().time_since_epoch().count();
+        last_time = chrono::high_resolution_clock::now().time_since_epoch().count();
+    }
+
+    void tick() {
+        long long time = chrono::high_resolution_clock::now().time_since_epoch().count();
+        ///cout << CLOCKS_PER_SEC << endl;
+        cout << (time - start_prog_time) << " (+" <<time-last_time << ")" << endl;
+        last_time = time;
+    }
+
+    void tick(string text){
+        cout << text << " : ";
+        tick();
+    }
+
+
+};
+
+Clock MainClock;
+
 #include <iostream>
 #include <fstream>
 
@@ -165,12 +195,23 @@ public:
         , alloc_size(1)
     {_digits[0] = 0;}
 
+    void operator= (BigUnsigned&& bu)
+    {
+        cout << "called move equality" << endl;
+        _digits = ( bu._digits  );
+        real_size = ( bu.real_size );
+        alloc_size = ( bu.alloc_size );
+
+
+        bu._digits = NULL;
+    }
+
     BigUnsigned (BigUnsigned&& bu)
         : _digits( bu._digits  )
         , real_size( bu.real_size )
         , alloc_size( bu.alloc_size )
     {
-        cout << "called move" << endl;
+        cout << "called constructor" << endl;
         bu._digits = NULL;
     }
 
@@ -178,8 +219,8 @@ public:
 
 
 
-    BigUnsigned (const BigUnsigned& bu){
-        cout << "started equality" << endl;
+    void operator= (const BigUnsigned& bu){
+        cout << "called copy equality" << endl;
         if (bu.real_size > alloc_size){
             alloc_size = bu.alloc_size;
             _digits = new CONT_TYPE[alloc_size];
@@ -191,6 +232,21 @@ public:
 
         memcpy(_digits,bu._digits,sizeof(CONT_TYPE) * bu.alloc_size);
     }
+    /*
+    BigUnsigned (const BigUnsigned& bu)
+        : real_size(bu.real_size)
+    {
+        cout << "called copy constructor" << endl;
+        if (bu.real_size > alloc_size){
+            alloc_size = bu.alloc_size;
+            _digits = new CONT_TYPE[alloc_size];
+            ///_digits = (CONT_TYPE*)(ptr); /// new CONT_TYPE[alloc_size]{0} РР›Р new CONT_TYPE[alloc_size]()
+        }
+        real_size = bu.real_size;
+
+        memcpy(_digits,bu._digits,sizeof(CONT_TYPE) * bu.alloc_size);
+    }
+    */
 
 
 
@@ -231,9 +287,6 @@ public:
     friend BigUnsigned Reciprocal(const BigUnsigned& bu,int precision);
 
     friend BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsigned&, BigUnsigned& div, const int );
-
-	BigUnsigned& operator =(BigUnsigned&& bu){return (*this = bu); }
-	BigUnsigned& operator =(const BigUnsigned& bu){return (*this = bu); }
 
 	void _add(const BigUnsigned&);
 
@@ -1296,9 +1349,12 @@ void print(T* a, int n ){
 /**
 Не работает для чисел типа:
 1, 10, 100, 1000, 10000 и т.д.
+
+upd: уже работает, но это решение - есть костыль...
 */
 BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 {
+    MainClock.tick("Started Reciprocal");
     ubi_szt cool_num = 1 << precision;
 
     BigUnsigned res;
@@ -1377,11 +1433,13 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
     ///write_to = dividend / divisor;
     ///write_to._appendZeros(precision - sz);
 
-
+    MainClock.tick("Reciprocal prep done");
 
     // Do the interation to fullfil the precision
     for (int i = 1; i != cool_num; i <<= 1)
     {
+        MainClock.tick("itterarion start");
+        cout << i << endl;
         memset(sqr, 0, (cool_num) * sizeof(CONT_TYPE));
         memset(minus, 0, (2 * cool_num) * sizeof(CONT_TYPE));
 
@@ -1430,7 +1488,7 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
         ///cout << res << endl << endl;
 
 
-
+        MainClock.tick("itterarion finish");
         /// a = 2*a - truncated_bits(n*a*a)
         ///write_to.Interate(*this, precision);
     }
@@ -1445,7 +1503,7 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsigned& Reciprocal, BigUnsigned& div, const int shift){
     BigUnsigned res;
     res.alloc_with_zeros(number.real_size + Reciprocal.real_size);
-    res.real_size = res.alloc_size;
+
     mult(number._digits, Reciprocal._digits + (Reciprocal.alloc_size - number.real_size), res._digits, number.real_size);
 
     ///cout << number << endl << Reciprocal << endl;
@@ -1453,9 +1511,9 @@ BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsi
 
     res._digits += shift;
 
-    res.real_size -= shift;
+    res.real_size = (res.alloc_size -= shift);
     res._remove_leading_zeros();
-    res.alloc_size -= shift;
+
 
 
 
@@ -1463,6 +1521,12 @@ BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsi
     /// Я не пойму что это за обкуренные заморочки, но если писать
     /// BigUnsigned rem = number, то он возьмёт данные напрямую, игнорируя мой оператор =. Наверное у этого есть крутое объяснение с аллокацией памяти
     /// и я +- это понимаю, но всё равно необычненько
+
+    /**
+    16.05.2022 - Теперь я понимаю в чём дело, но почему-то если я добавлю КОНСТРУКТОР копирования, то будет попа...
+    Так что пока ничего не меняю
+    */
+
     BigUnsigned rem;
     rem = number;
     rem -= m;
@@ -1511,33 +1575,6 @@ BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsi
 
 
 
-#include <iostream>
-#include <iomanip>
-#include <vector>
-#include <numeric>
-#include <chrono>
-
-class Clock{
-private:
-    long long start_prog_time;
-    long long last_time;
-
-
-
-public:
-
-    Clock(){
-        start_prog_time = chrono::high_resolution_clock::now().time_since_epoch().count();
-        last_time = chrono::high_resolution_clock::now().time_since_epoch().count();
-    }
-
-  void tick() {
-      long long time = chrono::high_resolution_clock::now().time_since_epoch().count();
-      ///cout << CLOCKS_PER_SEC << endl;
-      cout << (time - start_prog_time) << " (+" <<time-last_time << ")" << endl;
-      last_time = time;
-    }
-};
 
 
 #define file_read 1
@@ -1546,19 +1583,16 @@ public:
 
 int main()
 {
-    Clock cl;
-    cl.tick();
+
     ///cout << "here2 " << endl;
     #if file_read
 
-    freopen ("10_5.txt","r",stdin);
+    freopen ("double_10k.txt","r",stdin);
 
     #endif // file_read
      
 
-    BigUnsigned test;
 
-    BigUnsigned e2(test);
 
 
     cout << "here" << endl;
@@ -1577,23 +1611,18 @@ int main()
     /// Р’Рѕ-РїРµСЂРІС‹С…: СѓРјРЅРѕР¶РµРЅРёРµ РєР°РїРµС† РєР°РєРѕРµ РґРѕР»РіРѕРµ: РЅР° 10Рє * 5Рє ~= 0.1 СЃРµРєСѓРЅРґР° (Сѓ С€РєРѕР»СЊРЅРѕРіРѕ СѓР№РґС‘С‚ РїСЂРё 10k РЅР° 10k 0.3, РєР°Рє-С‚Рѕ РјР°Р»Рѕ СѓРІРµР»РёС‡РёРІР°РµС‚)
     /// Рђ Р”Р•Р›Р•РќРР• - РєР°РїРµС† РєР°РєРѕРµ РґРѕР»РіРѕРµ! 2 СЃРµРєСѓРЅРґС‹ РїСЂРё С‚РµС… Р¶Рµ РїР°СЂР°РјРµС‚СЂР°С…
 
-    BigUnsigned r =Reciprocal(b,intlog(2,a.real_size) + 2 ) ;
+    BigUnsigned r;
+    r = Reciprocal(b,intlog(2,a.real_size) + 2 ) ;
+
+    cout << "r size " << r.real_size << endl;
+
     for(int i = 0;i<2;++i){
 
-        ///b = a;
-        //CONT_TYPE * d = new CONT_TYPE[100000];
-        ///cout << karatsuba(a,b);
-        /// РџРѕС‡РµРјСѓ-С‚Рѕ... РџРћР§Р•РњРЈ С‚РѕР»СЊРєРѕ РїРѕР»РѕРІРёРЅР° Р·РЅР°РєРѕРІ Р±СѓРґРµС‚ Р·РЅР°С‡РёРјР°..
-        ///cout << Reciprocal(a,4) << endl;
 
-
-        ///cout << "a " << a << endl;
-        ///cout << "b " << b << endl;
-        ///cout << "r " <<r << endl;
         cout << a.real_size << endl;
-        cl.tick();
+        MainClock.tick();
         c = DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size);
-        ///cl.tick();
+        MainClock.tick();
         cout << a.real_size << endl;
         ///cout << "b : " << b << endl;
         ///cout << b.real_size << endl;

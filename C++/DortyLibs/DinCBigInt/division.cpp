@@ -20,9 +20,12 @@ void print(T* a, int n ){
 /**
 Не работает для чисел типа:
 1, 10, 100, 1000, 10000 и т.д.
+
+upd: уже работает, но это решение - есть костыль...
 */
 BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 {
+    MainClock.tick("Started Reciprocal");
     ubi_szt cool_num = 1 << precision;
 
     BigUnsigned res;
@@ -101,11 +104,13 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
     ///write_to = dividend / divisor;
     ///write_to._appendZeros(precision - sz);
 
-
+    MainClock.tick("Reciprocal prep done");
 
     // Do the interation to fullfil the precision
     for (int i = 1; i != cool_num; i <<= 1)
     {
+        MainClock.tick("itterarion start");
+        cout << i << endl;
         memset(sqr, 0, (cool_num) * sizeof(CONT_TYPE));
         memset(minus, 0, (2 * cool_num) * sizeof(CONT_TYPE));
 
@@ -154,7 +159,7 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
         ///cout << res << endl << endl;
 
 
-
+        MainClock.tick("itterarion finish");
         /// a = 2*a - truncated_bits(n*a*a)
         ///write_to.Interate(*this, precision);
     }
@@ -169,7 +174,7 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsigned& Reciprocal, BigUnsigned& div, const int shift){
     BigUnsigned res;
     res.alloc_with_zeros(number.real_size + Reciprocal.real_size);
-    res.real_size = res.alloc_size;
+
     mult(number._digits, Reciprocal._digits + (Reciprocal.alloc_size - number.real_size), res._digits, number.real_size);
 
     ///cout << number << endl << Reciprocal << endl;
@@ -177,9 +182,9 @@ BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsi
 
     res._digits += shift;
 
-    res.real_size -= shift;
+    res.real_size = (res.alloc_size -= shift);
     res._remove_leading_zeros();
-    res.alloc_size -= shift;
+
 
 
 
@@ -187,6 +192,12 @@ BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsi
     /// Я не пойму что это за обкуренные заморочки, но если писать
     /// BigUnsigned rem = number, то он возьмёт данные напрямую, игнорируя мой оператор =. Наверное у этого есть крутое объяснение с аллокацией памяти
     /// и я +- это понимаю, но всё равно необычненько
+
+    /**
+    16.05.2022 - Теперь я понимаю в чём дело, но почему-то если я добавлю КОНСТРУКТОР копирования, то будет попа...
+    Так что пока ничего не меняю
+    */
+
     BigUnsigned rem;
     rem = number;
     rem -= m;

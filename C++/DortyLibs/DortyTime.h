@@ -18,10 +18,19 @@ public:
         last_time = chrono::high_resolution_clock::now().time_since_epoch().count();
     }
 
-  void tick() {
-      long long time = chrono::high_resolution_clock::now().time_since_epoch().count();
-      ///cout << CLOCKS_PER_SEC << endl;
-      cout << (time - start_prog_time) << " (+" <<time-last_time << ")" << endl;
-      last_time = time;
+    void tick() {
+        long long time = chrono::high_resolution_clock::now().time_since_epoch().count();
+        ///cout << CLOCKS_PER_SEC << endl;
+        cout << (time - start_prog_time) << " (+" <<time-last_time << ")" << endl;
+        last_time = time;
     }
+
+    void tick(string text){
+        cout << text << " : ";
+        tick();
+    }
+
+
 };
+
+Clock MainClock;
