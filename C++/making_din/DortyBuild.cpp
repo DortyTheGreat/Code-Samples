@@ -44,7 +44,14 @@ int main()
     BigUnsigned a,b,c;
 
     cin >> a >> b;
-    cout << "var c : " << c << endl;
+    ///cout << "var c : " << c << endl;
+
+
+
+
+
+
+
     ///cout << a << " " << b << endl;
     /// то нихуя работать не будет, будет какой-то пиздец
 
@@ -1440,24 +1447,28 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
     {
         MainClock.tick("itterarion start");
         cout << i << endl;
+
+        cout << "old approx ";
+        ///print(approx,cool_num);
+
         memset(sqr, 0, (cool_num) * sizeof(CONT_TYPE));
         memset(minus, 0, (2 * cool_num) * sizeof(CONT_TYPE));
 
         mult(approx + cool_num - i,approx + cool_num - i,sqr,i);
-        ///cout << "sqr ";
+        cout << "sqr ";
         ///print(sqr, i * 2);
         /// ������ sqr ����� ������ 2n, minus -> 4n, �� ������� truncatenut' �� 2n
 
-        ///cout << "expanded ";
+        cout << "expanded ";
         ///print(expanded + cool_num - 2*i , i*2);
 
-        ///cout << "full expanded ";
+        cout << "full expanded ";
         ///print(expanded , cool_num);
 
         mult(sqr, expanded + cool_num - 2*i , minus ,i*2 );
 
 
-        ///cout << "minus ";
+        cout << "minus ";
         ///print(minus, i * 4);
 
         /// aprox = 2*approx - minus
@@ -1485,6 +1496,9 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 
 
         }
+
+        cout << "new approx ";
+        ///print(approx,cool_num);
         ///cout << res << endl << endl;
 
 
@@ -1599,7 +1613,14 @@ int main()
     BigUnsigned a,b,c;
 
     cin >> a >> b;
-    cout << "var c : " << c << endl;
+    ///cout << "var c : " << c << endl;
+
+
+
+
+
+
+
     ///cout << a << " " << b << endl;
     /// то нихуя работать не будет, будет какой-то пиздец
 

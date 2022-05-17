@@ -37,7 +37,14 @@ int main()
     BigUnsigned a,b,c;
 
     cin >> a >> b;
-    cout << "var c : " << c << endl;
+    ///cout << "var c : " << c << endl;
+
+
+
+
+
+
+
     ///cout << a << " " << b << endl;
     /// то нихуя работать не будет, будет какой-то пиздец
 
