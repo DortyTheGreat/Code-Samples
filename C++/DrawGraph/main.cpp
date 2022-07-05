@@ -13,8 +13,8 @@ using namespace std;
 
 #include "../DortyLibs/Screen.h"
 
-const int H = 20 * 3;
-const int W = 30 * 3;
+const int H = 20 * 3 * 2;
+const int W = 30 * 3 * 2;
 
 Screen scr(W,H);
 

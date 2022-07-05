@@ -13,6 +13,6 @@ void gotoxy(SHORT x, SHORT y) {
     SetConsoleCursorPosition(STD_HANDLE, pos);
 }
 
-void gotoxy(COORD pos) {
+void gotoxy(const COORD& pos) {
     SetConsoleCursorPosition(STD_HANDLE, pos);
 }
