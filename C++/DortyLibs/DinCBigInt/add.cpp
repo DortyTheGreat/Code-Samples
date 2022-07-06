@@ -201,6 +201,8 @@ const BigInt BigInt::operator -() const {
 Складывает и помещает новое число в новое место в памяти (вероятнее всего присваивать его мы захотим через ->)
 
 */
+
+
 const BigUnsigned operator +(const BigUnsigned& left, const BigUnsigned& right) {
 
     if (left.real_size < right.real_size){
@@ -221,12 +223,24 @@ const BigUnsigned operator +(const BigUnsigned& left, const BigUnsigned& right) 
 }
 
 
+const BigUnsigned operator +(BigUnsigned&& left, const BigUnsigned& right) {
+    cout << "called rvalue" << endl;
+    if (left.real_size < right.real_size){
+        //return right+left;
+    }
+
+    left += right;
+
+	return left;
+}
+
+
 
 // префиксный инкремент
 void BigUnsigned::operator++() {
-	ubi_szt cou = 0;
+
 	++_digits[0];
-	for ( ; cou < real_size -1; ++cou){
+	for ( ubi_szt cou = 0; cou < real_size -1; ++cou){
         if (_digits[cou] < BASE){ return;}
 
         _digits[cou] -= BASE; /// можно записать = 0 в целом, если изначальное число сбалансировано

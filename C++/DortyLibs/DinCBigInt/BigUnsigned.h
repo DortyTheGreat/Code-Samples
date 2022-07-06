@@ -48,7 +48,7 @@ public:
         , real_size(1)
         , alloc_size(1)
     {_digits[0] = 0;}
-
+    /*
     void operator= (BigUnsigned&& bu)
     {
         cout << "called move equality" << endl;
@@ -72,7 +72,7 @@ public:
 
 
 
-
+    /*
     void operator= (const BigUnsigned& bu){
         cout << "called copy equality" << endl;
         if (bu.real_size > alloc_size){
@@ -86,8 +86,10 @@ public:
 
         memcpy(_digits,bu._digits,sizeof(CONT_TYPE) * bu.alloc_size);
     }
-    /*
-    BigUnsigned (const BigUnsigned& bu)
+
+
+
+    constexpr BigUnsigned(const BigUnsigned& bu)
         : real_size(bu.real_size)
     {
         cout << "called copy constructor" << endl;
@@ -99,8 +101,11 @@ public:
         real_size = bu.real_size;
 
         memcpy(_digits,bu._digits,sizeof(CONT_TYPE) * bu.alloc_size);
+
     }
+
     */
+
 
 
 
@@ -124,7 +129,12 @@ public:
     bool friend operator >=(const BigUnsigned& left, const BigUnsigned& right);
     bool friend operator !=(const BigUnsigned& left, const BigUnsigned& right);
 
-	friend const BigUnsigned operator +(const BigUnsigned&, const BigUnsigned&);
+    friend const BigUnsigned operator +(const BigUnsigned&, const BigUnsigned&);
+
+    friend const BigUnsigned operator +(BigUnsigned&&, const BigUnsigned&);
+
+
+
 	void operator +=(const BigUnsigned&);
 
     void operator++();
