@@ -8,7 +8,7 @@ int main()
     string b = "b";
     for(int i = 0; i < 1000;++i){
         ///big_str = big_str + 'b';
-        big_str = (((((big_str + b) + b) + b) + b) + b) ;
+        big_str = big_str ;
     }
 
     /*
