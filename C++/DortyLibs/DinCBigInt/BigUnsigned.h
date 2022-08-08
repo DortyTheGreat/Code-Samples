@@ -14,7 +14,7 @@
 #define ubi_szt int /// Unsigned Big Int SiZe Type, ïîêà îáÿçàí áûòü çíàêîâûì -_-
 
 
-#define big_container 0
+#define big_container 1
 
 #if big_container
 

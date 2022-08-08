@@ -11,15 +11,15 @@ Discord: �����#9030
 
 using namespace std;
 #include <iostream>
-#include "../DortyLibs/DortyTime.h"
-///#include "../DortyLibs/AdvancedStream.h"
+#include "../../DortyLibs/DortyTime.h"
+
 
 #include <cmath>
 
 #include <stdio.h>
-#include "../DortyLibs/DinBigLib.h"
+#include "../../DortyLibs/DinBigLib.h"
 
-#include "../DortyLibs/DortyBuild.h"
+#include "../../DortyLibs/DortyBuild.h"
 
 
 #define file_read 1
@@ -43,49 +43,16 @@ int main()
     cout << "here" << endl;
     BigUnsigned a,b,c;
 
-    cin >> a >> b;
+    cin >> a;
+    b = a;
     ///cout << "var c : " << c << endl;
 
 
-
-
-
-
-
-    ///cout << a << " " << b << endl;
-    /// то нихуя работать не будет, будет какой-то пиздец
-
-    /// 100k memcpy of 100k ints (aka 1 million decimal places) in 5 s
-    /// -> 100 allocs in 5 ms
-    /// -> 1 alloc in 0.05 ms (INSANELY QUICKLY!)
-
-
-    /// Во-первых: умножение капец какое долгое: на 10к * 5к ~= 0.1 секунда (у школьного уйдёт при 10k на 10k 0.3, как-то мало увеличивает)
-    /// А ДЕЛЕНИЕ - капец какое долгое! 2 секунды при тех же параметрах
-
-    BigUnsigned r;
-    r = Reciprocal(b,intlog(2,a.real_size) + 2 ) ;
-
-    cout << "r size " << r.real_size << endl;
-
-    for(int i = 0;i<2;++i){
-
-
-        cout << a.real_size << endl;
-        MainClock.tick();
-        c = DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size);
-        MainClock.tick();
-        cout << a.real_size << endl;
-        ///cout << "b : " << b << endl;
-        ///cout << b.real_size << endl;
-        ///karatsuba(a,b);
-        cout << "c: "<< c << endl;
-
-
-        ///x_mul(a,a);
-
+    for(int i = 0;i<100;i++){
+        c = karatsuba(a,b);
     }
 
+    /// 0.2
 
 
 
@@ -141,11 +108,6 @@ public:
 
 Clock MainClock;
 
-#include <iostream>
-#include <fstream>
-
-std::ifstream fin("input.txt");
-std::ofstream fout("output.txt");
 
 
 #include <cmath>
@@ -167,7 +129,7 @@ std::ofstream fout("output.txt");
 #define ubi_szt int /// Unsigned Big Int SiZe Type, ïîêà îáÿçàí áûòü çíàêîâûì -_-
 
 
-#define big_container 0
+#define big_container 1
 
 #if big_container
 
@@ -202,15 +164,20 @@ public:
         , alloc_size(1)
     {_digits[0] = 0;}
 
-    void operator= (BigUnsigned&& bu)
+
+
+
+
+    BigUnsigned& operator= (BigUnsigned&& bu)
     {
-        cout << "called move equality" << endl;
+        //cout << "called move equality" << endl;
         _digits = ( bu._digits  );
         real_size = ( bu.real_size );
         alloc_size = ( bu.alloc_size );
 
 
         bu._digits = NULL;
+        return *this;
     }
 
     BigUnsigned (BigUnsigned&& bu)
@@ -218,7 +185,7 @@ public:
         , real_size( bu.real_size )
         , alloc_size( bu.alloc_size )
     {
-        cout << "called constructor" << endl;
+        ///cout << "called move constructor" << endl;
         bu._digits = NULL;
     }
 
@@ -226,8 +193,8 @@ public:
 
 
 
-    void operator= (const BigUnsigned& bu){
-        cout << "called copy equality" << endl;
+    BigUnsigned& operator= (const BigUnsigned& bu){
+        ///cout << "called copy equality" << endl;
         if (bu.real_size > alloc_size){
             alloc_size = bu.alloc_size;
             _digits = new CONT_TYPE[alloc_size];
@@ -238,12 +205,16 @@ public:
         real_size = bu.real_size;
 
         memcpy(_digits,bu._digits,sizeof(CONT_TYPE) * bu.alloc_size);
+
+        return *this;
     }
-    /*
-    BigUnsigned (const BigUnsigned& bu)
+
+
+
+     BigUnsigned(const BigUnsigned& bu)
         : real_size(bu.real_size)
     {
-        cout << "called copy constructor" << endl;
+        ///cout << "called copy constructor" << endl;
         if (bu.real_size > alloc_size){
             alloc_size = bu.alloc_size;
             _digits = new CONT_TYPE[alloc_size];
@@ -252,8 +223,11 @@ public:
         real_size = bu.real_size;
 
         memcpy(_digits,bu._digits,sizeof(CONT_TYPE) * bu.alloc_size);
+
     }
-    */
+
+
+
 
 
 
@@ -277,7 +251,12 @@ public:
     bool friend operator >=(const BigUnsigned& left, const BigUnsigned& right);
     bool friend operator !=(const BigUnsigned& left, const BigUnsigned& right);
 
-	friend const BigUnsigned operator +(const BigUnsigned&, const BigUnsigned&);
+    friend const BigUnsigned operator +(const BigUnsigned&, const BigUnsigned&);
+
+    friend const BigUnsigned operator +(BigUnsigned&&, const BigUnsigned&);
+
+
+
 	void operator +=(const BigUnsigned&);
 
     void operator++();
@@ -600,6 +579,8 @@ const BigInt BigInt::operator -() const {
 ���������� � �������� ����� ����� � ����� ����� � ������ (��������� ����� ����������� ��� �� ������� ����� ->)
 
 */
+
+
 const BigUnsigned operator +(const BigUnsigned& left, const BigUnsigned& right) {
 
     if (left.real_size < right.real_size){
@@ -620,12 +601,24 @@ const BigUnsigned operator +(const BigUnsigned& left, const BigUnsigned& right) 
 }
 
 
+const BigUnsigned operator +(BigUnsigned&& left, const BigUnsigned& right) {
+    cout << "called rvalue" << endl;
+    if (left.real_size < right.real_size){
+        //return right+left;
+    }
+
+    left += right;
+
+	return left;
+}
+
+
 
 // ���������� ���������
 void BigUnsigned::operator++() {
-	ubi_szt cou = 0;
+
 	++_digits[0];
-	for ( ; cou < real_size -1; ++cou){
+	for ( ubi_szt cou = 0; cou < real_size -1; ++cou){
         if (_digits[cou] < BASE){ return;}
 
         _digits[cou] -= BASE; /// ����� �������� = 0 � �����, ���� ����������� ����� ��������������
@@ -1334,7 +1327,7 @@ void kmul_split(const BigUnsigned& n,
 }
 */
 
-
+#include <cmath>
 int intlog(double base, double x) {
     return (int)(log(x) / log(base));
 }
@@ -1612,49 +1605,16 @@ int main()
     cout << "here" << endl;
     BigUnsigned a,b,c;
 
-    cin >> a >> b;
+    cin >> a;
+    b = a;
     ///cout << "var c : " << c << endl;
 
 
-
-
-
-
-
-    ///cout << a << " " << b << endl;
-    /// то нихуя работать не будет, будет какой-то пиздец
-
-    /// 100k memcpy of 100k ints (aka 1 million decimal places) in 5 s
-    /// -> 100 allocs in 5 ms
-    /// -> 1 alloc in 0.05 ms (INSANELY QUICKLY!)
-
-
-    /// Во-первых: умножение капец какое долгое: на 10к * 5к ~= 0.1 секунда (у школьного уйдёт при 10k на 10k 0.3, как-то мало увеличивает)
-    /// А ДЕЛЕНИЕ - капец какое долгое! 2 секунды при тех же параметрах
-
-    BigUnsigned r;
-    r = Reciprocal(b,intlog(2,a.real_size) + 2 ) ;
-
-    cout << "r size " << r.real_size << endl;
-
-    for(int i = 0;i<2;++i){
-
-
-        cout << a.real_size << endl;
-        MainClock.tick();
-        c = DivisionWithKnownReciprocal(a,r, b, b.real_size - 1 + a.real_size);
-        MainClock.tick();
-        cout << a.real_size << endl;
-        ///cout << "b : " << b << endl;
-        ///cout << b.real_size << endl;
-        ///karatsuba(a,b);
-        cout << "c: "<< c << endl;
-
-
-        ///x_mul(a,a);
-
+    for(int i = 0;i<100;i++){
+        c = karatsuba(a,b);
     }
 
+    /// 0.2
 
 
 

@@ -2,7 +2,7 @@
 #include <queue>
 #include <utility>
 #include <algorithm>
-#include "../BasicWindowsLib.h"
+#include "../DortyLibs/BasicWindowsLib.h"
 #include <conio.h>
 #include <thread>
 
@@ -222,7 +222,7 @@ int main()
         }
         #else
             ai();
-            const int ms = 00;
+            const int ms = 100;
             this_thread::sleep_for(chrono::milliseconds(ms));
         #endif // ai
     }
