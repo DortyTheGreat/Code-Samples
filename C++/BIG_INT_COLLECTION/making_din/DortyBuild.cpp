@@ -44,9 +44,9 @@ int main()
     BigUnsigned a,b, r;
 
     cin >> a >> b;
-    r = Reciprocal(b,1);
-    cout << r << endl;
-    cout << endl<< DivisionWithKnownReciprocal(a,r,(1 << 1));
+    r = Reciprocal(b,10);
+    ///print(r._digits,1<<3);
+    cout << endl<< DivisionWithKnownReciprocal(a,r, b.real_size);
 
     /// 0.2 100 10kx10k
 
@@ -146,7 +146,7 @@ const CONT_TYPE BASE = total_base;
 
 //template <const int def_base = default_base, int BASE = total_base, const int container_stack = cnt_stack>
 class BigUnsigned{
-private:
+public:
     CONT_TYPE* _digits;
     static const CONT_TYPE BASE = total_base;
 public:
@@ -271,7 +271,7 @@ public:
 
     friend BigUnsigned Reciprocal(const BigUnsigned& bu,int precision);
 
-    friend BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsigned&, const int );
+    friend BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsigned&, const int);
 
 	void _add(const BigUnsigned&);
 
@@ -1375,7 +1375,7 @@ upd: уже работает, но это решение - есть костыль...
 */
 BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 {
-    MainClock.tick("Started Reciprocal");
+    ///MainClock.tick("Started Reciprocal");
     ubi_szt cool_num = 1 << precision;
 
     BigUnsigned res;
@@ -1454,35 +1454,35 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
     ///write_to = dividend / divisor;
     ///write_to._appendZeros(precision - sz);
 
-    MainClock.tick("Reciprocal prep done");
+    ///MainClock.tick("Reciprocal prep done");
 
     // Do the interation to fullfil the precision
     for (int i = 1; i != cool_num; i <<= 1)
     {
-        MainClock.tick("itterarion start");
-        cout << i << endl;
+        ///MainClock.tick("itterarion start");
+        ///cout << i << endl;
 
-        cout << "old approx ";
+       /// cout << "old approx ";
         ///print(approx,cool_num);
 
         memset(sqr, 0, (cool_num) * sizeof(CONT_TYPE));
         memset(minus, 0, (2 * cool_num) * sizeof(CONT_TYPE));
 
         mult(approx + cool_num - i,approx + cool_num - i,sqr,i);
-        cout << "sqr ";
+        ///cout << "sqr ";
         ///print(sqr, i * 2);
         /// “еперь sqr имеет размер 2n, minus -> 4n, но следует truncatenut' до 2n
 
-        cout << "expanded ";
+        ///cout << "expanded ";
         ///print(expanded + cool_num - 2*i , i*2);
 
-        cout << "full expanded ";
+        ///cout << "full expanded ";
         ///print(expanded , cool_num);
 
         mult(sqr, expanded + cool_num - 2*i , minus ,i*2 );
 
 
-        cout << "minus ";
+        ///cout << "minus ";
         ///print(minus, i * 4);
 
         /// aprox = 2*approx - minus
@@ -1511,12 +1511,12 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 
         }
 
-        cout << "new approx ";
+        ///cout << "new approx ";
         ///print(approx,cool_num);
         ///cout << res << endl << endl;
 
 
-        MainClock.tick("itterarion finish");
+        ///MainClock.tick("itterarion finish");
         /// a = 2*a - truncated_bits(n*a*a)
         ///write_to.Interate(*this, precision);
     }
@@ -1536,7 +1536,7 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 */
 BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsigned& Reciprocal, const int shift){
     BigUnsigned res;
-    res.alloc_with_zeros(number.real_size + Reciprocal.real_size + 1);
+    res.alloc_with_zeros(number.real_size * 2 + 1);
 
 
     ///  опи€ нужна не всегда, можно сделать дл€ этого детект
@@ -1544,16 +1544,37 @@ BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsi
     copy.assign_from_BU(number.real_size + 1, number);
 
     mult(copy._digits, Reciprocal._digits + (Reciprocal.alloc_size - number.real_size - 1), res._digits, number.real_size + 1);
-    print(res._digits,res.alloc_size);
+    ///print(res._digits,res.alloc_size);
     res.real_size = res.alloc_size;
-    print(res._digits,res.alloc_size);
-    res._add(Reciprocal);
-    print(res._digits,res.alloc_size);
-    --res;
-    print(res._digits,res.alloc_size);
-    res._digits += shift;
+    ///print(res._digits,res.alloc_size);
+    ///res += Reciprocal
+    for(int i = 0;i< number.real_size + 1; ++i){
+        res._digits[i] += Reciprocal._digits[(Reciprocal.alloc_size - number.real_size - 1) + i];
+        if (res._digits[i] >= BASE){
+            res._digits[i] -= BASE;
+            ++res._digits[i+1];
+        }
+    }
 
-    res.real_size = (res.alloc_size -= shift);
+    /// ’очетс€, то, что ниже сделать дл€ флекса, но так тоже +- ничего
+    CONT_TYPE *p = &res._digits[number.real_size + 1];
+    while (*p >= BASE){
+        *p -= BASE;
+        ++p;
+        ++(*p);
+    }
+
+    /// ѕереполнени€ real_size или alloc_size произойти не может, так что всЄ ок
+
+
+
+    ///
+    ///print(res._digits,res.alloc_size);
+    --res;
+    ///print(res._digits,res.alloc_size);
+    res._digits += (number.real_size + shift);
+
+    res.real_size = (res.alloc_size -= (number.real_size + shift));
     res._remove_leading_zeros();
 
     return res;
@@ -1666,9 +1687,9 @@ int main()
     BigUnsigned a,b, r;
 
     cin >> a >> b;
-    r = Reciprocal(b,1);
-    cout << r << endl;
-    cout << endl<< DivisionWithKnownReciprocal(a,r,(1 << 1));
+    r = Reciprocal(b,10);
+    ///print(r._digits,1<<3);
+    cout << endl<< DivisionWithKnownReciprocal(a,r, b.real_size);
 
     /// 0.2 100 10kx10k
 

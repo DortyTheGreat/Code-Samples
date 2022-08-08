@@ -35,7 +35,7 @@ const CONT_TYPE BASE = total_base;
 
 //template <const int def_base = default_base, int BASE = total_base, const int container_stack = cnt_stack>
 class BigUnsigned{
-private:
+public:
     CONT_TYPE* _digits;
     static const CONT_TYPE BASE = total_base;
 public:
@@ -160,7 +160,7 @@ public:
 
     friend BigUnsigned Reciprocal(const BigUnsigned& bu,int precision);
 
-    friend BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsigned&, const int );
+    friend BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsigned&, const int);
 
 	void _add(const BigUnsigned&);
 

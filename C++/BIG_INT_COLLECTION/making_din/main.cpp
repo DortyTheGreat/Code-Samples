@@ -37,9 +37,9 @@ int main()
     BigUnsigned a,b, r;
 
     cin >> a >> b;
-    r = Reciprocal(b,1);
-    cout << r << endl;
-    cout << endl<< DivisionWithKnownReciprocal(a,r,(1 << 1));
+    r = Reciprocal(b,10);
+    ///print(r._digits,1<<3);
+    cout << endl<< DivisionWithKnownReciprocal(a,r, b.real_size);
 
     /// 0.2 100 10kx10k
 
