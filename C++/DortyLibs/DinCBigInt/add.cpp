@@ -261,6 +261,25 @@ void BigUnsigned::operator++() {
 
     }
 }
+
+void BigUnsigned::operator--() {
+
+	--_digits[0];
+
+
+
+    for(int j = 0; _digits[j] < 0;++j){
+
+        _digits[j] += BASE;
+        --_digits[j+1];
+
+    }
+
+
+    _remove_leading_zeros();
+}
+
+
 /*
 // постфиксный инкремент
 const BigInt BigInt::operator ++(int) {

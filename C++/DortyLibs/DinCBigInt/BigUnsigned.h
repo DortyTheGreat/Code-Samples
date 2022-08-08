@@ -74,6 +74,8 @@ public:
         bu._digits = NULL;
     }
 
+    BigUnsigned (const string& str);
+
 
 
 
@@ -145,6 +147,7 @@ public:
 	void operator +=(const BigUnsigned&);
 
     void operator++();
+    void operator--();
 
     void operator -=(const BigUnsigned& minus);
 
@@ -157,7 +160,7 @@ public:
 
     friend BigUnsigned Reciprocal(const BigUnsigned& bu,int precision);
 
-    friend BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsigned&, BigUnsigned& div, const int );
+    friend BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsigned&, const int );
 
 	void _add(const BigUnsigned&);
 

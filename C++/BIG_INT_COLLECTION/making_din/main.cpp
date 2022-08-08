@@ -15,7 +15,7 @@ using namespace std;
 #include "../../DortyLibs/DortyBuild.h"
 
 
-#define file_read 1
+#define file_read 0
 
 
 
@@ -33,17 +33,13 @@ int main()
 
 
 
-    cout << "here" << endl;
-    BigUnsigned a,b,c;
 
-    cin >> a;
-    b = a;
-    ///cout << "var c : " << c << endl;
+    BigUnsigned a,b, r;
 
-
-    for(int i = 0;i<100;i++){
-        c = karatsuba(a,b);
-    }
+    cin >> a >> b;
+    r = Reciprocal(b,1);
+    cout << r << endl;
+    cout << endl<< DivisionWithKnownReciprocal(a,r,(1 << 1));
 
     /// 0.2 100 10kx10k
 

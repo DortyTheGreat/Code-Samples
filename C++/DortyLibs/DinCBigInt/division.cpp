@@ -177,6 +177,41 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
     return res;
 }
 
+/**
+Новая идея
+
+(number+1) * Reciprocal(1+ extra digit, rounded down) - 1
+Например:
+1) 7 / 4 -> 8 * 25 - 1 -> 199 -> 1
+*/
+BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsigned& Reciprocal, const int shift){
+    BigUnsigned res;
+    res.alloc_with_zeros(number.real_size + Reciprocal.real_size + 1);
+
+
+    /// Копия нужна не всегда, можно сделать для этого детект
+    BigUnsigned copy;
+    copy.assign_from_BU(number.real_size + 1, number);
+
+    mult(copy._digits, Reciprocal._digits + (Reciprocal.alloc_size - number.real_size - 1), res._digits, number.real_size + 1);
+    print(res._digits,res.alloc_size);
+    res.real_size = res.alloc_size;
+    print(res._digits,res.alloc_size);
+    res._add(Reciprocal);
+    print(res._digits,res.alloc_size);
+    --res;
+    print(res._digits,res.alloc_size);
+    res._digits += shift;
+
+    res.real_size = (res.alloc_size -= shift);
+    res._remove_leading_zeros();
+
+    return res;
+}
+
+
+
+/**
 
 BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsigned& Reciprocal, BigUnsigned& div, const int shift){
     BigUnsigned res;
@@ -200,10 +235,10 @@ BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsi
     /// BigUnsigned rem = number, то он возьмёт данные напрямую, игнорируя мой оператор =. Наверное у этого есть крутое объяснение с аллокацией памяти
     /// и я +- это понимаю, но всё равно необычненько
 
-    /**
+
     16.05.2022 - Теперь я понимаю в чём дело, но почему-то если я добавлю КОНСТРУКТОР копирования, то будет попа...
     Так что пока ничего не меняю
-    */
+
 
     BigUnsigned rem;
     rem = number;
@@ -218,6 +253,10 @@ BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsi
 
     return res;
 }
+
+*/
+
+
 /**
     void inline _DivUnrefined( BigInt &divisor, size_t precision, BigInt &write_to)
     {

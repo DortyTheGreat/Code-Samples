@@ -67,24 +67,7 @@ std::istream& operator>>(std::istream& in, BigUnsigned &bi) {
     std::string stream_;
     in >> stream_;
 
-    ubi_szt carret_r_sz = stream_.size();
-    bi.real_size = (carret_r_sz+cnt_stack-1)/cnt_stack;
-    bi.alloc_with_zeros(next_power_of_two( bi.real_size));
-
-    CONT_TYPE Carret;
-
-    for(ubi_szt i = 0;i<bi.real_size;++i){
-        Carret = 0;
-        for(ubi_szt j = 0; j < cnt_stack;++j){
-            int index = carret_r_sz - (i+1)*cnt_stack + j;
-            if (index > -1){
-                Carret *= default_base;
-                Carret += FromCharToInt(stream_[index]);
-            }
-        }
-
-        bi._digits[i] = Carret;
-    }
+    new (&bi) BigUnsigned(stream_);
 
     /// мб тут надо регистрировать "лидирующие" нули, но хз
 

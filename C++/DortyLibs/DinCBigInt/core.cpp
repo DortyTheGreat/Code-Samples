@@ -1,45 +1,4 @@
-/**
 
-Оператор полного присваивания (копирования). Дольше, чем ->
-
-Придётся ещё ебаться с нулями, которые могут лежать в памяти(точнее как раз не лежать в памяти)
-
-Есть 2 варианта
-
-1) Всё-таки заполнять нулями
-2) Ебаться отдельно во всех других функциях.
-
-*/
-
-/*
-
-BigUnsigned::BigUnsigned (BigUnsigned&& ){
-
-}
-
-BigUnsigned::BigUnsigned (const BigUnsigned& bu){
-    cout << "started equality" << endl;
-    if (bu.real_size > alloc_size){
-        alloc_size = bu.alloc_size;
-        _digits = new CONT_TYPE[alloc_size];
-
-
-        ///_digits = (CONT_TYPE*)(ptr); /// new CONT_TYPE[alloc_size]{0} ИЛИ new CONT_TYPE[alloc_size]()
-    }
-    real_size = bu.real_size;
-
-    memcpy(_digits,bu._digits,sizeof(CONT_TYPE) * bu.alloc_size);
-}
-
-*/
-
-/*
-void BigUnsigned::operator =(BigUnsigned&& bu){
-    real_size = bu.real_size;
-    alloc_size = bu.alloc_size;
-    _digits = bu._digits;
-}
-*/
 
 void BigUnsigned::alloc_with_zeros(const int sz){
     alloc_size = sz;
@@ -74,6 +33,67 @@ void BigUnsigned::_remove_leading_zeros(){
     }
     real_size = cur + 1;
 }
+
+
+
+BigUnsigned::BigUnsigned (const string& stream_){
+    ubi_szt carret_r_sz = stream_.size();
+    real_size = (carret_r_sz+cnt_stack-1)/cnt_stack;
+    alloc_with_zeros(next_power_of_two(real_size));
+
+    CONT_TYPE Carret;
+
+    for(ubi_szt i = 0;i<real_size;++i){
+        Carret = 0;
+        for(ubi_szt j = 0; j < cnt_stack;++j){
+            int index = carret_r_sz - (i+1)*cnt_stack + j;
+            if (index > -1){
+                Carret *= default_base;
+                Carret += FromCharToInt(stream_[index]);
+            }
+        }
+
+        _digits[i] = Carret;
+    }
+}
+
+
+
+
+
+
+
+/*
+
+BigUnsigned::BigUnsigned (BigUnsigned&& ){
+
+}
+
+BigUnsigned::BigUnsigned (const BigUnsigned& bu){
+    cout << "started equality" << endl;
+    if (bu.real_size > alloc_size){
+        alloc_size = bu.alloc_size;
+        _digits = new CONT_TYPE[alloc_size];
+
+
+        ///_digits = (CONT_TYPE*)(ptr); /// new CONT_TYPE[alloc_size]{0} ИЛИ new CONT_TYPE[alloc_size]()
+    }
+    real_size = bu.real_size;
+
+    memcpy(_digits,bu._digits,sizeof(CONT_TYPE) * bu.alloc_size);
+}
+
+*/
+
+/*
+void BigUnsigned::operator =(BigUnsigned&& bu){
+    real_size = bu.real_size;
+    alloc_size = bu.alloc_size;
+    _digits = bu._digits;
+}
+*/
+
+
 
 /*
 int intlog(double base, double x) {
