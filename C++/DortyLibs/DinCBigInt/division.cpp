@@ -25,7 +25,7 @@ upd: уже работает, но это решение - есть костыль...
 */
 BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 {
-    ///MainClock.tick("Started Reciprocal");
+    MainClock.tick("Started Reciprocal");
     ubi_szt cool_num = 1 << precision;
 
     BigUnsigned res;
@@ -104,35 +104,35 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
     ///write_to = dividend / divisor;
     ///write_to._appendZeros(precision - sz);
 
-    ///MainClock.tick("Reciprocal prep done");
+    MainClock.tick("Reciprocal prep done");
 
     // Do the interation to fullfil the precision
     for (int i = 1; i != cool_num; i <<= 1)
     {
-        ///MainClock.tick("itterarion start");
-        //cout << i << endl;
+        MainClock.tick("itterarion start");
+        cout << i << endl;
 
-        ///cout << "old approx ";
+        cout << "old approx ";
         ///print(approx,cool_num);
 
         memset(sqr, 0, (cool_num) * sizeof(CONT_TYPE));
         memset(minus, 0, (2 * cool_num) * sizeof(CONT_TYPE));
 
         mult(approx + cool_num - i,approx + cool_num - i,sqr,i);
-        ///cout << "sqr ";
+        cout << "sqr ";
         ///print(sqr, i * 2);
         /// Теперь sqr имеет размер 2n, minus -> 4n, но следует truncatenut' до 2n
 
-        ///cout << "expanded ";
+        cout << "expanded ";
         ///print(expanded + cool_num - 2*i , i*2);
 
-        ///cout << "full expanded ";
+        cout << "full expanded ";
         ///print(expanded , cool_num);
 
         mult(sqr, expanded + cool_num - 2*i , minus ,i*2 );
 
 
-        ///cout << "minus ";
+        cout << "minus ";
         ///print(minus, i * 4);
 
         /// aprox = 2*approx - minus
@@ -161,12 +161,12 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 
         }
 
-        ///cout << "new approx ";
+        cout << "new approx ";
         ///print(approx,cool_num);
         ///cout << res << endl << endl;
 
 
-        ///MainClock.tick("itterarion finish");
+        MainClock.tick("itterarion finish");
         /// a = 2*a - truncated_bits(n*a*a)
         ///write_to.Interate(*this, precision);
     }
@@ -194,13 +194,13 @@ BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsi
     copy.assign_from_BU(number.real_size + 1, number);
 
     mult(copy._digits, Reciprocal._digits + (Reciprocal.alloc_size - number.real_size - 1), res._digits, number.real_size + 1);
-    ///print(res._digits,res.alloc_size);
+    print(res._digits,res.alloc_size);
     res.real_size = res.alloc_size;
-    ///print(res._digits,res.alloc_size);
+    print(res._digits,res.alloc_size);
     res._add(Reciprocal);
-    ///print(res._digits,res.alloc_size);
+    print(res._digits,res.alloc_size);
     --res;
-    ///print(res._digits,res.alloc_size);
+    print(res._digits,res.alloc_size);
     res._digits += shift;
 
     res.real_size = (res.alloc_size -= shift);
