@@ -183,6 +183,8 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 (number+1) * Reciprocal(1+ extra digit, rounded down) - 1
 Например:
 1) 7 / 4 -> 8 * 25 - 1 -> 199 -> 1
+объяснение +- простое, но это работает
+
 */
 BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsigned& Reciprocal, const int shift){
     BigUnsigned res;

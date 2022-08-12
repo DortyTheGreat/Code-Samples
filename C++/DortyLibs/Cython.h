@@ -8,14 +8,6 @@ void YesNo(bool arg){
     }
 }
 
-void NoYes(bool arg){
-    if (arg){
-        cout << "NO" << endl;
-    }else{
-        cout << "YES" << endl;
-    }
-}
-
 string input(){
     string returner;
     cin >> returner;
