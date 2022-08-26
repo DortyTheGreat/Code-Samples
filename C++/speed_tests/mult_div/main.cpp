@@ -2,6 +2,48 @@
 #include <cmath>
 #include <time.h>
 
+
+
+#include <iostream>
+#include <iomanip>
+#include <vector>
+#include <numeric>
+#include <chrono>
+
+class Clock2{
+private:
+    long long start_prog_time;
+    long long last_time;
+
+
+
+public:
+
+    Clock2(){
+        start_prog_time = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+        last_time = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+    }
+
+    void tick() {
+        long long time = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+        ///cout << CLOCKS_PER_SEC << endl;
+        std::cout << (time - start_prog_time) << " (+" <<time-last_time << ")" << std::endl;
+        last_time = time;
+    }
+
+    void tick(std::string text){
+        std::cout << text << " : ";
+        tick();
+    }
+
+
+};
+
+Clock2 MainClock;
+
+
+
+
 #include <sstream>
 template <typename T>
 std::string to_str ( T any )
@@ -63,6 +105,7 @@ int main()
     }
 
     cout << double(cl.tick()) / itterations / rerand_i << " ns - int mult" << endl;
+    MainClock.tick();
 
     for(int i = 0;i<itterations;++i){
         long long a = rand(),b = rand(),c;
@@ -72,6 +115,7 @@ int main()
     }
 
     cout << double(cl.tick()) / itterations / rerand_i  << " ns - long long mult" << endl;
+    MainClock.tick();
 
     for(int i = 0;i<itterations;++i){
         __uint128_t a = rand(),b = rand(),c;
@@ -149,7 +193,7 @@ int main()
     for(int i = 0;i<itterations;++i){
         __uint128_t a = rand128(),b = rand64() + 1,c;
         for(int j = 0;j<rerand_i;++j){
-            c = a % b;
+            c = a %  b;
         }
     }
 
