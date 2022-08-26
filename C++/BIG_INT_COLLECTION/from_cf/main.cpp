@@ -2,6 +2,8 @@
 ///#pragma GCC target("avx,avx2,fma")
 #include <bits/stdc++.h>
 
+/// https://codeforces.com/blog/entry/74209?locale=ru
+
 #define align 64
 
 /*

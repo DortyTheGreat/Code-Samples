@@ -1,8 +1,4 @@
 #include <fstream>
-#include <string>
-#include <iostream>
-
-using namespace std;
 
 
 /// Правила пользованием DortyBuild
@@ -15,14 +11,18 @@ using namespace std;
 ///Нельзя подключать глобальные библиотеки через "", если так сделаете получите
 /// "////DortyBuild failed to load: iomanip"
 
-const string version_code = "v 1.3";
+const std::string version_code = "v 1.4";
+const std::string ThisLibName = "DortyBuild.h";
+const std::string INCLUDE_INSTEAD = "#include <fstream>";
+const std::string INCLUDE_STRING = "#include";
+const std::string PREFAB_TEXT = "/*\n---------------------\nThis File was Build Automatically by DortyBuild " + version_code + ".\nFor More Information ask:\n\
+Discord: Тесла#9030 \n\
+---Original---Code---\n\n";
 
-string ThisLibName = "DortyBuild.h";
-
-string GetLibTxt(string Lib){
-    ifstream Reader(Lib.c_str());
-    string Data = "";
-    string Carret;
+std::string GetLibTxt(std::string Lib){
+    std::ifstream Reader(Lib.c_str());
+    std::string Data = "";
+    std::string Carret;
 
     if (Reader.fail()){
         return "////DortyBuild failed to load: " +Lib + "\n";
@@ -30,65 +30,60 @@ string GetLibTxt(string Lib){
 
     while(!Reader.eof()){
         getline(Reader,Carret);
-        Data = Data  + Carret + '\n';
+        Data += Carret + '\n';
     }
 
     Reader.close();
     return Data;
 }
 
-string FuncName = "AppBuild";
+std::string FuncName = "AppBuild";
 
-void RequrrentBuild(string MainProgrammFileName, string OutProgrammFileName, string lib, int depth){
+void RequrrentBuild(std::string MainProgrammFileName, std::string OutProgrammFileName, std::string lib, int depth){
 
-///cout <<"lib: " <<  lib << endl;
-for(int i =0;i<depth;i++){
-    cout << ">";
-}
-cout << " File: " << (lib+MainProgrammFileName) << endl;
 
-ofstream out(OutProgrammFileName.c_str(),std::ios::app);
-ifstream in((lib+MainProgrammFileName).c_str());
+    cout << std::string(depth,'>') << " File: " << (lib+MainProgrammFileName) << endl;
 
-string DataReader;
+    ofstream out(OutProgrammFileName.c_str(),std::ios::app);
+    ifstream in((lib+MainProgrammFileName).c_str());
 
-//cout << GetLibTxt("iostream") << endl;
+    std::string DataReader;
 
-while(!in.eof()){
-    getline(in,DataReader);
+    //cout << GetLibTxt("iostream") << endl;
 
-        const string INCLUDE_STRING = "#include";
+    while(!in.eof()){
+        getline(in,DataReader);
 
-        int find_pos = DataReader.find(INCLUDE_STRING);
+        int find_pos = DataReader.find(INCLUDE_std::string);
 
         if(find_pos != -1){
 
-            string Find_Lib = DataReader.substr(find_pos + INCLUDE_STRING.size());
+            std::string Find_Lib = DataReader.substr(find_pos + INCLUDE_std::string.size());
 
-            string LibName = "";
+            std::string LibName = "";
 
             int first_appo_pos = Find_Lib.find("\"");
             int last_appo_pos = Find_Lib.rfind("\"");
 
-            if (first_appo_pos == -1 || last_appo_pos == -1){
-            ///pass
-            }else{
+            if (first_appo_pos != -1 && last_appo_pos != -1){
 
                 LibName = Find_Lib.substr(first_appo_pos+1,last_appo_pos-first_appo_pos-1);
-                string Folder = "";
-                if (LibName.rfind("/") != string::npos){
+                std::string Folder = "";
+                if (LibName.rfind("/") != std::string::npos){
                     Folder = LibName.substr(0,LibName.rfind("/")) + "/";
                     ///cout << "Folder: " << Folder << endl;
                     LibName = LibName.substr(LibName.rfind("/")+1);
                 }
 
                 ///cout << "LibName: " << LibName << endl;
-                    //cout << "\{" <<LibName << "\}" << endl;
-                    if (LibName != ThisLibName){ /// ОБРАТИ ВНИМАНИЕ!
-                        RequrrentBuild(LibName,OutProgrammFileName,lib + Folder,depth+1);
-                    }
-                    continue;
-                    ///DataReader.replace(DataReader.find(INCLUDE_STRING) + first_appo_pos + find_pos, DataReader.size(), ChangeToLib);
+                //cout << "\{" <<LibName << "\}" << endl;
+                if (LibName == ThisLibName){ /// ОБРАТИ ВНИМАНИЕ!
+                    out << INCLUDE_INSTEAD << endl;
+                }else{
+                    RequrrentBuild(LibName,OutProgrammFileName,lib + Folder,depth+1);
+                }
+                continue;
+                ///DataReader.replace(DataReader.find(INCLUDE_std::string) + first_appo_pos + find_pos, DataReader.size(), ChangeToLib);
 
             }
 
@@ -96,32 +91,25 @@ while(!in.eof()){
         }
 
 
-    if(DataReader.find(FuncName) != string::npos){
+        if(DataReader.find(FuncName) != std::string::npos){
 
-        int loc = DataReader.find(";",DataReader.find(FuncName)+1);
-        int delta = loc - DataReader.find(FuncName) + 1;
-        DataReader.replace(DataReader.find(FuncName), delta, " ");
+            int loc = DataReader.find(";",DataReader.find(FuncName)+1);
+            int delta = loc - DataReader.find(FuncName) + 1;
+            DataReader.replace(DataReader.find(FuncName), delta, " ");
+        }
+
+        out << DataReader << endl;
     }
 
-    out << DataReader << endl;
-}
-
-in.close();
-out.close();
+    in.close();
+    out.close();
 }
 
 
 
-const string PREFAB_TEXT = "/*\n---------------------\nThis File was Build Automatically by DortyBuild " + version_code + ".\nFor More Information ask:\n\
-Discord: Тесла#9030 \n\
----Original---Code---\n\n";
-
-void AppBuild(string MainProgrammFileName, string OutProgrammFileName){
 
 
-
-
-
+void AppBuild(std::string MainProgrammFileName, std::string OutProgrammFileName){
     ofstream out(OutProgrammFileName.c_str());
     out << PREFAB_TEXT;
     out << GetLibTxt(MainProgrammFileName);

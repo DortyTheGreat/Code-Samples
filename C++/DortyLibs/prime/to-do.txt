@@ -1,0 +1,11 @@
+https://vjudge.net/problem/Aizu-NTL_2_F
+https://vjudge.net/problem/SPOJ-FACTMODP
+https://vjudge.net/problem/SPOJ-FACT0
+https://vjudge.net/problem/SPOJ-FACT2
+https://vjudge.net/problem/SPOJ-FACT1
+https://vjudge.net/status/#un=&OJId=SPOJ&probNum=FACT2&res=0&orderBy=run_id&language=
+https://vjudge.net/problem/SPOJ-PRIME1
+https://codeforces.com/blog/entry/61901
+https://loj.ac/problem/6466/statistics/fastest ( VPN?)
+https://codeforces.com/blog/entry/1729?locale=ru -- https://loj.ac/s/316691
+https://vjudge.net/problem/SPOJ-NTHPRIME -- https://github.com/kimwalisch/primecount

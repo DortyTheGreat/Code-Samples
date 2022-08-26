@@ -22,7 +22,7 @@ using namespace std;
 #include "../../DortyLibs/DortyBuild.h"
 
 
-#define file_read 0
+#define file_read 1
 
 
 
@@ -32,7 +32,7 @@ int main()
     ///cout << "here2 " << endl;
     #if file_read
 
-    freopen ("double_10k.txt","r",stdin);
+    freopen ("100k.txt","r",stdin);
 
     #endif // file_read
     AppBuild();
@@ -43,10 +43,15 @@ int main()
 
     BigUnsigned a,b, r;
 
-    cin >> a >> b;
-    r = Reciprocal(b,10);
+    cin >> a;
+
+    for(int i =0;i<50;++i){
+        karatsuba(a,a);
+    }
+
+    //r = Reciprocal(b,10);
     ///print(r._digits,1<<3);
-    cout << endl<< DivisionWithKnownReciprocal(a,r, b.real_size);
+    //cout << endl<< DivisionWithKnownReciprocal(a,r, b.real_size);
 
     /// 0.2 100 10kx10k
 
@@ -1533,6 +1538,8 @@ BigUnsigned Reciprocal(const BigUnsigned& bu,int precision)
 (number+1) * Reciprocal(1+ extra digit, rounded down) - 1
 Например:
 1) 7 / 4 -> 8 * 25 - 1 -> 199 -> 1
+объяснение +- простое, но это работает
+
 */
 BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsigned& Reciprocal, const int shift){
     BigUnsigned res;
@@ -1665,7 +1672,7 @@ BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsi
 
 
 
-#define file_read 0
+#define file_read 1
 
 
 
@@ -1675,7 +1682,7 @@ int main()
     ///cout << "here2 " << endl;
     #if file_read
 
-    freopen ("double_10k.txt","r",stdin);
+    freopen ("100k.txt","r",stdin);
 
     #endif // file_read
      
@@ -1686,10 +1693,15 @@ int main()
 
     BigUnsigned a,b, r;
 
-    cin >> a >> b;
-    r = Reciprocal(b,10);
+    cin >> a;
+
+    for(int i =0;i<50;++i){
+        karatsuba(a,a);
+    }
+
+    //r = Reciprocal(b,10);
     ///print(r._digits,1<<3);
-    cout << endl<< DivisionWithKnownReciprocal(a,r, b.real_size);
+    //cout << endl<< DivisionWithKnownReciprocal(a,r, b.real_size);
 
     /// 0.2 100 10kx10k
 

@@ -1,0 +1,201 @@
+--[[
+
+Assets = {	
+	Asset("ATLAS", "modicon.xml"),
+	Asset("IMAGE", "modicon.tex"),
+	Asset("ATLAS", "modicon.xml"),
+	Asset("IMAGE", "modicon.tex"),
+}
+
+
+Assets = {	
+	Asset("ATLAS", "images/rules.xml"),
+	Asset("IMAGE", "images/rules.tex"),
+	Asset("ATLAS", "images/top.xml"),
+	Asset("IMAGE", "images/top.tex"),
+}
+
+]]
+
+
+--[[
+Assets = {	
+	Asset("ATLAS", "modicon.xml"),
+	Asset("IMAGE", "modicon.tex"),
+	Asset("ATLAS", "modicon.xml"),
+	Asset("IMAGE", "modicon.tex"),
+}
+]]
+
+table.insert(Assets, Asset("ATLAS", "modicon.xml"))
+table.insert(Assets, Asset("IMAGE", "modicon.tex"))
+
+local require = GLOBAL.require
+
+
+local Image = GLOBAL.require("widgets/image")
+local Top = GLOBAL.require("widgets/image")
+local Widget = require "widgets/widget"
+local Button = require "widgets/imagebutton"
+
+AddClassPostConstruct("widgets/statusdisplays", function(self)
+	local rules = self:AddChild(Button())
+	local imgrules = self:AddChild(Image("modicon.xml", "modicon.tex")) -- rules
+	rules:SetScale(0.7, 0.7, 0.7)	
+	rules:SetText("Kurallar")
+	rules:SetOnClick(function()
+		if imgrules.shown then			
+			imgrules:Hide()
+			rules:Hide()			
+		else			
+			imgrules:Show()		
+		end	
+		end)
+	
+	rules:SetPosition(-1460, 120, 0)	
+	imgrules:SetPosition(-800, -200, 0)	
+	rules:Show()	
+	imgrules:Hide()
+end)
+
+AddClassPostConstruct("widgets/statusdisplays", function(self)	
+
+	local top = self:AddChild(Button())	
+	local imgtop = self:AddChild(Top("modicon.xml", "modicon.tex")) -- top
+	top:SetScale(0.7, 0.7, 0.7)	
+	top:SetText("TOP 10")	
+	top:SetOnClick(function()		
+		if imgtop.shown then			
+			imgtop:Hide()		
+		else		
+			imgtop:Show()		
+		end	
+	end)	
+	top:SetPosition(-1360, 120, 0)	
+	imgtop:SetPosition(-800, -200, 0)	
+	top:Show()	
+	imgtop:Hide()
+end)
+
+-- G2
+
+
+
+local CoordinatesWidget = Class(Widget, function(self, mapscale)
+    Widget._ctor(self, "CoordinatesWidget")
+    self.owner = ThePlayer
+
+    mapscale = mapscale or 1
+
+    self.button = self:AddChild(Button())
+
+    local coords_w, coords_h = self.button:GetSize()
+    local coords_w, coords_h = coords_w * mapscale, coords_h * mapscale
+
+    self.coordssize = {
+      w = coords_w,
+      h = coords_h
+    }
+
+    self.button:SetScale(.7, .7, .7)
+    self.button:SetText("Hello World")
+    self.button:SetClickable(false) --TODO Make it send coords to chat
+    self.button:Show()
+end)
+
+
+
+
+
+
+
+-- holds the coordinates widget once it's added to the controls widget
+--local coordinates = nil
+
+local relative_coord = {-0.1, -0.1} -- x,y
+local function PositionCoordinates(controls, screensize)
+    local hudscale = controls.top_root:GetScale()
+    local screenw_full, screenh_full = GLOBAL.unpack(screensize)
+    local screenw = screenw_full/hudscale.x
+    local screenh = screenh_full/hudscale.y
+
+    local position_x = screenw * relative_coord[1]
+    local position_y = screenh * relative_coord[2]
+	print(position_x)
+	print(position_y)
+	
+	
+    controls.coordinates:SetPosition(position_x, position_y, 0)
+end
+
+-- Create a coordinates widget as a child of the controls widget
+local function AddCoordinates(controls)
+    controls.inst:DoTaskInTime(0, function()
+
+        controls.coordinates = controls.top_root:AddChild(CoordinatesWidget(1))
+        local screensize = {GLOBAL.TheSim:GetScreenSize()}
+        PositionCoordinates(controls, screensize)
+
+        local OnUpdate_base = controls.OnUpdate
+        controls.OnUpdate = function(self, dt)
+            OnUpdate_base(self, dt)
+
+            -- x,z,y? Seems like that's correct because the second value is 0 regardless of movement
+            local x, z, y = GLOBAL.ThePlayer.Transform:GetWorldPosition()
+
+            local coordinatesString = math.floor(x+0.5) .. "x" .. math.floor(y+0.5)
+            controls.coordinates.button:SetText(coordinatesString)
+
+            local curscreensize = {GLOBAL.TheSim:GetScreenSize()}
+            if curscreensize[1] ~= screensize[1] or curscreensize[2] ~= screensize[2] then
+                PositionCoordinates(controls, curscreensize)
+                screensize = curscreensize
+            end
+        end
+
+        
+    end)
+end
+
+AddClassPostConstruct("widgets/controls", AddCoordinates)
+
+
+-- G3
+
+
+AddClassPostConstruct("widgets/statusdisplays", function(self)	
+
+	local button = self:AddChild(Button())	
+	button:SetScale(0.7, 0.7, 0.7)	
+	button:SetText("G3")	
+	button:SetOnClick(function()		
+		if imgtop.shown then			
+			imgtop:Hide()		
+		else		
+			imgtop:Show()		
+		end	
+	end)	
+	button:SetPosition(0, 0, 0)	
+
+	button:Show()	
+
+end)
+
+
+AddClassPostConstruct("widgets/statusdisplays", function(self)	
+
+	local button = self:AddChild(Button())	
+	button:SetScale(0.7, 0.7, 0.7)	
+	button:SetText("G4")	
+	button:SetOnClick(function()		
+		if imgtop.shown then			
+			imgtop:Hide()		
+		else		
+			imgtop:Show()		
+		end	
+	end)	
+	button:SetPosition(-300, 100, 0)
+
+	button:Show()	
+
+end)

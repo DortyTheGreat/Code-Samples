@@ -78,8 +78,9 @@ using namespace std;
 
 int main()
 {
-	string ipAddress = "123.123.123.123";			// IP Address of the server
-	int port = 54000;						// Listening port # on the server
+    /// https://domaintoipconverter.com/index.php
+	string ipAddress = "18.192.93.86";			// IP Address of the server
+	int port = 12849;						// Listening port # on the server
 
 	// Initialize WinSock
 	WSAData data;
