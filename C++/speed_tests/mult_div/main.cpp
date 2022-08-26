@@ -146,6 +146,15 @@ int main()
 
     cout << double(cl.tick()) / itterations / rerand_i << " ns - even bigger u128 div" << endl;
 
+    for(int i = 0;i<itterations;++i){
+        __uint128_t a = rand128(),b = rand64() + 1,c;
+        for(int j = 0;j<rerand_i;++j){
+            c = a % b;
+        }
+    }
+
+    cout << double(cl.tick()) / itterations / rerand_i << " ns - even bigger u128 remainder" << endl;
+
 
     for(int i = 0;i<itterations;++i){
         __uint128_t a = rand128(),b = rand128() + 1,c;
