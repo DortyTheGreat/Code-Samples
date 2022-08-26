@@ -162,15 +162,6 @@ int main()
 
     cout << double(cl.tick()) / itterations / rerand_i << " ns - unsigned long long div" << endl;
 
-    for(int i = 0;i<itterations;++i){
-        __uint128_t a = rand(),b = rand() + 1,c;
-        for(int j = 0;j<rerand_i;++j){
-            c = a / b;
-        }
-    }
-
-    cout << double(cl.tick()) / itterations / rerand_i << " ns - u128 mult" << endl;
-
 
     for(int i = 0;i<itterations;++i){
         __uint128_t a = rand() + rand() * 32767,b = rand() + rand() * 32767 + 1,c;
