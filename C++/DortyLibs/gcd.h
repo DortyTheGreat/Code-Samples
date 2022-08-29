@@ -1,15 +1,9 @@
 /// Чуть быстрее __gcd, для int
 template<typename T>
-T gcd(T a, T b)
+inline T gcd(T a, T b)
 {
-    T c;
-    while (b)
-    {
-        c = b;
-        b = a % b;
-        a = c;
-    }
-    return a;
+    while(a %=b) if (!(b %= a)) return a;
+    return b;
 }
 /// Для long long и выше - предпочтительнее -
 /// https://github.com/NyaanNyaan/library/blob/master/math-fast/gcd.hpp
