@@ -86,6 +86,28 @@ unsigned short rand16(){return rand();}
 unsigned int rand32(){return (unsigned int)(rand16()) * 65535 + rand16();}
 unsigned long long rand64(){return (unsigned long long)(rand32()) * 0xffffffff + rand32();}
 __uint128_t rand128(){return (__uint128_t)(rand64()) * 0xffffffffffffffff + rand64();}
+
+#define t10(a) a a a a a a a a a a
+
+#define t50(a) a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+
+__forceinline long long mul(const long long& a,const long long& b){
+    return a * b;
+}
+
+uint64_t montmul(__uint128_t a, uint64_t b, uint64_t mod, uint64_t inv){
+    a *= b;
+    uint64_t y = (a >> 64) - (__uint128_t(uint64_t(a) * inv) * mod >> 64);
+    return int64_t(y) < 0 ? y + mod : y;
+
+}
+
+__forceinline uint64_t montmul_i(const __uint128_t& a, const __uint128_t& b){
+    return a * b;
+
+
+}
+
 int main()
 {
 
@@ -94,46 +116,71 @@ int main()
     Clock cl;
     cl.tick();
 
-    const int itterations = 100000;
+    const int itterations = 10000;
     const int rerand_i = 1000;
 
     for(int i = 0;i<itterations;++i){
         int a = rand(),b = rand(),c;
         for(int j = 0;j<rerand_i;++j){
-            c = a * b;
+            t10(c = a * b;)
         }
     }
 
-    cout << double(cl.tick()) / itterations / rerand_i << " ns - int mult" << endl;
-    MainClock.tick();
+    cout << double(cl.tick()) / itterations / rerand_i / 10 << " ns - int mult" << endl;
 
     for(int i = 0;i<itterations;++i){
-        long long a = rand(),b = rand(),c;
+        long long a = rand64(),b = rand64(),c;
         for(int j = 0;j<rerand_i;++j){
-            c = a * b;
+            t10(c = a * b;)
         }
     }
 
-    cout << double(cl.tick()) / itterations / rerand_i  << " ns - long long mult" << endl;
-    MainClock.tick();
+    cout << double(cl.tick()) / itterations / rerand_i / 10 << " ns - long long mult" << endl;
 
     for(int i = 0;i<itterations;++i){
-        __uint128_t a = rand(),b = rand(),c;
+        long long a = rand64(),b = rand64(),c;
         for(int j = 0;j<rerand_i;++j){
-            c = a * b;
+            t10(c = mul(a, b);)
         }
     }
 
-    cout << double(cl.tick()) / itterations / rerand_i  << " ns - u128 mult" << endl;
+    cout << double(cl.tick()) / itterations / rerand_i / 10 << " ns - long long mult(func)" << endl;
+
+    for(int i = 0;i<itterations;++i){
+        uint64_t a = rand64(),b = rand64(),c, d = rand64(), e = rand64();
+        for(int j = 0;j<rerand_i;++j){
+            t10(c = montmul(a, b,c,d);)
+        }
+    }
+
+    cout << double(cl.tick()) / itterations / rerand_i / 10 << " ns - mont mul" << endl;
+
+    for(int i = 0;i<itterations;++i){
+        __uint128_t a = rand64(),b = rand64(),c;
+        for(int j = 0;j<rerand_i;++j){
+            t10(c = montmul_i(a, b);)
+        }
+    }
+
+    cout << double(cl.tick()) / itterations / rerand_i / 10 << " ns - mont mul_i" << endl;
 
     for(int i = 0;i<itterations;++i){
         __uint128_t a = rand128(),b = rand128(),c;
         for(int j = 0;j<rerand_i;++j){
-            c = a * b;
+            t10(c = a * b;)
         }
     }
 
-    cout << double(cl.tick()) / itterations / rerand_i  << " ns - bigger u128 mult" << endl;
+    cout << double(cl.tick()) / itterations / rerand_i / 10  << " ns - u128 mult" << endl;
+
+    for(int i = 0;i<itterations;++i){
+        __uint128_t a = rand128(),b = rand128(),c;
+        for(int j = 0;j<rerand_i;++j){
+            t10(c = a * b;)
+        }
+    }
+
+    cout << double(cl.tick()) / itterations / rerand_i / 10  << " ns - bigger u128 mult" << endl;
 
     for(int i = 0;i<itterations;++i){
         int a = rand(),b = rand() + 1,c;

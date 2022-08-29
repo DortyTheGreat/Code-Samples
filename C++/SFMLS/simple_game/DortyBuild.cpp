@@ -1,6 +1,6 @@
 /*
 ---------------------
-This File was Build Automatically by DortyBuild v 1.3.
+This File was Build Automatically by DortyBuild v 1.4.
 For More Information ask:
 Discord: Тесла#9030 
 ---Original---Code---
@@ -143,6 +143,7 @@ std::string to_str ( T any )
     return ret;
   }
 
+#include <fstream>
 /// lovely BS: https://stackoverflow.com/questions/56978556/how-to-use-sfml-textures-as-static-data-members
 
 class Enemy : public sf::Drawable

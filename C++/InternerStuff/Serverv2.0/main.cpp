@@ -66,25 +66,7 @@ bool getMyIP(IPv4 & myIP)
 
 int main()
 {
-    IPv4 ip;
 
-    getMyIP(ip);
-    cout << "My IP: " << int(ip.b1) << " " << int(ip.b2) << " " << int(ip.b3) << " " << int(ip.b4) << " " << endl;
-
-    // Init WinSock
-    WSADATA wsa_Data;
-    int wsa_ReturnCode = WSAStartup(0x101,&wsa_Data);
-
-    // Get the local hostname
-    char szHostName[255];
-    gethostname(szHostName, 255);
-    struct hostent *host_entry;
-    host_entry=gethostbyname(szHostName);
-    char * szLocalIP;
-    szLocalIP = inet_ntoa (*(struct in_addr *)*host_entry->h_addr_list);
-    WSACleanup();
-
-    cout << szLocalIP << endl;
 
 
 
@@ -111,7 +93,7 @@ int main()
 	// Bind the ip address and port to a socket
 	sockaddr_in hint;
 	hint.sin_family = AF_INET;
-	hint.sin_port = htons(7250);
+	hint.sin_port = htons(8888);
 	hint.sin_addr.S_un.S_addr = INADDR_ANY; // Could also use inet_pton ....
 
 	bind(listening, (sockaddr*)&hint, sizeof(hint));

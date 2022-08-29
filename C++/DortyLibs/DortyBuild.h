@@ -41,11 +41,11 @@ std::string FuncName = "AppBuild";
 
 void RequrrentBuild(std::string MainProgrammFileName, std::string OutProgrammFileName, std::string lib, int depth){
 
-
-    cout << std::string(depth,'>') << " File: " << (lib+MainProgrammFileName) << endl;
-
-    ofstream out(OutProgrammFileName.c_str(),std::ios::app);
-    ifstream in((lib+MainProgrammFileName).c_str());
+    #ifdef _GLIBCXX_IOSTREAM
+    std::cout << std::string(depth,'>') << " File: " << (lib+MainProgrammFileName) << std::endl;
+    #endif // _GLIBCXX_IOSTREAM
+    std::ofstream out(OutProgrammFileName.c_str(),std::ios::app);
+    std::ifstream in((lib+MainProgrammFileName).c_str());
 
     std::string DataReader;
 
@@ -54,11 +54,11 @@ void RequrrentBuild(std::string MainProgrammFileName, std::string OutProgrammFil
     while(!in.eof()){
         getline(in,DataReader);
 
-        int find_pos = DataReader.find(INCLUDE_std::string);
+        int find_pos = DataReader.find(INCLUDE_STRING);
 
         if(find_pos != -1){
 
-            std::string Find_Lib = DataReader.substr(find_pos + INCLUDE_std::string.size());
+            std::string Find_Lib = DataReader.substr(find_pos + INCLUDE_STRING.size());
 
             std::string LibName = "";
 
@@ -78,7 +78,7 @@ void RequrrentBuild(std::string MainProgrammFileName, std::string OutProgrammFil
                 ///cout << "LibName: " << LibName << endl;
                 //cout << "\{" <<LibName << "\}" << endl;
                 if (LibName == ThisLibName){ /// ÎÁÐÀÒÈ ÂÍÈÌÀÍÈÅ!
-                    out << INCLUDE_INSTEAD << endl;
+                    out << INCLUDE_INSTEAD << std::endl;
                 }else{
                     RequrrentBuild(LibName,OutProgrammFileName,lib + Folder,depth+1);
                 }
@@ -98,7 +98,7 @@ void RequrrentBuild(std::string MainProgrammFileName, std::string OutProgrammFil
             DataReader.replace(DataReader.find(FuncName), delta, " ");
         }
 
-        out << DataReader << endl;
+        out << DataReader << std::endl;
     }
 
     in.close();
@@ -110,18 +110,19 @@ void RequrrentBuild(std::string MainProgrammFileName, std::string OutProgrammFil
 
 
 void AppBuild(std::string MainProgrammFileName, std::string OutProgrammFileName){
-    ofstream out(OutProgrammFileName.c_str());
+    std::ofstream out(OutProgrammFileName.c_str());
     out << PREFAB_TEXT;
     out << GetLibTxt(MainProgrammFileName);
     out << "*/\n";
     out.close();
     RequrrentBuild(MainProgrammFileName, OutProgrammFileName,"",1); /// "/LibName" ... + "//" + LibTxt
-
+    #ifdef _GLIBCXX_IOSTREAM
     cout << endl;
     cout << "Build Has Been Done Successfully." << endl;
     cout << "Made " << OutProgrammFileName << " file using" << endl;
     cout << MainProgrammFileName << " file Build-Instructions" <<endl;
     cout << "Original Programm will continue running" << endl << endl;
+    #endif // _GLIBCXX_IOSTREAM
     return;
 }
 
