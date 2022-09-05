@@ -149,19 +149,7 @@ bool inlinePcheck(int n){
 #undef _5c
 
 
-/// Чуть быстрее __gcd, для int
-template<typename T>
-T gcd(T a, T b)
-{
-    T c;
-    while (b)
-    {
-        c = b;
-        b = a % b;
-        a = c;
-    }
-    return a;
-}
+
 
 /// only for int
 unsigned int mod_pow(unsigned long long a, unsigned int t, unsigned int mod) {
@@ -196,6 +184,14 @@ int jacobi (int a, int b)
 	if (a1 == 1)
 		return s;
 	return s * jacobi (b % a1, a1);
+}
+
+/// Чуть быстрее __gcd, для int
+template<typename T>
+inline T gcd(T a, T b)
+{
+    while(a %=b) if (!(b %= a)) return a;
+    return b;
 }
 
 bool BPSW(int n){
@@ -300,13 +296,16 @@ bool is_SPRP(uint32_t n, uint32_t a) {
         a = ((uint64_t)a*a) % n;
         pw >>= 1;
     }
-    if (cur == 1) return true;
+    if (cur == 1) return true; /// prob prime
     for (uint32_t r=0; r<s; r++) {
-        if (cur == n-1) return true;
+        if (cur == n-1) return true; /// prob prime
         cur = (cur*cur) % n;
     }
-return false;
+return false; /// definately complex
 }
+
+
+
 bool is_prime_WTF(uint32_t x) {
     if (x==2 || x==3 || x==5 || x==7) return true;
     if (x%2==0 || x%3==0 || x%5==0 || x%7==0) return false;
@@ -318,7 +317,43 @@ bool is_prime_WTF(uint32_t x) {
     return is_SPRP(x,bases[h]);
 }
 
+__attribute__((always_inline))
+bool is_SPRP_complex(const uint32_t& n, uint32_t pw, uint64_t a,const unsigned char& cycle) {
 
+    uint64_t cur = 1;
+    while (pw) {
+        if (pw & 1) cur = (cur*a) % n;
+        a = (a*a) % n;
+        pw >>= 1;
+    }
+
+    if (cur == 1) return false; /// prob prime
+    for (unsigned char r=0; r<cycle; ++r) {
+        if (cur == n-1) return false; /// prob prime
+        cur = (cur*cur) % n;
+    }
+return true; /// definately complex
+}
+
+bool NextGenRabin(uint32_t n){
+    if (n < 2) return false;
+
+    if (n % 2 == 0) return n == 2;
+    if (n % 3 == 0) return n == 3;
+    if (n % 5 == 0) return n == 5;
+    if (n % 7 == 0) return n == 7;
+
+    uint32_t d = n-1;
+
+    unsigned char e = __builtin_ctz(d);
+    uint32_t pw = (d >>= e);
+
+
+    static const uint32_t jp[] = {2, 3, 5, 7};
+    for(uint32_t tester : jp)
+        if (is_SPRP_complex(n,pw,tester,e)) return false;
+    return true;
+}
 
 
 
@@ -480,6 +515,12 @@ int main()
     cout << double(cl.tick()) / itterations << " ns - BPSW" << endl;
 
     for(int i = 0;i<itterations;++i){
+        NextGenRabin(67777);
+    }
+
+    cout << double(cl.tick()) / itterations << " ns - NGR" << endl;
+
+    for(int i = 0;i<itterations;++i){
         is_prime_WTF(67777);
     }
 
@@ -519,6 +560,12 @@ int main()
     }
 
     cout << double(cl.tick()) / itterations << " ns - BPSW" << endl;
+
+    for(int i = 0;i<itterations;++i){
+        NextGenRabin(2147483647);
+    }
+
+    cout << double(cl.tick()) / itterations << " ns - NGR" << endl;
 
     for(int i = 0;i<1000000;++i){
         bool IPS = isPrimeSimple(i);

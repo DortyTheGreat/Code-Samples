@@ -25,6 +25,8 @@ Either way, here's some code implementing this
 This trick made the implementation 4 times faster.
 */
 
+#include "../DortyLibs/DortyBuild.h"
+
 #include <cstdint>
 #include <iostream>
 #include <tuple>
@@ -195,7 +197,8 @@ uint64_t pollard_brent_montgomery(uint64_t n) {
 
 using namespace std;
 
-__uint128_t mod_pow(__uint128_t a, __uint128_t t, __uint128_t mod) {
+__attribute__((always_inline))
+__uint128_t mod_pow(__uint128_t a,uint64_t t,const __uint128_t& mod) {
     __uint128_t r = 1;
 
     for (; t; t >>= 1, a = (a) * a % mod)
@@ -253,22 +256,9 @@ bool isPrime(unsigned long long n) {
     return true;
 }
 
-#include <algorithm>
-///  const __uint128_t& ui128, но у меня всё деструктивно
-std::ostream& operator <<(std::ostream& os, __uint128_t ui128) {
-
-    string buff;
-    while(ui128){
-        buff += (ui128%10+'0');
-        ui128 /= 10;
-    }
 
 
 
-    reverse(buff.begin(),buff.end());
-
-	return (os << buff);
-}
 
 #define cf(k) while (!(num % k)){++ret[k]; num /= k;}
 
@@ -300,27 +290,14 @@ std::map<unsigned long long,int> factor(__uint128_t num){
 
 
 
-std::istream& operator>>(std::istream& in, __uint128_t &ui128) {
-
-
-    std::string stream_;
-    in >> stream_;
-
-    ui128 = 0;
-    for(char c : stream_){
-        ui128 *= 10;
-        ui128 += c-'0';
-    }
-
-    return in;
-
-}
+#include "../DortyLibs/operators/io128.h"
 
 
 
 
 int main()
 {
+    AppBuild();
     __uint128_t N;
     cin >> N;
     while(N){
