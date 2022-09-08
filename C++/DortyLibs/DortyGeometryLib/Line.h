@@ -63,11 +63,7 @@ public:
         C = 0;
     }
 
-    Line(double A_, double B_, double C_){
-        A = A_;
-        B = B_;
-        C = C_;
-    }
+    Line(double A_, double B_, double C_) : A(A_), B(B_), C(C_){}
 
     double getY_byX(double X){
         double template_null = 1337;

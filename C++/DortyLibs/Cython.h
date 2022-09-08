@@ -21,6 +21,13 @@ T input(T ab){
     return returner;
 }
 
+template<typename T>
+T input(){
+    T x;
+    std::cin >> x;
+    return x;
+}
+
 long long to_int(string str){
     long long mask = 1;
     size_t start_index = 0;
