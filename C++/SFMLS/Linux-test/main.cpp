@@ -177,13 +177,17 @@ private:
 
 
 
-bool first_click = true;
-void try_to_click(int x, int y){
 
+
+void mouseEvent(const sf::RenderWindow& rw, Board& b, sf::Event &event)
+{
+
+    if (event.mouseButton.button != sf::Mouse::Left) return;
+    sf::Vector2i winpos = sf::Mouse::getPosition(rw);
+
+    b.reveal_by_mouse(winpos);
 
 }
-
-
 
 int main()
 {
@@ -193,6 +197,8 @@ int main()
 
 
     sf::RenderWindow window(sf::VideoMode(1200, 800), "SFML works!");
+    window.setKeyRepeatEnabled(false);
+
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
 
@@ -201,15 +207,16 @@ int main()
         sf::Event event;
         while (window.pollEvent(event))
         {
+
             if (event.type == sf::Event::Closed)
                 window.close();
+            if (event.type == sf::Event::MouseButtonPressed)
+                mouseEvent(window,MainBoard,event);
         }
 
-        sf::Vector2i winpos = sf::Mouse::getPosition(window);
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 
-            MainBoard.reveal_by_mouse(winpos);
-        }
+
+
 
 
         window.clear();
