@@ -12,3 +12,10 @@
 1647356590 c:\users\saha2\desktop\code samples\c++\basicwindowslib.h
 	<windows.h>
 
+1663313317 source:/home/hitech/Рабочий стол/Code-Samples/C++/Snake_NetBook/main.cpp
+	<iostream>
+	<queue>
+	<utility>
+	<algorithm>
+	<thread>
+

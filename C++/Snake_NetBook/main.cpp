@@ -2,8 +2,7 @@
 #include <queue>
 #include <utility>
 #include <algorithm>
-#include "../BasicWindowsLib.h"
-#include <conio.h>
+
 #include <thread>
 
 using namespace std;
@@ -12,39 +11,49 @@ const int W = 30;
 const int H = 20;
 
 const char Snake_Body = '$';
+int Field[W][H];
+pair<int,int> apple;
+
+char to_ch(int x, int y){
+
+    if (x == apple.first && y == apple.second) return '*';
+    if (Field[x][y] == 0) return ' ';
+
+    return '#';
+}
 
 class Screen{
 public:
-    void init(){
+
+    void draw(){
         for(int i = 0;i<H+2;i++){
             cout << "#";
             for(int j = 0;j<W;j++){
+
+
                 if (i == 0 || i == (H+1)){
                     cout << "#";
                 }else{
-                    cout << " ";
+                    cout << to_ch(j,i-1);
                 }
             }
             cout << "#"<<endl;
         }
+
     }
 
 
-    void draw(pair<int,int> pr, char symbol){
-        gotoxy(pr.first+1, pr.second+1);
-        cout << symbol;
-    }
 
 
 };
 
 Screen scr;
 
-int Field[W][H];
+
 
 queue<pair<int,int>> snake;
 
-pair<int,int> apple;
+
 
 int counter;
 int size_;
@@ -54,14 +63,12 @@ void add_element(int x, int y){
     snake.push({x, y});
     Field[x][y] = counter;
     counter++;
-    scr.draw({x,y},Snake_Body);
 }
 
 void add_element(pair<int,int> pr){
     snake.push(pr);
     Field[pr.first][pr.second] = counter;
     counter++;
-    scr.draw(pr,Snake_Body);
 }
 
 void init_snake(){
@@ -95,7 +102,6 @@ void gen_apple(){
                 if (amount_of_empty == rand_tile){
                     apple.first = i;
                     apple.second = j;
-                    scr.draw(apple,'*');
                 }
             }
         }
@@ -119,7 +125,6 @@ void move(int dx, int dy){
         pair<int,int>tail =  snake.front();
 
         Field[tail.first][tail.second] = 0;
-        scr.draw(tail,' ');
         snake.pop();
 
         if (isIllegalMove(n_head)){
@@ -132,7 +137,7 @@ void move(int dx, int dy){
 
 void ai(){
 
-    gotoxy(0,H+3);
+
     queue<pair<int, int>> que;
     que.push(snake.back());
     vector<vector<int>> d(W, vector<int>(H));
@@ -175,7 +180,7 @@ void ai(){
 int main()
 {
 
-    scr.init();
+
     init_snake();
     gen_apple();
 
@@ -196,6 +201,8 @@ int main()
         }
         #else
             ai();
+            cout << endl;
+            scr.draw();
             const int ms = 50;
             this_thread::sleep_for(chrono::milliseconds(ms));
         #endif // ai

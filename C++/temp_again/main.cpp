@@ -2,17 +2,16 @@
 using namespace std;
 
 
-
-
-
-
+constexpr uint32_t high_type(uint16_t) {
+    return uint32_t(0);
+}
 
 constexpr uint64_t high_type(uint32_t) {
-  return uint64_t(0);
+    return uint64_t(0);
 }
 
 constexpr __uint128_t high_type(uint64_t) {
-  return __uint128_t(0);
+    return __uint128_t(0);
 }
 
 template<typename T>
@@ -74,17 +73,16 @@ public:
 
 int main()
 {
-
-    uint32_t a, old_rand, b,c,n;
-    cin >> a >> old_rand >> b >> c >> n;
-    LCM<uint32_t> my_method(a,old_rand, b, c);
-    uint64_t ans = 0;
-
-    for(int i = 0;i < n;++i){
-        ans += my_method.get();
+    for(uint16_t i = 30000; i != 0; ++i){
+        if (i % 100 == 0){cout << i << endl;}
+        for(uint16_t j = 1; j != 0; ++j){
+            if ( (i / j) !=   (i / fast_div<uint16_t>(j) )){
+                cout << "err" << endl;
+                cout << i << " : " << j << " " << (i / j) << " : " << (i / fast_div<uint16_t>(j) );
+            }
+        }
     }
 
 
-    cout << ans<< endl;
     return 0;
 }

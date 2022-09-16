@@ -67,7 +67,7 @@ public:
 
         for(size_t i = 0;i<m;++i){
             for(size_t j = 0;j<other.n;++j){
-                ret.data[i][j] = data[i][j] * val;
+                //ret.data[i][j] = data[i][j] * val;
             }
         }
 
@@ -87,24 +87,20 @@ public:
 m x n
 */
 
-template <typename T>
-T summ(T a,T b){
-    return a + b;
-}
 
 
 using namespace std;
 
 int main()
 {
+    long double abobus = 123e10000;
+    cout << sizeof(long double) << endl;
     cout << summ(2.2,3.9) << endl;
 
     Matrix<int> a(10,20);
     cin >> a;
     cout << a;
 
-    a.operator+(a)
-    cout << a + Matrix(2,3) << endl;
     cout << a * 2 << endl;
     cout << "Hello world!" << endl;
     return 0;
