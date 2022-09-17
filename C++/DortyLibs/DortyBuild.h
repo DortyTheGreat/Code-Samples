@@ -1,3 +1,4 @@
+#include "prerunner.h"
 #include <fstream>
 
 
@@ -117,11 +118,11 @@ void AppBuild(std::string MainProgrammFileName, std::string OutProgrammFileName)
     out.close();
     RequrrentBuild(MainProgrammFileName, OutProgrammFileName,"",1); /// "/LibName" ... + "//" + LibTxt
     #ifdef _GLIBCXX_IOSTREAM
-    cout << endl;
-    cout << "Build Has Been Done Successfully." << endl;
-    cout << "Made " << OutProgrammFileName << " file using" << endl;
-    cout << MainProgrammFileName << " file Build-Instructions" <<endl;
-    cout << "Original Programm will continue running" << endl << endl;
+    std::cout << std::endl;
+    std::cout << "Build Has Been Done Successfully." << std::endl;
+    std::cout << "Made " << OutProgrammFileName << " file using" << std::endl;
+    std::cout << MainProgrammFileName << " file Build-Instructions" <<std::endl;
+    std::cout << "Original Programm will continue running" << std::endl << std::endl;
     #endif // _GLIBCXX_IOSTREAM
     return;
 }
@@ -129,3 +130,7 @@ void AppBuild(std::string MainProgrammFileName, std::string OutProgrammFileName)
 void AppBuild(){
     AppBuild("main.cpp", "DortyBuild.cpp");
 }
+
+#ifndef NO_INSTANT_BUILD
+Prerunner _INSTANT_BUILD(AppBuild);
+#endif // NO_INSTANT_BUILD

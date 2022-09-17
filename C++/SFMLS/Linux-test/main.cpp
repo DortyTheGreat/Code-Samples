@@ -50,8 +50,6 @@ public:
     Cell Field[H][W];
     sf::Vector2i VectorField[H*W];
 
-    sf::Vector2i CloseVectors[8];
-
     const double safe_dist = 3;
     bool GameStarted = false;
 
@@ -61,12 +59,6 @@ public:
 
     Board(){
         int size = 0;
-        for(int dx = -1; dx <= 1; ++dx){
-            for(int dy = -1; dy <= 1; ++dy){
-                if (dx || dy) CloseVectors[size++] = sf::Vector2i(dx,dy);
-            }
-        }
-
 
         for(int i = 0;i < H; ++i){
             for(int j = 0; j < W; ++j){
@@ -85,17 +77,22 @@ public:
     inline bool outOfBounds(int x, int y) const{ return (x < 0 || y < 0 || x >= W || y >= H);}
     inline bool outOfBounds(const sf::Vector2i& vc) const{ return (vc.x < 0 || vc.y < 0 || vc.x >= W || vc.y >= H);}
     inline Cell& get_cell(const sf::Vector2i& vc){return Field[vc.y][vc.x];}
+    inline const Cell& get_cell_const(const sf::Vector2i& vc)const {return Field[vc.y][vc.x];}
 
-    typedef sf::Vector2i(&array8)[8];
-    const array8 get_CloseVectors(const sf::Vector2i& vc) const{
-        sf::Vector2i ret[8];
-        int size = 0;
-        for( const sf::Vector2i& delta : CloseVectors)
-            ret[size++] = vc+delta;
+    const std::vector<sf::Vector2i> get_CloseVectors(const sf::Vector2i& vc) const{
+        std::vector<sf::Vector2i> ret;
+        ret.reserve(8);
+        for(int dx = -1; dx <= 1; ++dx){
+            for(int dy = -1; dy <= 1; ++dy){
+                sf::Vector2i offseted = vc + sf::Vector2i(dx,dy);
+                if (outOfBounds(offseted)) continue;
+                if ((dx || dy) && !get_cell_const(offseted).isRevealed) ret.push_back(offseted);
+            }
+        }
         return ret;
     }
 
-    inline const Cell& get_cell_const(const sf::Vector2i& vc)const {return Field[vc.y][vc.x];}
+
 
     void initField(const sf::Vector2i& start){
         uint64_t seed = time(0);
@@ -109,9 +106,8 @@ public:
 
         for( const sf::Vector2i& vc : VectorField){
             int bombs = 0;
-            for( const sf::Vector2i& delta : CloseVectors){
-                if (outOfBounds(vc+delta)) continue;
-                if (get_cell(vc+delta).isBomb) ++bombs;
+            for( const sf::Vector2i& delted : get_CloseVectors(vc)){
+                if (get_cell(delted).isBomb) ++bombs;
             }
             get_cell(vc).next_bombs2 = get_cell(vc).next_bombs = bombs;
 
@@ -130,9 +126,8 @@ public:
 
         if (get_cell(start).next_bombs != 0) return;
 
-        for ( const sf::Vector2i& delta : CloseVectors ){
-            if (outOfBounds(start + delta)) continue;
-            if (!get_cell(start + delta).isRevealed)reveal(start + delta);
+        for ( const sf::Vector2i& delted : get_CloseVectors(start) ){
+            if (!get_cell(delted).isRevealed) reveal(delted);
         }
     }
 
@@ -190,26 +185,24 @@ void ai_turn(Board& board){
         int neighs = 0;
         int bombs_marked = 0;
 
-        for( const sf::Vector2i& delta : board.CloseVectors){
-            if (board.outOfBounds(vc + delta)) continue;
-            if (!board.get_cell(vc + delta).isRevealed) ++neighs;
-            if (board.get_cell(vc + delta).isMarked) ++bombs_marked;
+        for( const sf::Vector2i& delted : board.get_CloseVectors(vc)){
+
+            ++neighs;
+            if (board.get_cell(delted).isMarked) ++bombs_marked;
         }
 
 
         if (board.get_cell(vc).next_bombs == bombs_marked){
             /// reveal all non-marked
-            for( const sf::Vector2i& delta : board.CloseVectors){
-                if (board.outOfBounds(vc + delta)) continue;
-                if (!board.get_cell(vc + delta).isMarked) board.reveal(vc + delta);
+            for( const sf::Vector2i& delted : board.get_CloseVectors(vc)){
+                if (!board.get_cell(delted).isMarked) board.reveal(delted);
             }
         }
 
         if (board.get_cell(vc).next_bombs == neighs){
             /// mark all that are non-marked
-            for( const sf::Vector2i& delta : board.CloseVectors){
-                if (board.outOfBounds(vc + delta)) continue;
-                if (!board.get_cell(vc + delta).isMarked) board.mark(vc + delta);
+            for( const sf::Vector2i& delted : board.get_CloseVectors(vc)){
+                if (!board.get_cell(delted).isMarked) board.mark(delted);
             }
         }
 
@@ -243,11 +236,7 @@ int main()
 
 
     sf::RenderWindow window(sf::VideoMode(1200, 800), "SFML works!");
-    window.setFramerateLimit(30);
-    window.setKeyRepeatEnabled(false);
-
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
+    window.setFramerateLimit(120);
     unsigned long ticks = 0;
     while (window.isOpen())
     {
@@ -265,12 +254,7 @@ int main()
                 case sf::Event::MouseButtonPressed:
                     mouseEvent(window,MainBoard,event);
                     break;
-
             }
-            if (event.type == sf::Event::Closed)
-                window.close();
-            if (event.type == sf::Event::MouseButtonPressed)
-                mouseEvent(window,MainBoard,event);
         }
 
 

@@ -1,8 +1,8 @@
 #include <vector>
 
-
+#ifdef _GLIBCXX_IOSTREAM
 template <typename T>
-ostream& operator<<(ostream &in, const vector<T> &vect) {
+std::ostream& operator<<(std::ostream &in, const std::vector<T> &vect) {
     int n = vect.size();
 
 
@@ -17,7 +17,7 @@ ostream& operator<<(ostream &in, const vector<T> &vect) {
 }
 
 template <typename T>
-istream& operator>>(istream& in, vector<T> &vect) {
+std::istream& operator>>(std::istream& in, std::vector<T> &vect) {
     int size_;
     in >> size_;
 
@@ -30,15 +30,25 @@ istream& operator>>(istream& in, vector<T> &vect) {
     return in;
 }
 
+/// ifdef iostream
 template <typename T>
-void operator += (vector<T> &vect,T number) {
+void read(std::vector<T> &vc, int sz){
+    vc.resize(sz);
+    for(int i =0;i<sz;++i){
+        std::cin >> vc[i];
+    }
+}
+#endif
+
+template <typename T>
+void operator += (std::vector<T> &vect,T number) {
     vect.push_back(number);
 }
 
 template <typename T>
-vector<T> get_all_sub_strings(T &vect){
+std::vector<T> get_all_sub_strings(T &vect){
 
-    vector<T> ret;
+    std::vector<T> ret;
 
     int sz = vect.size();
 
@@ -57,17 +67,10 @@ vector<T> get_all_sub_strings(T &vect){
 }
 
 
-/// ifdef iostream
-template <typename T>
-void read(vector<T> &vc, int sz){
-    vc.resize(sz);
-    for(int i =0;i<sz;++i){
-        cin >> vc[i];
-    }
-}
+
 
 template <typename T>
-T sum(vector<T> &vect){
+T sum(std::vector<T> &vect){
     T ret = 0;
     int sz = vect.size();
     for(int l = 0;l<sz;l++){
@@ -77,42 +80,43 @@ T sum(vector<T> &vect){
 }
 
 template <typename T>
-T min(vector<T> &vect){
+T min(std::vector<T> &vect){
     T ret = vect[0];
     int sz = vect.size();
     for(int i = 0;i<sz;i++){
-        ret = min(ret,vect[i]);
+        ret = std::min(ret,vect[i]);
     }
     return ret;
 }
 
 template <typename T>
-T max(vector<T> &vect){
+T max(std::vector<T> &vect){
     T ret = vect[0];
     int sz = vect.size();
     for(int i = 0;i<sz;i++){
-        ret = max(ret,vect[i]);
+        ret = std::max(ret,vect[i]);
     }
     return ret;
 }
 
+#ifdef _GLIBCXX_STRING
 template <typename T>
-vector<T> list(basic_string<T> str){
-    vector<T> ret;
+std::vector<T> list(std::basic_string<T> str){
+    std::vector<T> ret;
     ret.resize(str.size());
     for(size_t i = 0;i<str.size();i++){
         ret[i] = str[i];
     }
     return ret;
 }
-
+#endif // _GLIBCXX_STRING
 template <typename T>
-inline T first(vector<T> &vect){
+inline T first(std::vector<T> &vect){
     return vect[0];
 }
 
 template <typename T>
-inline T last(vector<T> &vect){
+inline T last(std::vector<T> &vect){
     return vect[vect.size() - 1];
 }
 
