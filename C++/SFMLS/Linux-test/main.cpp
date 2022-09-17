@@ -57,16 +57,9 @@ public:
 
     bool autoZero = true;
 
-    sf::Font font;
+    static sf::Font font;
 
     Board(){
-
-        if (!font.loadFromFile("Arial.ttf"))
-        {
-            std::cout << "font load error" << std::endl;
-        }
-
-
         int size = 0;
         for(int dx = -1; dx <= 1; ++dx){
             for(int dy = -1; dy <= 1; ++dy){
@@ -137,16 +130,10 @@ public:
 
         if (get_cell(start).next_bombs != 0) return;
 
-        for ( const sf::Vector2i& vc : CloseVectors ){
-            sf::Vector2i offseted = vc + start;
-            if (outOfBounds(offseted)) continue;
-
-            if (!get_cell(offseted).isRevealed)reveal(offseted);
+        for ( const sf::Vector2i& delta : CloseVectors ){
+            if (outOfBounds(start + delta)) continue;
+            if (!get_cell(start + delta).isRevealed)reveal(start + delta);
         }
-
-
-
-
     }
 
     void mark(const sf::Vector2i& start){
@@ -188,6 +175,10 @@ private:
         }
     }
 };
+
+sf::Font Board::font;
+
+
 
 
 void ai_turn(Board& board){
@@ -243,7 +234,10 @@ void mouseEvent(const sf::RenderWindow& rw, Board& b, sf::Event &event)
 
 int main()
 {
-
+    if (!Board::font.loadFromFile("Arial.ttf"))
+    {
+        std::cout << "font load error" << std::endl;
+    }
 
     Board MainBoard;
 
@@ -264,7 +258,15 @@ int main()
         sf::Event event;
         while (window.pollEvent(event))
         {
+            switch( event.type ){
+                case sf::Event::Closed:
+                    window.close();
+                    break;
+                case sf::Event::MouseButtonPressed:
+                    mouseEvent(window,MainBoard,event);
+                    break;
 
+            }
             if (event.type == sf::Event::Closed)
                 window.close();
             if (event.type == sf::Event::MouseButtonPressed)
