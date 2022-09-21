@@ -30,11 +30,7 @@ bool Roll(double percent){
 
 class Cell{
 public:
-    bool isBomb;
-    bool isRevealed;
-    bool isMarked;
-    int next_bombs;
-    int next_bombs2;
+    int state;
     sf::RectangleShape shape;
 };
 
@@ -46,6 +42,8 @@ public:
     const int cellSize = 30;
     const int textSize = 20;
     const int space = 33;
+    const int connect_to_win = 5;
+    int winning = 0;
 
     Cell Field[H][W];
     sf::Vector2i VectorField[H*W];
@@ -54,11 +52,11 @@ public:
     bool GameStarted = false;
 
     bool autoZero = true;
-
+    bool turn = 0;
     static sf::Font font;
 
     Board(){
-        int size = 0;
+
 
         for(int i = 0;i < H; ++i){
             for(int j = 0; j < W; ++j){
@@ -67,7 +65,7 @@ public:
                 shape = sf::RectangleShape(sf::Vector2f(cellSize,cellSize));
                 shape.setFillColor(sf::Color::White);
                 shape.setPosition(sf::Vector2f(space * j, space * i));
-                Field[i][j].isRevealed = Field[i][j].isMarked = false;
+                Field[i][j].state = 0;
             }
         }
     }
@@ -79,72 +77,124 @@ public:
     inline Cell& get_cell(const sf::Vector2i& vc){return Field[vc.y][vc.x];}
     inline const Cell& get_cell_const(const sf::Vector2i& vc)const {return Field[vc.y][vc.x];}
 
-    const std::vector<sf::Vector2i> get_CloseVectors(const sf::Vector2i& vc) const{
-        std::vector<sf::Vector2i> ret;
-        ret.reserve(8);
-        for(int dx = -1; dx <= 1; ++dx){
-            for(int dy = -1; dy <= 1; ++dy){
-                sf::Vector2i offseted = vc + sf::Vector2i(dx,dy);
-                if (outOfBounds(offseted)) continue;
-                if ((dx || dy) && !get_cell_const(offseted).isRevealed) ret.push_back(offseted);
+
+
+
+    void check_winstate(){
+        for(int y=  0;y<H-connect_to_win+1;y++){
+            for(int x = 0;x<W;x++){
+
+                    int FirstValue = Field[y][x].state;
+                    int counter = 0;
+
+                    if (FirstValue != 0){
+                        for(int Y_ = 0; Y_ < connect_to_win;Y_++){
+                            if (Field[y+Y_][x].state != FirstValue){
+                                break;
+                            }
+                            if( (++counter) == connect_to_win){ winning = FirstValue;}
+                        }
+                    }
+
+
             }
-        }
-        return ret;
-    }
-
-
-
-    void initField(const sf::Vector2i& start){
-        uint64_t seed = time(0);
-        srand(seed);
-        std::cout << "seed : " << seed << ", coords: " << start.x << ", " << start.y << std::endl;
-
-        for( const sf::Vector2i& vc : VectorField)
-            get_cell(vc).isBomb = (dist(start,vc) <= safe_dist) ? false : Roll(20);
-
-
-
-        for( const sf::Vector2i& vc : VectorField){
-            int bombs = 0;
-            for( const sf::Vector2i& delted : get_CloseVectors(vc)){
-                if (get_cell(delted).isBomb) ++bombs;
-            }
-            get_cell(vc).next_bombs2 = get_cell(vc).next_bombs = bombs;
-
 
         }
+
+        ///„еккер √оризонтальных полосок
+        for(int y=  0;y<H;y++){
+            for(int x = 0;x<W-connect_to_win+1;x++){
+
+                    int FirstValue = Field[y][x].state;
+                    int counter = 0;
+
+                    if (FirstValue != 0){
+                        for(int X_ = 0; X_ < connect_to_win;X_++){
+                            if (Field[y][x+X_].state != FirstValue){
+                                break;
+                            }
+                            if( (++counter) == connect_to_win){ winning = FirstValue;}
+                        }
+
+                    }
+
+            }
+
+        }
+
+        ///„еккер ƒиаг (\) полосок
+        for(int y=  0;y<H-connect_to_win+1;y++){
+            for(int x = 0;x<W-connect_to_win+1;x++){
+
+                    int FirstValue = Field[y][x].state;
+                    int counter = 0;
+
+                    if (FirstValue != 0){
+                        for(int X_Y = 0; X_Y < connect_to_win;X_Y++){
+
+
+                            if (Field[y+X_Y][x+X_Y].state != FirstValue){
+                                break;
+                            }
+                            if( (++counter) == connect_to_win){ winning = FirstValue;}
+                        }
+
+                    }
+
+            }
+
+        }
+
+        ///„еккер ƒиаг (/) полосок
+        for(int y=  0;y<H-connect_to_win+1;y++){
+            for(int x = connect_to_win-1;x<W;x++){
+
+                    int FirstValue = Field[y][x].state;
+                    int counter = 0;
+
+                    if (FirstValue != 0){
+                        for(int X_Y = 0; X_Y < connect_to_win;X_Y++){
+
+
+                            if (Field[y+X_Y][x-X_Y].state != FirstValue){
+                                break;
+                            }
+                            if( (++counter) == connect_to_win){ winning = FirstValue;}
+                        }
+
+                    }
+
+
+            }
+
+        }
     }
+
 
     void reveal(const sf::Vector2i& start){
         if (outOfBounds(start)) return;
-        if (!GameStarted){
-            GameStarted = true;
-            initField(start);
-        }
-        get_cell(start).shape.setFillColor( (get_cell(start).isBomb) ? sf::Color::Red : sf::Color::Green );
-        get_cell(start).isRevealed = true;
-
-        if (get_cell(start).next_bombs != 0) return;
-
-        for ( const sf::Vector2i& delted : get_CloseVectors(start) ){
-            if (!get_cell(delted).isRevealed) reveal(delted);
-        }
+        if (get_cell(start).state != 0) return;
+        turn ^= 1;
+        get_cell(start).state = turn*2 - 1;
+        check_winstate();
     }
 
-    void mark(const sf::Vector2i& start){
-        if (get_cell(start).isRevealed) return;
-        get_cell(start).shape.setFillColor( (get_cell(start).isMarked ^= 1) ? sf::Color::Black : sf::Color::White);
-    }
+
 
     void reveal_by_mouse(const sf::Vector2i& mousePos){
 
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)){
-            mark(mousePos / space);
         }else{
             reveal(mousePos / space);
         }
 
+    }
+
+    std::string num_to_str(int n) const{
+        if (n == -1){return "Nolik";}
+        if (n == 1){return "Krestik";}
+        return "WTF";
     }
 
 private:
@@ -153,6 +203,13 @@ private:
         sf::Text text;
 
         text.setFont(font); // font is a sf::Font
+
+        if (winning != 0){
+            text.setCharacterSize(textSize * 5);
+            text.setString(num_to_str(winning) + "Win");
+            target.draw(text);
+            return;
+        }
         text.setCharacterSize(textSize); // in pixels, not points!
 
         // set the color
@@ -160,8 +217,9 @@ private:
 
         for( const sf::Vector2i& vc : VectorField){
             target.draw(get_cell_const(vc).shape);
-            if (get_cell_const(vc).isRevealed){
-                text.setString(to_str(get_cell_const(vc).next_bombs));
+            if (get_cell_const(vc).state != 0){
+                if (get_cell_const(vc).state == 1){text.setString('X');}
+                if (get_cell_const(vc).state == -1){text.setString('0');}
                 text.setPosition(space*vc.x, space*vc.y );
                 target.draw(text);
             }
@@ -175,42 +233,6 @@ sf::Font Board::font;
 
 
 
-
-void ai_turn(Board& board){
-    if(!board.GameStarted) return;
-
-    for( const sf::Vector2i& vc : board.VectorField){
-        if (!board.get_cell(vc).isRevealed) continue;
-
-        int neighs = 0;
-        int bombs_marked = 0;
-
-        for( const sf::Vector2i& delted : board.get_CloseVectors(vc)){
-
-            ++neighs;
-            if (board.get_cell(delted).isMarked) ++bombs_marked;
-        }
-
-
-        if (board.get_cell(vc).next_bombs == bombs_marked){
-            /// reveal all non-marked
-            for( const sf::Vector2i& delted : board.get_CloseVectors(vc)){
-                if (!board.get_cell(delted).isMarked) board.reveal(delted);
-            }
-        }
-
-        if (board.get_cell(vc).next_bombs == neighs){
-            /// mark all that are non-marked
-            for( const sf::Vector2i& delted : board.get_CloseVectors(vc)){
-                if (!board.get_cell(delted).isMarked) board.mark(delted);
-            }
-        }
-
-
-
-    }
-
-}
 
 
 
@@ -237,18 +259,14 @@ int main()
 
 
     sf::RenderWindow window(sf::VideoMode(1200, 800), "SFML works!");
-    window.setFramerateLimit(120);
-    unsigned long ticks = 0;
+    window.setFramerateLimit(30);
     while (window.isOpen())
     {
-        if ( (++ticks) % 30 == 0){
-            std::cout << "ai goes" << std::endl;
-            ai_turn(MainBoard);
-        }
+
         sf::Event event;
         while (window.pollEvent(event))
         {
-            switch( event.type ){
+            switch( int(event.type) ){
                 case sf::Event::Closed:
                     window.close();
                     break;
