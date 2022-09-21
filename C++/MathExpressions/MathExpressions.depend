@@ -1,8 +1,0 @@
-# depslib dependency file v1.0
-1646981747 source:c:\users\thegreatone\desktop\nbook\c++\mathexpressions\main.cpp
-	<iostream>
-	<string>
-	<vector>
-	<iostream>
-	<sstream>
-

@@ -1,6 +1,0 @@
-# depslib dependency file v1.0
-1643093631 source:c:\users\saha2\desktop\code samples\c++\variant10\main.cpp
-	<iostream>
-	<fstream>
-	<map>
-
