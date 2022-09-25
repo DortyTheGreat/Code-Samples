@@ -1,110 +1,154 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 using namespace std;
 #define int long long
+
+int sign(int a){
+    if (a < 0) return -1;
+    if (a > 0) return 1;
+    return 0;
+}
+
+#define sz 2007
 signed main()
 {
     int t;
-
-    int h;
-
+    int arr[sz];
+    int new_arr[sz];
+    pair<int,int> fwd[sz]; /// incr, requirement
+    pair<int,int> bckd[sz]; /// incr, requirement
     cin >> t;
     while(t--){
-        int n, x,y;
-        cin >> n >> x >> y;
-        string a,b;
-        bool c[10000];
-        cin >> a >> b;
+        int n,k;
+        int h = 0;
+        int fw = 0;
+        int bc = 0;
 
-        int diff = 0;
-        for(int i = 0;i<n;i++){
-            c[i] = !(a[i] == b[i]);
-            diff += !(a[i] == b[i]);
+        cin >> n >> k;
+        int new_k = 0;
+        --k;
+        for(int i = 0;i<n;++i){
+            cin >> arr[i+1];
+        }
+        if (k == 0 || k == n-1){cout << "YES" << endl; continue;}
+        arr[0] = 1e16;
+        arr[n+1] = 1e16;
+        n += 2;
+        new_arr[h++] = arr[0];
+        for(int i = 1;i<n;++i){
+            if (sign(new_arr[h-1]) == sign(arr[i]) ){
+                new_arr[h-1] += arr[i];
+            }else{
+                new_arr[h++] = arr[i];
+            }
+            if ( (i-1) == k){
+                new_k = h - 1;
+            }
         }
 
-        if (diff % 2 == 1){
-            cout << -1 << endl;
-            continue;
+        cout << endl;
+        for(int i = 0;i<h;++i){
+            cout << new_arr[i] << " ";
+        }
+        cout << endl<<"k= " << new_k << endl;
+
+
+
+
+        cout << "forward: ";
+
+        bool isCreated = false;
+
+        for(int i = new_k+1;i<h;i+=2){
+
+            if (!isCreated){
+                fwd[fw] = {abs(new_arr[i]), new_arr[i+1] + new_arr[i] };
+
+            }else{
+
+                fwd[fw].first = max(fwd[fw].first, abs(new_arr[i]) - fwd[fw].second);
+                fwd[fw].second += new_arr[i+1] + new_arr[i];
+            }
+
+
+            if (fwd[fw].second >= 0){
+                isCreated = false;
+                fw++;
+            }else{
+                isCreated = true;
+            }
+
         }
 
-        if (diff == 0){
-            cout << 0 << endl;
-            continue;
+        for(int i = 0;i < fw;++i){
+            cout << "(" << fwd[i].first << " " << fwd[i].second << ") ";
         }
 
-        if (x >= y){
+        cout << endl;
 
-            if (diff > 2){
-                cout << diff/2 *  y << endl;
+        cout << "backward: ";
+
+        isCreated = false;
+        for(int i = new_k-1;i>-1;i-=2){
+
+            if (!isCreated){
+                bckd[bc] = {abs(new_arr[i]), new_arr[i-1] + new_arr[i] };
+
+            }else{
+
+                bckd[bc].first = max(bckd[bc].first, abs(new_arr[i]) - bckd[bc].second);
+                bckd[bc].second += new_arr[i-1] + new_arr[i];
+            }
+
+
+            if (bckd[bc].second >= 0){
+                isCreated = false;
+                bc++;
+            }else{
+                isCreated = true;
+            }
+
+        }
+
+
+        for(int i = 0;i < bc;++i){
+            cout << "(" << bckd[i].first << " " << bckd[i].second << ") ";
+        }
+
+
+
+        int value = new_arr[new_k];
+
+
+        int carB = 0,carF = 0;
+        while(1){
+
+            if (carB == bc){cout << "YES" << endl; break;}
+            if (carF == fw){cout << "YES" << endl; break;}
+
+            if (bckd[carB].first <= value){
+                value += bckd[carB].second;
+                carB++;
                 continue;
             }
 
-            if (diff == 2){
-                bool flag = 1;
-                for(int i = 0;i<n-1;i++){
-                    if ( (c[i]==1)&&(c[i+1] == 1) ){
-
-                        if (n <= 3){
-                            cout << x;
-                            flag = 0;
-                        }
-                        if (n == 4){
-
-                            if (i == 1){
-
-                                cout << min(3*y,x) << endl;
-                                flag = 0;
-
-                                /// 3 long
-                            }else{
-                                cout << min(2*y,x) << endl;
-                                flag = 0;
-                            }
-
-                        }
-
-                        if (n >= 5){
-                            cout << min(2*y,x) << endl;
-                            flag = 0;
-
-                        }
-
-
-                    }
-                }
-
-                if (flag) cout << y << endl;
+            if (fwd[carF].first <= value){
+                value += fwd[carF].second;
+                carF++;
                 continue;
             }
 
-        }else{
-            vector<int> clusters;
-            clusters.push_back(0);
-            int in_1 = 0;
-            for(int i = 0;i<n;i++){
-                if (in_1==0 && c[i] == 0 ) continue;
-                if (in_1==1 && c[i] == 0){
-                    clusters.push_back(0);
-                    in_1 = 0;
-                }
-
-
-
-                if (c[i] == 1){
-                    clusters.back()++;
-                    in_1 = 1;
-                }
-            }
-            int s = 0;
-            for(int i =0;i<clusters.size();++i){
-                s += 2*x*(clusters[i]/2) + y*((clusters[i]%2));
-            }
-            s /= 2;
-            cout << s << endl;
-
+            cout << "NO" << endl;
+            break;
 
 
         }
+
+        cout << endl;
+
+
+
 
 
     }

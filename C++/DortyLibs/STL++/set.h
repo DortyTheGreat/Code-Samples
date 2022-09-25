@@ -1,54 +1,67 @@
-#include <vector>
+#include <set>
 #ifdef  _GLIBCXX_IOSTREAM
 
 template <typename T>
-std::ostream& operator<<(std::ostream &in, const std::vector<T> &vect) {
-    int n = vect.size();
-
-
-
-    for(int i =0;i<n;i++){
-
-        in << vect[i] << " " ;
-
+std::ostream& operator<<(std::ostream &out, const std::set<T> &st) {
+    for(auto elem : st){
+        out << elem << ' ';
     }
 
-    return in;
+    return out;
 }
 
 template <typename T>
-std::istream& operator>>(std::istream& in, std::vector<T> &vect) {
-    size_t size_ = vect.size();
+std::istream& operator>>(std::istream& in, std::set<T> &st) {
+    size_t size_ = st.size();
     if (size_ == 0)
         in >> size_;
-    vect.resize(size_);
+    st.resize(size_);
 
     for(int i = 0;i<size_;i++){
-        in >> vect[i];
+        T val;
+        in >> val;
+        st.insert(val);
     }
 
     return in;
 }
 
-/// ifdef iostream
 template <typename T>
-void read(std::vector<T> &vc, int sz){
-    vc.resize(sz);
-    for(int i =0;i<sz;++i){
-        std::cin >> vc[i];
+void read(std::set<T> &st, size_t sz){
+    for(size_t i =0;i<sz;++i){
+        T val;
+        std::cin >> val;
+        st.insert(val);
     }
 }
-#endif
 
-#include <utility>
-#include <algorithm>
 template <typename T>
-std::pair<size_t,size_t> indexOf(const std::vector<T>& vc, const T& elem){
-    auto lb = std::distance(vc.begin(), std::lower_bound(vc.begin(),vc.end(),elem));
-    if (lb == vc.size()) return {-1,-1};
-    return {lb,std::distance(vc.begin(), std::upper_bound(vc.begin(),vc.end(),elem))-1} ;
+void read(std::multiset<T> &st, size_t sz){
+    for(size_t i =0;i<sz;++i){
+        T val;
+        std::cin >> val;
+        st.insert(val);
+    }
 }
 
+
+#endif
+
+template <typename T>
+bool contains(const std::set<T>& st, const T& elem){
+    return st.find(elem) != st.end();
+}
+
+/// not tested
+#include <utility>
+template <typename T>
+std::pair<size_t,size_t> indexOf(const std::multiset<T>& mst, const T& elem){
+    auto lb = std::distance(mst.begin(),mst.lower_bound (elem));
+    if (lb == mst.size()) return {-1,-1};
+    return {lb,std::distance(mst.begin(),mst.upper_bound (elem))-1} ;
+}
+
+/*
 template <typename T>
 void operator += (std::vector<T> &vect,T number) {
     vect.push_back(number);
@@ -131,3 +144,4 @@ inline T last(std::vector<T> &vect){
     return vect[vect.size() - 1];
 }
 
+*/

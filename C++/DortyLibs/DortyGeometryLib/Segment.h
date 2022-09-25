@@ -5,17 +5,9 @@ class Segment{
 public:
     Point Point1, Point2;
 
-    friend istream& operator>> (std::istream &in, Segment &segment)
+    friend std::istream& operator>> (std::istream &in, Segment &segment)
     {
-        // Поскольку operator>> является другом класса Point, то мы имеем прямой доступ к членам Point.
-        // Обратите внимание, параметр point (объект класса Point) должен быть неконстантным, чтобы мы имели возможность изменить члены класса
-        in >> segment.Point1.X;
-        in >> segment.Point1.Y;
-
-        in >> segment.Point2.X;
-        in >> segment.Point2.Y;
-
-        return in;
+        return in >> segment.Point1 >> segment.Point2;
     }
 
     Segment(){
@@ -88,7 +80,7 @@ public:
             if ((v1 > 0) && (v2 > 0)){
                 return nap_line.distance_to_point(point_);
             }else{
-                return min(a,c);
+                return std::min(a,c);
             }
 
     }

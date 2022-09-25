@@ -5,23 +5,14 @@ class Line{
 public:
     double A,B,C;
 
-    friend istream& operator>> (std::istream &in, Line &line)
+    friend std::istream& operator>> (std::istream &in, Line &line)
     {
-        // Поскольку operator>> является другом класса Point, то мы имеем прямой доступ к членам Point.
-        // Обратите внимание, параметр point (объект класса Point) должен быть неконстантным, чтобы мы имели возможность изменить члены класса
-        in >> line.A;
-        in >> line.B;
-        in >> line.C;
-
-        return in;
+        return in >> line.A >> line.B >> line.C;
     }
 
-    friend ostream& operator<< (std::ostream &out, const Line &line)
+    friend std::ostream& operator<< (std::ostream &out, const Line &line)
     {
-        // Поскольку operator<< является другом класса Point, то мы имеем прямой доступ к членам Point
-        out << line.A << " " << line.B << " " << line.C;
-
-        return out;
+        return out << line.A << " " << line.B << " " << line.C;
     }
 
     bool operator|| (const Line &line){
@@ -123,22 +114,22 @@ public:
     }
 
     /// 1 - ровно в одной точке, 0 - нет пересечений, 2 - всё пересекается
-    pair<int, Point> intersection(Line another_line){
+    std::pair<int, Point> intersection(Line another_line){
 
         if (*this||another_line){
-            return make_pair((*this==another_line)*2,Point());
+            return {(*this==another_line)*2,Point()};
         }else{
             double x_coord = (C*another_line.B-another_line.C*B)/ (another_line.A * B - A* another_line.B);
             if (doubleEqual(B,0)){
-                return make_pair(1,Point(x_coord, another_line.getY_byX(x_coord)));
+                return {1,Point(x_coord, another_line.getY_byX(x_coord))};
             }else{
-                return make_pair(1,Point(x_coord, getY_byX(x_coord)));
+                return {1,Point(x_coord, getY_byX(x_coord))};
             }
         }
     }
 
     void make_perpendicular_to_point(Point point_){
-        swap(A,B);
+        std::swap(A,B);
         B *= (-1);
         if (doubleEqual(A,0)){
             B *= -1;
