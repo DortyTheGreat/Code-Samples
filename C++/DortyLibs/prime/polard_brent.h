@@ -58,6 +58,5 @@ T pollard_brent_montgomery(T n) {
     }
 
     if (factor == n){return pollard_brent_montgomery(n);}
-
     return factor;
 }

@@ -12,3 +12,8 @@ std::istream& operator>>(std::istream& in, std::pair<T,F> &p) {
 }
 
 #endif
+
+template <typename T, typename F>
+std::pair<T,F> operator + (const std::pair<T,F>& p1,const std::pair<T,F>& p2) {
+    return {p1.first+p2.first,p1.second+p2.second};
+}

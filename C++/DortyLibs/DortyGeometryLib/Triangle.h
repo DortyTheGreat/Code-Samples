@@ -9,16 +9,9 @@ public:
     Point3 = Point(0,1);
     }
 
-    friend istream& operator>> (std::istream &in, Triangle &tr)
+    friend std::istream& operator>> (std::istream &in, Triangle &tr)
     {
-        // Поскольку operator>> является другом класса Point, то мы имеем прямой доступ к членам Point.
-        // Обратите внимание, параметр point (объект класса Point) должен быть неконстантным, чтобы мы имели возможность изменить члены класса
-        in >> tr.Point1;
-        in >> tr.Point2;
-        in >> tr.Point3;
-
-
-        return in;
+        return in >> tr.Point1>> tr.Point2 >> tr.Point3;
     }
 
     Triangle(Point _Point1,Point _Point2, Point _Point3){

@@ -18,8 +18,8 @@ std::vector<T> prime_factor(T n) {
     std::vector<T> ret;
     ret.push_back(n);
     for(size_t i = 0;i < ret.size(); ){
-
         if (isPrime(ret[i])) { ++i;continue; } /// got here n as a factor
+
         ret.push_back(pollard_brent_montgomery(ret[i]));
 
         ret[i] /= ret.back();

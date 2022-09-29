@@ -1,13 +1,6 @@
 #include "Angle.h"
 
-///Dorty Utility
-void YesNo(bool arg){
-    if (arg){
-        cout << "YES" << endl;
-    }else{
-        cout << "NO" << endl;
-    }
-}
+
 
 
 
@@ -72,22 +65,14 @@ public:
             return PI/2 - atan( X / Y );
         }
     }
-    friend istream& operator>> (std::istream &in, Point &point)
+    friend std::istream& operator>> (std::istream &in, Point &point)
     {
-        // Поскольку operator>> является другом класса Point, то мы имеем прямой доступ к членам Point.
-        // Обратите внимание, параметр point (объект класса Point) должен быть неконстантным, чтобы мы имели возможность изменить члены класса
-        in >> point.X;
-        in >> point.Y;
-
-        return in;
+        return in >> point.X >> point.Y;
     }
 
-    friend ostream& operator<< (std::ostream &out, const Point &point)
+    friend std::ostream& operator<< (std::ostream &out, const Point &point)
     {
-        // Поскольку operator<< является другом класса Point, то мы имеем прямой доступ к членам Point
-        out << point.X << " " << point.Y;
-
-        return out;
+        return out << point.X << " " << point.Y;
     }
 
 };

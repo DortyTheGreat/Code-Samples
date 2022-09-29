@@ -11,7 +11,7 @@ class Polygon{
 public:
     int size_;
 
-    vector<Point> points;
+    std::vector<Point> points;
 
     signed int size(){
         return size_;
@@ -79,7 +79,7 @@ public:
 
 
 
-    friend istream& operator>> (std::istream &in, Polygon &pg)
+    friend std::istream& operator>> (std::istream &in, Polygon &pg)
     {
         signed int sz;
         in >> pg.size_;

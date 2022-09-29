@@ -16,18 +16,15 @@ public:
         radius = 1;
     }
 
-    friend istream& operator>> (std::istream &in, Circle &circl)
+    friend std::istream& operator>> (std::istream &in, Circle &circl)
     {
-        in >> circl.Center;
-        in >> circl.radius;
-
-        return in;
+        return in >> circl.Center >> circl.radius;
     }
 
     const double EPS = 0.001;
 
     /// -1 - бесконечно, 0 - нет пересечений, 1 - одно, 2 - два
-    pair<int, pair<Point,Point>> intersection (Line second){
+    std::pair<int, std::pair<Point,Point>> intersection (Line second){
 
 
 
@@ -41,13 +38,13 @@ public:
         //cout << abs (c*c - r*r*(a*a+b*b)) << endl;
 
         if (  c*c > r*r*(a*a+b*b)+EPS ){
-          return make_pair(0,make_pair(Point(),Point()));
+          return {0,{Point(),Point()}};
         }
 
 
 
         if (abs (c*c - r*r*(a*a+b*b)) < EPS) {
-            return make_pair(1,make_pair(Point(x0,y0)+Center ,Point()));
+            return {1,{Point(x0,y0)+Center ,Point()}};
         }
 
 
@@ -59,20 +56,20 @@ public:
             bx = x0 - b * mult;
             ay = y0 - a * mult;
             by = y0 + a * mult;
-            return make_pair(2,make_pair(Point(ax,ay)+Center,Point(bx,by)+Center));
+            return {2,{Point(ax,ay)+Center,Point(bx,by)+Center}};
 
     }
 
-    pair<int, pair<Point,Point>> intersection (Circle second){
+    std::pair<int, std::pair<Point,Point>> intersection (Circle second){
 
         second.Center = second.Center + Center*(-1);
         if (doubleEqual(0,second.Center.X) && doubleEqual(0,second.Center.Y)){
             // Центры совпадают
             if (doubleEqual(radius,second.radius)){
-                return make_pair(-1,make_pair(Point(),Point()));
+                return {-1,{Point(),Point()}};
             }
 
-            return make_pair(0,make_pair(Point(),Point()));
+            return {0,{Point(),Point()}};
         }
 
         //cout << Center << " : " << second.Center  << endl;
@@ -83,7 +80,7 @@ public:
         double r2 = second.radius;
         //cout << "CR:" << x2*x2 + y2*y2 + r1*r1 - r2*r2 << endl;
         //cout << "Line: " << Line(-2*x2,-2*y2,x2*x2 + y2*y2 + r1*r1 - r2*r2) << endl;
-        pair<int, pair<Point,Point>> ans =  second.intersection(Line(-2*x2,-2*y2,x2*x2 + y2*y2 + r1*r1 - r2*r2));
+        std::pair<int, std::pair<Point,Point>> ans =  second.intersection(Line(-2*x2,-2*y2,x2*x2 + y2*y2 + r1*r1 - r2*r2));
         ans.second.first = ans.second.first + Center;
         ans.second.second = ans.second.second + Center;
 
@@ -91,7 +88,7 @@ public:
     }
 
 
-    pair<int, pair<Point,Point>> tangent_to(Point point_){
+    std::pair<int, std::pair<Point,Point>> tangent_to(Point point_){
         Line Ex;
 
         double x0 = 0;
@@ -104,7 +101,7 @@ public:
         Ex.B = - y0 - y1;
         Ex.C = radius*radius + x0*x1 + y0 * y1;
 
-        pair<int, pair<Point,Point>> ans = Circle(Point(0,0),radius).intersection(Ex);
+        std::pair<int, std::pair<Point,Point>> ans = Circle(Point(0,0),radius).intersection(Ex);
 
         ans.second.first = ans.second.first + Center;
         ans.second.second = ans.second.second + Center;
