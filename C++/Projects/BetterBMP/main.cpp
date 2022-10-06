@@ -40,7 +40,7 @@ int main()
     */
     uint32_t W = 100;
     uint32_t H = 100;
-    BMP<RGBColor> mm(W,H,false);
+    BMP mm(W,H,false);
     uint32_t channels = mm.bmp_info_header.bit_count / 8;
 
 
@@ -50,7 +50,7 @@ int main()
     for (uint32_t y = 0; y < H; ++y) {
         for (uint32_t x = 0; x < W; ++x) {
             int n = channels * (y * W + x);
-            mm[n] = {255,255,0};
+            mm[n] = {255,255,0,0};
 
 
         }
