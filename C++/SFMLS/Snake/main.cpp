@@ -37,8 +37,8 @@ public:
 class Board :public sf::Drawable{
 public:
 
-    static const int H = 10;
-    static const int W = 10;
+    static const int H = 20;
+    static const int W = 20;
     const int cellSize = 30;
     const int textSize = 20;
     const int space = 33;
@@ -140,7 +140,7 @@ public:
     }
 
     void move(const sf::Vector2i& mv){
-
+        std::cout << mv.x << " " << mv.y << std::endl;
         if (abs(mv.x) + abs(mv.y) != 1){end_game(); return;}
         if (outOfBounds(head + mv)){end_game(); return;}
 
@@ -197,6 +197,105 @@ private:
 sf::Font Board::font;
 
 
+void hamilton_basic(Board& b){
+    if((b.head.x == 0) && (b.head.y == 0)){b.move({0,1});return;}
+    if((b.head.x == (b.W-1) ) && (b.head.y == 1)){b.move({0,-1});return;}
+
+    if( (b.head.y == (b.W-1)) && (b.head.x %2 == 0) ){b.move({1,0}); return;}
+    if( (b.head.y == 1) && (b.head.x %2 == 1 )){b.move({1,0}); return;}
+
+    ///Работает только для SIZE_ кратного четырём
+
+    if(b.head.y == (0) ){ b.move({-1,0});return;}
+
+    if(b.head.x %2 == 1 ){b.move({0,-1});return;}
+    if(b.head.x %2 == 0 ){b.move({0,1});return;}
+}
+
+class RelaxRequest{
+public:
+    int x,y,depth;
+
+     RelaxRequest(int y_,int x_,int depth_){
+        x = x_;
+        y = y_;
+        depth = depth_;
+    }
+};
+
+class RevRelaxRequest{
+public:
+    int x,y,depth,walls;
+
+     RevRelaxRequest(int y_,int x_,int depth_,int walls_){
+        x = x_;
+        y = y_;
+        depth = depth_;
+        walls = walls_;
+    }
+};
+#include <queue>
+#include <vector>
+
+bool isIllegalMove(const Board& b,const sf::Vector2i& n_head){
+    if (n_head.x >= b.W || n_head.x < 0 || n_head.y >= b.H || n_head.y < 0){
+        return true;
+    }
+    return (b.Field[n_head.x][n_head.y].age);
+}
+
+void BFS(Board& b){
+
+    for(int i = 0;i<b.H;i++){
+        for(int j = 0;j<b.W;j++){
+            std::cout << b.Field[i][j].age << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    std::queue<sf::Vector2i> que;
+    que.push(b.head);
+    std::vector<std::vector<int> > d(b.W, std::vector<int>(b.H));
+    std::vector<std::vector<sf::Vector2i> > p(b.W, std::vector<sf::Vector2i>(b.H));
+    const std::vector<sf::Vector2i> neighs = {
+        {0, 1},
+        {0, -1},
+        {-1, 0},
+        {1, 0}
+    };
+
+
+    std::cout << "here" << std::endl;
+    d[b.head.x][b.head.y] = 1;
+    while(!que.empty()){
+        sf::Vector2i current_pos = que.front();
+        que.pop();
+
+        for (auto& neigh: neighs) {
+            sf::Vector2i t = { current_pos.x + neigh.x, current_pos.y + neigh.y };
+
+            if (!isIllegalMove(b,t) && !d[t.x][t.y]) {
+                d[t.x][t.y] = d[current_pos.x][current_pos.y] + 1;
+                p[t.x][t.y] = current_pos;
+                que.push(t);
+            }
+        }
+    }
+    std::cout << "here" << std::endl;
+
+
+    std::vector<sf::Vector2i> ans;
+    for (sf::Vector2i cur = b.apple; cur != b.head; cur = p[cur.x][cur.y]) ans.push_back(cur);
+    reverse(ans.begin(), ans.end());
+    ///cout << ans.size() << "    ";
+    b.move(ans.front() - b.head);
+}
+
+void ai_turn(Board& b){
+
+    BFS(b);
+
+}
 
 /*
 void ai_turn(Board& board){
@@ -259,14 +358,14 @@ int main()
     Board MainBoard;
 
 
-    sf::RenderWindow window(sf::VideoMode(1200, 800), "SFML works!");
+    sf::RenderWindow window(sf::VideoMode(1200, 1000), "SFML works!");
     window.setFramerateLimit(120);
     unsigned long ticks = 0;
     while (window.isOpen())
     {
         if ( (++ticks) % 30 == 0){
             ///std::cout << "ai goes" << std::endl;
-            ///ai_turn(MainBoard);
+            ai_turn(MainBoard);
         }
         sf::Event event;
         while (window.pollEvent(event))
