@@ -15,10 +15,9 @@ int FromCharToInt(char a){
     return (a - 'A')+10;
 }
 
-// печатает число в поток вывода
-std::ostream& operator <<(std::ostream& os, const BigUnsigned& bi) {
-	/*
-	if ( (bi._digits.size() == 1) && (bi._digits[0] == 0)){
+BigUnsigned::operator std::string() const{
+    /*
+	if ( (bi.digits.size() == 1) && (bi.digits[0] == 0)){
         os << FromIntToChar(0);
         return os;
     }
@@ -28,8 +27,8 @@ std::ostream& operator <<(std::ostream& os, const BigUnsigned& bi) {
 
     CONT_TYPE Carret;
     std::string buff = "";
-    for(int i = 0;i<bi.real_size;++i){
-        Carret = bi._digits[i];
+    for(int i = 0;i<real_size;++i){
+        Carret = digits[i];
         for(int j = 0; j < cnt_stack;++j){
             buff += FromIntToChar(Carret % default_base);
             Carret /= default_base;
@@ -42,7 +41,7 @@ std::ostream& operator <<(std::ostream& os, const BigUnsigned& bi) {
     while(buff.back() == '0' ){
         buff.pop_back();
         if (buff.empty()){
-            return (os << "0");
+            return "0";
         }
     }
 
@@ -50,7 +49,12 @@ std::ostream& operator <<(std::ostream& os, const BigUnsigned& bi) {
 
     reverse(buff.begin(),buff.end());
 
-	return (os << buff);
+	return buff;
+}
+
+// печатает число в поток вывода
+std::ostream& operator <<(std::ostream& os, const BigUnsigned& bi) {
+    return os << std::string(bi);
 }
 
 int next_power_of_two(int n) {

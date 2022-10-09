@@ -3,29 +3,29 @@
 void BigInt::_add(const BigInt& right) {
     size_t extra_size = 1;
 
-    size_t an_sz = right._digits.size();
+    size_t an_sz = right.digits.size();
 
-    if (an_sz > _digits.size()){
-        extra_size = an_sz - _digits.size() + 1;
+    if (an_sz > digits.size()){
+        extra_size = an_sz - digits.size() + 1;
     }
 
     for(size_t i = 0;i < extra_size; i++){
-        _digits.push_back(0);
+        digits.push_back(0);
     }
     /// «аполн€ем контейнер нул€ми, чтобы было место под новые возможные числа(aka разр€ды)
 
     for(size_t i = 0; i < an_sz;i++){
-        _digits[i] += right._digits[i];
-        if (_digits[i] >= BASE){
-            _digits[i] -= BASE;
-            _digits[i+1]++;
+        digits[i] += right.digits[i];
+        if (digits[i] >= BASE){
+            digits[i] -= BASE;
+            digits[i+1]++;
         }
     }
 
-    while(_digits[an_sz] >= BASE){
-        _digits[an_sz] -= BASE;
+    while(digits[an_sz] >= BASE){
+        digits[an_sz] -= BASE;
         an_sz++;
-        _digits[an_sz]++;
+        digits[an_sz]++;
     }
 
 
@@ -36,20 +36,20 @@ void BigInt::_add(const BigInt& right) {
 /// ќбработка вычитани€ двух положительных чисел (работает, если второе меньше первого)
 void BigInt::_subtract(const BigInt &another){
 
-    size_t an_sz = another._digits.size();
+    size_t an_sz = another.digits.size();
 
     for(size_t i = 0; i < an_sz;i++){
-        _digits[i] -= another._digits[i];
-        if (_digits[i] < 0){
-            _digits[i] += BASE;
-            _digits[i+1]--;
+        digits[i] -= another.digits[i];
+        if (digits[i] < 0){
+            digits[i] += BASE;
+            digits[i+1]--;
         }
     }
 
-    while(_digits[an_sz] < 0){
-        _digits[an_sz] += BASE;
+    while(digits[an_sz] < 0){
+        digits[an_sz] += BASE;
         an_sz++;
-        _digits[an_sz]--;
+        digits[an_sz]--;
     }
 
 
@@ -64,7 +64,7 @@ void BigUnsigned::operator +=(const BigUnsigned& right) {
     }
 
     if (right.alloc_size < alloc_size){
-        if (_digits[alloc_size - 1] == (BASE-1) ){
+        if (digits[alloc_size - 1] == (BASE-1) ){
             /// ћожет произойти переполнение
         }
     }
@@ -81,10 +81,10 @@ void BigUnsigned::operator +=(const BigUnsigned& right) {
 void BigUnsigned::operator -=(const BigUnsigned& minus) {
 
     for(int i = 0;i< minus.real_size; ++i){
-        _digits[i] -= minus._digits[i];
-        if (_digits[i] < 0){
-            _digits[i] += BASE;
-            --_digits[i+1];
+        digits[i] -= minus.digits[i];
+        if (digits[i] < 0){
+            digits[i] += BASE;
+            --digits[i+1];
         }
     }
 
@@ -93,10 +93,10 @@ void BigUnsigned::operator -=(const BigUnsigned& minus) {
 
 
         /// «амечу что первый проход не имеет смысла :-)
-        for(int j = minus.real_size; _digits[j] < 0;++j){
+        for(int j = minus.real_size; digits[j] < 0;++j){
 
-            _digits[j] += BASE;
-            --_digits[j+1];
+            digits[j] += BASE;
+            --digits[j+1];
 
         }
     }
@@ -116,15 +116,15 @@ void BigUnsigned::operator -=(const BigUnsigned& minus) {
 void BigUnsigned::_add(const BigUnsigned& right) {
 
     for(int i = 0;i < right.real_size; ++i){
-        _digits[i] += right._digits[i];
-        if (_digits[i] >= BASE){
-            _digits[i] -= BASE;
-            ++_digits[i + 1];
+        digits[i] += right.digits[i];
+        if (digits[i] >= BASE){
+            digits[i] -= BASE;
+            ++digits[i + 1];
         }
     }
 
     /// ’очетс€, то, что ниже сделать дл€ флекса, но так тоже +- ничего
-    CONT_TYPE *p = &_digits[right.real_size];
+    CONT_TYPE *p = &digits[right.real_size];
     while (*p >= BASE){
         *p -= BASE;
         ++p;
@@ -133,7 +133,7 @@ void BigUnsigned::_add(const BigUnsigned& right) {
 
 
     /*
-    CONT_TYPE &p = _digits[right.real_size];
+    CONT_TYPE &p = digits[right.real_size];
     while (p >= BASE){
         p -= BASE;
         (&p)++;
@@ -142,9 +142,9 @@ void BigUnsigned::_add(const BigUnsigned& right) {
     */
 
     /// Ёто тоже следует улучшить
-    real_size = max(real_size, right.real_size);
+    real_size = std::max(real_size, right.real_size);
     if (real_size != alloc_size){
-        if (_digits[real_size] != 0){
+        if (digits[real_size] != 0){
             ++real_size;
         }
     }
@@ -204,11 +204,9 @@ const BigInt BigInt::operator -() const {
 
 
 const BigUnsigned operator +(const BigUnsigned& left, const BigUnsigned& right) {
-
     if (left.real_size < right.real_size){
         return right+left;
     }
-
 
 
     BigUnsigned ret;
@@ -224,7 +222,7 @@ const BigUnsigned operator +(const BigUnsigned& left, const BigUnsigned& right) 
 
 
 const BigUnsigned operator +(BigUnsigned&& left, const BigUnsigned& right) {
-    cout << "called rvalue" << endl;
+    ///cout << "called rvalue" << endl;
     if (left.real_size < right.real_size){
         //return right+left;
     }
@@ -239,39 +237,39 @@ const BigUnsigned operator +(BigUnsigned&& left, const BigUnsigned& right) {
 // префиксный инкремент
 void BigUnsigned::operator++() {
 
-	++_digits[0];
+	++digits[0];
 	for ( ubi_szt cou = 0; cou < real_size -1; ++cou){
-        if (_digits[cou] < BASE){ return;}
+        if (digits[cou] < BASE){ return;}
 
-        _digits[cou] -= BASE; /// можно записать = 0 в целом, если изначальное число сбалансировано
-        ++_digits[cou+1];
+        digits[cou] -= BASE; /// можно записать = 0 в целом, если изначальное число сбалансировано
+        ++digits[cou+1];
 	}
 
-    if (_digits[real_size - 1] >= BASE ){
+    if (digits[real_size - 1] >= BASE ){
         if (real_size == alloc_size){
             /// reallocate memory
             CONT_TYPE * new_c = new CONT_TYPE[++alloc_size];
-            memcpy(new_c, _digits, real_size * sizeof(CONT_TYPE));
+            memcpy(new_c, digits, real_size * sizeof(CONT_TYPE));
             new_c[real_size] = 0;
-            _digits = new_c;
+            digits = new_c;
         }
 
-        _digits[real_size - 1] -= BASE;
-        ++_digits[real_size++];
+        digits[real_size - 1] -= BASE;
+        ++digits[real_size++];
 
     }
 }
 
 void BigUnsigned::operator--() {
 
-	--_digits[0];
+	--digits[0];
 
 
 
-    for(int j = 0; _digits[j] < 0;++j){
+    for(int j = 0; digits[j] < 0;++j){
 
-        _digits[j] += BASE;
-        --_digits[j+1];
+        digits[j] += BASE;
+        --digits[j+1];
 
     }
 
@@ -279,33 +277,4 @@ void BigUnsigned::operator--() {
     _remove_leading_zeros();
 }
 
-
-/*
-// постфиксный инкремент
-const BigInt BigInt::operator ++(int) {
-	*this += 1;
-	return *this - 1;
-}
-
-// префиксный декремент
-const BigInt BigInt::operator --() {
-	return *this -= 1;
-}
-
-
-// постфиксный декремент
-const BigInt BigInt::operator --(int) {
-	*this -= 1;
-	return *this + 1;
-}
-
-*/
-/*
-// вычитает два числа
-const BigInt operator -(BigInt left, const BigInt& right) {
-	left -= right;
-	return left;
-}
-
-*/
 

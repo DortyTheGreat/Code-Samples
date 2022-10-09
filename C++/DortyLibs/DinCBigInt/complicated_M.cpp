@@ -20,10 +20,10 @@ BigUnsigned x_mul(const BigUnsigned& a,const BigUnsigned& b)
 
     for (i = 0; i < size_a; ++i) {
         DOUBLE_CONT_TYPE carry = 0;
-        DOUBLE_CONT_TYPE f = a._digits[i];
-        CONT_TYPE *pz = z._digits + i;
-        CONT_TYPE *pb = b._digits;
-        CONT_TYPE *pbend = b._digits + size_b;
+        DOUBLE_CONT_TYPE f = a.digits[i];
+        CONT_TYPE *pz = z.digits + i;
+        CONT_TYPE *pb = b.digits;
+        CONT_TYPE *pbend = b.digits + size_b;
 
         /// SIGCHECK ???
 
@@ -37,7 +37,7 @@ BigUnsigned x_mul(const BigUnsigned& a,const BigUnsigned& b)
     }
 
 
-    if (z._digits[z.alloc_size - 1] == 0){
+    if (z.digits[z.alloc_size - 1] == 0){
          z.real_size = z.alloc_size - 1;
     }else{
          z.real_size = z.alloc_size;
@@ -86,90 +86,6 @@ void x_mul(const CONT_TYPE *__restrict a, CONT_TYPE *__restrict b, CONT_TYPE *__
 }
 
 #define KAR_TRESH 20
-/*
-BigUnsigned k_mul(const BigUnsigned& left,const BigUnsigned& right) {
-
-
-
-    const ubi_szt n = left.real_size; /// size of biggest num
-
-    if (n < right.real_size){
-        return k_mul(right,left);
-    }
-
-    /// число мелкое, умножаем, как обычно
-    if (n < KAR_TRESH){return x_mul(left,right);}
-
-    const ubi_szt fh = (n+1) / 2;   // First half Data (take more)
-    const ubi_szt sh = (n - fh); // Second half of Data
-
-    // Find the first half and second half of first string.
-
-
-
-    BigUnsigned L0, L1, R0;
-
-    const ubi_szt s_sz = right.real_size;
-
-    const ubi_szt _0_sz = min(s_sz, fh);
-
-    L0._digits = new CONT_TYPE[fh];
-    L1._digits = new CONT_TYPE[sh];
-    R0._digits = new CONT_TYPE[_0_sz];
-    BigUnsigned Z0;
-    BigUnsigned Z1;
-
-
-
-    memcpy(L0._digits,left._digits,fh * sizeof(CONT_TYPE));
-    memcpy(L1._digits,left._digits + fh,sh * sizeof(CONT_TYPE));
-    memcpy(R0._digits, right._digits, _0_sz * sizeof(CONT_TYPE));
-
-
-
-
-
-
-
-
-    Z0 = k_mul(L0,R0);
-    const int _1_sz = s_sz - _0_sz;
-    if (_1_sz == 0){
-        /// Z2 = 0
-        Z1 = k_mul(L1,R0); /// no swap
-
-        Z1._appendZeros(fh);
-
-
-        return Z1+Z0;
-    }else{
-        BigUnsigned R1;
-        R1._digits.resize(_1_sz);
-
-
-
-        for(int i = 0;i<_1_sz;++i){
-            R1._digits[i] = right._digits[fh + i];
-        }
-
-        BigUnsigned Z2 = k_mul(L1,R1); /// no swap
-
-
-        Z1 = k_mul(L0+L1, R0+R1);
-
-        Z1 -= (Z0+Z2);
-
-        ///if ( !(Z1.data.size() == 1 && Z1.data[0] == 0) )
-            Z1._appendZeros(fh);
-
-        ///if ( !(Z2.data.size() == 1 && Z2.data[0] == 0) )
-            Z2._appendZeros(fh * 2);
-
-        return Z2 + Z1 + Z0;
-    }
-
-}
-*/
 
 
 
@@ -305,20 +221,20 @@ void mult(const CONT_TYPE * a, CONT_TYPE * b, CONT_TYPE *__restrict res, const u
 BigUnsigned karatsuba(BigUnsigned& left, BigUnsigned& right){
     /// Если правый больше -> тогда результат будет меньше требуемого
     if (left.alloc_size < right.real_size){
-        CONT_TYPE *remem = left._digits;
+        CONT_TYPE *remem = left.digits;
         left.alloc_with_zeros(right.real_size);
 
-        memcpy(left._digits, remem, left.real_size * sizeof(CONT_TYPE));
+        memcpy(left.digits, remem, left.real_size * sizeof(CONT_TYPE));
     }
 
 
     /// Если левый больше -> входим в неаллокейтед память
     if (right.alloc_size < left.real_size){
         //cout << right << endl;
-        CONT_TYPE *remem = right._digits;
+        CONT_TYPE *remem = right.digits;
         right.alloc_with_zeros(left.real_size);
 
-        memcpy(right._digits, remem, right.real_size * sizeof(CONT_TYPE));
+        memcpy(right.digits, remem, right.real_size * sizeof(CONT_TYPE));
         //cout << right << endl;
     }
 
@@ -327,12 +243,12 @@ BigUnsigned karatsuba(BigUnsigned& left, BigUnsigned& right){
 
 
     BigUnsigned res;
-    res.alloc_with_zeros(2 * max(left.real_size,right.real_size));
-    mult(left._digits,right._digits,res._digits,max(left.real_size,right.real_size));
+    res.alloc_with_zeros(2 * std::max(left.real_size,right.real_size));
+    mult(left.digits,right.digits,res.digits,std::max(left.real_size,right.real_size));
 
 
 
-    if (res._digits[res.alloc_size - 1] == 0){
+    if (res.digits[res.alloc_size - 1] == 0){
          res.real_size = res.alloc_size - 1;
     }else{
          res.real_size = res.alloc_size;
@@ -347,35 +263,3 @@ BigUnsigned karatsuba(BigUnsigned& left, BigUnsigned& right){
 
 
 
-
-/* A helper for Karatsuba multiplication (k_mul).
-   Takes a long "n" and an integer "size" representing the place to
-   split, and sets low and high such that abs(n) == (high << size) + low,
-   viewing the shift as being by digits.  The sign bit is ignored, and
-   the return values are >= 0.
-   Returns 0 on success, -1 on failure.
-*/
-/*
-void kmul_split(const BigUnsigned& n,
-           ubi_szt size,
-           BigUnsigned& high,
-           BigUnsigned& low)
-{
-
-    ubi_szt size_lo, size_hi;
-    const ubi_szt size_n = n.real_size;
-
-    size_lo = min(size_n, size);
-    size_hi = size_n - size_lo;
-
-    hi._digits = new CONT_TYPE[size_hi];
-    lo._digits = new CONT_TYPE[size_lo];
-
-    memcpy(lo->ob_digit, n->ob_digit, size_lo * sizeof(digit));
-    memcpy(hi->ob_digit, n->ob_digit + size_lo, size_hi * sizeof(digit));
-
-    *high = long_normalize(hi);
-    *low = long_normalize(lo);
-    return 0;
-}
-*/

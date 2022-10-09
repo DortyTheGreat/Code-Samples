@@ -10,8 +10,8 @@ short inline compare(const BigUnsigned &left, const BigUnsigned &right){
 
     for (size_t i = 0;i<sz;i++){
         int p = sz - i - 1;
-        if (left._digits[p] != right._digits[p]){
-            return (left._digits[p] > right._digits[p]) << 1;
+        if (left.digits[p] != right.digits[p]){
+            return (left.digits[p] > right.digits[p]) << 1;
         }
     }
 
@@ -33,8 +33,8 @@ bool operator <(const BigUnsigned& left, const BigUnsigned& right) {
 
     for (size_t i = 0;i<sz;i++){
         int p = sz - i - 1;
-        if (left._digits[p] != right._digits[p]){
-            return (left._digits[p] < right._digits[p]);
+        if (left.digits[p] != right.digits[p]){
+            return (left.digits[p] < right.digits[p]);
         }
     }
 
@@ -53,7 +53,7 @@ bool operator ==(const BigUnsigned& left, const BigUnsigned& right) {
 
     for (size_t i = 0;i<sz;i++){
         int p = sz - i - 1;
-        if (left._digits[p] != right._digits[p]){
+        if (left.digits[p] != right.digits[p]){
             return 0;
         }
     }
@@ -61,22 +61,18 @@ bool operator ==(const BigUnsigned& left, const BigUnsigned& right) {
     return 1;
 }
 
-// сравнивает два числа на неравенство
 bool operator !=(const BigUnsigned& left, const BigUnsigned& right) {
 	return !(left == right);
 }
 
-// проверяет, является ли левый операнд меньше либо равен правого
 bool operator <=(const BigUnsigned& left, const BigUnsigned& right) {
 	return !(right < left);
 }
 
-// проверяет, является ли левый операнд больше правого
 bool operator >(const BigUnsigned& left, const BigUnsigned& right) {
 	return (right < left);
 }
 
-// проверяет, является ли левый операнд больше либо равен правого
 bool operator >=(const BigUnsigned& left, const BigUnsigned& right) {
 	return !(left < right);
 }

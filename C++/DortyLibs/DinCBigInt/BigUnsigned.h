@@ -1,9 +1,3 @@
-//#pragma GCC target ("avx2")
-//#pragma GCC optimization ("O3")
-//#pragma GCC optimization ("unroll-loops")
-
-///#include <bits/stdc++.h>
-
 #include <cstdint> ///
 #include <cstring> /// äëÿ memcpy
 
@@ -31,87 +25,40 @@
 #endif
 
 const CONT_TYPE BASE = total_base;
+template<typename T>
+struct custom_array{
+    T* digits;
 
+    ubi_szt real_size;
+    ubi_szt alloc_size;
+};
 
 //template <const int def_base = default_base, int BASE = total_base, const int container_stack = cnt_stack>
 class BigUnsigned{
 public:
-    CONT_TYPE* _digits;
+    custom_array<CONT_TYPE> digits;
     static const CONT_TYPE BASE = total_base;
+
 public:
 
-    ubi_szt real_size; /// ÐÅÀËÜÍÀß Äëèííà ÷èñëà
-    ubi_szt alloc_size; /// Äëÿ óïðîùåíèÿ ðåàëèçàöèè alloc_size - âñåãäà ñòåïåíü äâîéêà, òàê ìîæíî áóäåò óäîáíî äåëèòü ìàññèâ íà äâå\\÷åòûðå ðàâíûå ÷àñòè.
-
-    BigUnsigned()
-        : _digits( new CONT_TYPE[1])
-        , real_size(1)
-        , alloc_size(1)
-    {_digits[0] = 0;}
 
 
+    BigUnsigned();
+    BigUnsigned(const BigUnsigned& bu);
+    BigUnsigned (BigUnsigned&& bu);
+    BigUnsigned (const std::string& str);
+
+    template <typename T>
+    inline CONT_TYPE& operator[] (const T& index){return digits[index];}
 
 
 
-    BigUnsigned& operator= (BigUnsigned&& bu)
-    {
-        //cout << "called move equality" << endl;
-        _digits = ( bu._digits  );
-        real_size = ( bu.real_size );
-        alloc_size = ( bu.alloc_size );
-
-
-        bu._digits = NULL;
-        return *this;
-    }
-
-    BigUnsigned (BigUnsigned&& bu)
-        : _digits( bu._digits  )
-        , real_size( bu.real_size )
-        , alloc_size( bu.alloc_size )
-    {
-        ///cout << "called move constructor" << endl;
-        bu._digits = NULL;
-    }
-
-    BigUnsigned (const string& str);
+    BigUnsigned& operator= (BigUnsigned&& bu);
+    BigUnsigned& operator= (const BigUnsigned& bu);
 
 
 
 
-
-    BigUnsigned& operator= (const BigUnsigned& bu){
-        ///cout << "called copy equality" << endl;
-        if (bu.real_size > alloc_size){
-            alloc_size = bu.alloc_size;
-            _digits = new CONT_TYPE[alloc_size];
-
-
-            ///_digits = (CONT_TYPE*)(ptr); /// new CONT_TYPE[alloc_size]{0} ИЛИ new CONT_TYPE[alloc_size]()
-        }
-        real_size = bu.real_size;
-
-        memcpy(_digits,bu._digits,sizeof(CONT_TYPE) * bu.alloc_size);
-
-        return *this;
-    }
-
-
-
-     BigUnsigned(const BigUnsigned& bu)
-        : real_size(bu.real_size)
-    {
-        ///cout << "called copy constructor" << endl;
-        if (bu.real_size > alloc_size){
-            alloc_size = bu.alloc_size;
-            _digits = new CONT_TYPE[alloc_size];
-            ///_digits = (CONT_TYPE*)(ptr); /// new CONT_TYPE[alloc_size]{0} ИЛИ new CONT_TYPE[alloc_size]()
-        }
-        real_size = bu.real_size;
-
-        memcpy(_digits,bu._digits,sizeof(CONT_TYPE) * bu.alloc_size);
-
-    }
 
 
 
@@ -123,6 +70,8 @@ public:
     /// ìåìîðè ñòàôô
     void alloc_with_zeros(const int sz);
     void assign_from_BU(const int alloc_space, const BigUnsigned& bu);
+
+    explicit operator std::string() const;
 
     friend std::ostream& operator << (std::ostream&, const BigUnsigned&);
 	friend std::istream& operator >> (std::istream&, BigUnsigned&);
@@ -165,8 +114,8 @@ public:
 	void _add(const BigUnsigned&);
 
 	~BigUnsigned (){
-	    _digits = NULL;
-        delete[] _digits;
+	    digits = NULL;
+        delete[] digits;
 	}
 };
 
