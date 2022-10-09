@@ -112,11 +112,6 @@ public:
     friend BigUnsigned DivisionWithKnownReciprocal(const BigUnsigned& number, const BigUnsigned&, const int);
 
 	void _add(const BigUnsigned&);
-
-	~BigUnsigned (){
-	    digits = NULL;
-        delete[] digits;
-	}
 };
 
 #include "BigUnsigned.cpp"
