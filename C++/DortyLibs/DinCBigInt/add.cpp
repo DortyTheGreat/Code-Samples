@@ -1,62 +1,4 @@
 /*
-/// Сложение двух положительных (исключительно контейнеров)
-void BigInt::_add(const BigInt& right) {
-    size_t extra_size = 1;
-
-    size_t an_sz = right.digits.size();
-
-    if (an_sz > digits.size()){
-        extra_size = an_sz - digits.size() + 1;
-    }
-
-    for(size_t i = 0;i < extra_size; i++){
-        digits.push_back(0);
-    }
-    /// Заполняем контейнер нулями, чтобы было место под новые возможные числа(aka разряды)
-
-    for(size_t i = 0; i < an_sz;i++){
-        digits[i] += right.digits[i];
-        if (digits[i] >= BASE){
-            digits[i] -= BASE;
-            digits[i+1]++;
-        }
-    }
-
-    while(digits[an_sz] >= BASE){
-        digits[an_sz] -= BASE;
-        an_sz++;
-        digits[an_sz]++;
-    }
-
-
-
-    _remove_leading_zeros();
-}
-
-/// Обработка вычитания двух положительных чисел (работает, если второе меньше первого)
-void BigInt::_subtract(const BigInt &another){
-
-    size_t an_sz = another.digits.size();
-
-    for(size_t i = 0; i < an_sz;i++){
-        digits[i] -= another.digits[i];
-        if (digits[i] < 0){
-            digits[i] += BASE;
-            digits[i+1]--;
-        }
-    }
-
-    while(digits[an_sz] < 0){
-        digits[an_sz] += BASE;
-        an_sz++;
-        digits[an_sz]--;
-    }
-
-
-
-    _remove_leading_zeros();
-}
-*/
 void BigUnsigned::operator +=(const BigUnsigned& right) {
     if (right.alloc_size > alloc_size){
         /// точно переполнение
@@ -71,6 +13,8 @@ void BigUnsigned::operator +=(const BigUnsigned& right) {
 
 
 }
+*/
+
 /**
 
 Способно отработать нормально, если ...

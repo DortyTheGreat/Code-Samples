@@ -51,6 +51,8 @@ public:
     template <typename T>
     inline CONT_TYPE& operator[] (const T& index){return digits[index];}
 
+    template <typename T>
+    inline const CONT_TYPE& operator[] (const T& index) const {return digits[index];}
 
 
     BigUnsigned& operator= (BigUnsigned&& bu);
