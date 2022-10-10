@@ -18,7 +18,8 @@ std::string to_str( T any )
     ss << any;
     return ss.str();
 }
-
+#include <map>
+#include <algorithm>
 int main()
 {
     srand(time(0));
@@ -38,23 +39,37 @@ int main()
      bmp3.write("img_test_24bits.bmp");
     cout << "Hello world!" << endl;
     */
-    uint32_t W = 100;
-    uint32_t H = 100;
-    BMP mm(W,H,false);
+    ///uint32_t W = 100;
+    ///uint32_t H = 100;
+    BMP mm("original.bmp");
     uint32_t channels = mm.bmp_info_header.bit_count / 8;
 
+    map<RGBAColor,int> mp;
 
 
-
-
-    for (uint32_t y = 0; y < H; ++y) {
-        for (uint32_t x = 0; x < W; ++x) {
-            int n = channels * (y * W + x);
-            mm[n] = {255,255,0,0};
-
+    for (int32_t y = 0; y < mm.bmp_info_header.height; ++y) {
+        for (int32_t x = 0; x < mm.bmp_info_header.width; ++x) {
+            int n = channels * (y * mm.bmp_info_header.width + x);
+            ///mm[n] = {255,255,255,255};
+            mm[n];
+            ///cout << x << " " << y << endl;
 
         }
     }
+
+
+    std::vector<std::pair<int,RGBAColor> > vc;
+    for(auto p : mp){
+        vc.push_back({p.second,p.first});
+    }
+    std::sort(vc.begin(),vc.end());
+    for (auto p : vc){
+        cout << p.first << " " << int(p.second.R) << " " << int(p.second.G) << " " << int(p.second.B) << endl;
+    }
+
+
+
+
 
 
 
