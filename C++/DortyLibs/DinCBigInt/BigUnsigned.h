@@ -25,18 +25,12 @@
 #endif
 
 const CONT_TYPE BASE = total_base;
-template<typename T>
-struct custom_array{
-    T* digits;
 
-    ubi_szt real_size;
-    ubi_szt alloc_size;
-};
-
+#include <vector>
 //template <const int def_base = default_base, int BASE = total_base, const int container_stack = cnt_stack>
 class BigUnsigned{
 public:
-    custom_array<CONT_TYPE> digits;
+    std::vector<CONT_TYPE> digits;
     static const CONT_TYPE BASE = total_base;
 
 public:
@@ -51,7 +45,11 @@ public:
     template <typename T>
     inline CONT_TYPE& operator[] (const T& index){return digits[index];}
 
+    template <typename T>
+    inline const CONT_TYPE& operator[] (const T& index) const{return digits[index];}
 
+    inline size_t size() const { return digits.size();}
+    inline size_t capacity() const { return digits.capacity();}
 
     BigUnsigned& operator= (BigUnsigned&& bu);
     BigUnsigned& operator= (const BigUnsigned& bu);

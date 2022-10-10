@@ -27,9 +27,9 @@ BigUnsigned::operator std::string() const{
 
     CONT_TYPE Carret;
     std::string buff = "";
-    for(int i = 0;i<real_size;++i){
+    for(size_t i = 0;i<size();++i){
         Carret = digits[i];
-        for(int j = 0; j < cnt_stack;++j){
+        for(size_t j = 0; j < cnt_stack;++j){
             buff += FromIntToChar(Carret % default_base);
             Carret /= default_base;
         }
