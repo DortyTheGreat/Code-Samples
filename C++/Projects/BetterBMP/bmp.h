@@ -20,7 +20,7 @@ struct BMPInfoHeader {
                                              //       (if positive, bottom-up, with origin in lower left corner)
                                              //       (if negative, top-down, with origin in upper left corner)
     uint16_t planes{ 1 };                    // No. of planes for the target device, this is always 1
-    uint16_t byte_count{ 0 };                 // No. of bits per pixel
+    uint16_t bit_count{ 0 };                 // No. of bits per pixel
     uint32_t compression{ 0 };               // 0 or 3 - uncompressed. THIS PROGRAM CONSIDERS ONLY UNCOMPRESSED BMP images
     uint32_t size_image{ 0 };                // 0 - for uncompressed images
     int32_t x_pixels_per_meter{ 0 };
@@ -37,112 +37,118 @@ struct BMPColorHeader {
     uint32_t color_space_type{ 0x73524742 }; // Default "sRGB" (0x73524742)
     uint32_t unused[16]{ 0 };                // Unused data for sRGB color space
 };
+#pragma pack(pop)
+
+struct RGBAColor;
+struct RGBAColorRef;
 
 
 
 struct RGBAColor{
     uint8_t R,G,B,A;
-};
-#pragma pack(pop)
 
-template <typename T>
-struct array2d{
-    T** data;
-    size_t width, height;
-
-    void init(size_t w, size_t h){
-        width = w;
-        height = h;
-        data = new T*[width];
-        for(size_t i = 0; i < width; ++i)
-            data[i] = new T[height];
+    bool operator< (const RGBAColor& color) const{
+        if (R != color.R) return R < color.R;
+        if (B != color.B) return B < color.B;
+        if (G != color.G) return G < color.G;
+        return A < color.A;
     }
 
-    constexpr inline T*& operator[] (const size_t& index){
-        return data[index];
+};
+
+struct RGBAColorRef{
+    uint8_t &R, &G, &B, &A;
+    void operator= (const RGBAColor& color){
+        R = color.R;
+        G = color.G;
+        B = color.B;
+        A = color.A;
+    }
+
+    operator RGBAColor() const{
+        return {R,G,B,A};
     }
 };
+
 
 
 struct BMP {
     BMPFileHeader file_header;
     BMPInfoHeader bmp_info_header;
     BMPColorHeader bmp_color_header;
-    array2d<RGBAColor> data;
-
-    bool hasAlpha = false;
-    BMP(const char *fname) {
-        read(fname);
+    std::vector<uint8_t> data;
+    inline RGBAColorRef operator[] (size_t index){
+        return {data[index],data[index+1],data[index+2],data[index+3]};
     }
 
-    constexpr inline RGBAColor*& operator[] (size_t x){
-        return data[x];
+    BMP(const char *fname) {
+        read(fname);
     }
 
 
 
     void read(const char *fname) {
         std::ifstream inp{ fname, std::ios_base::binary };
-        if (!inp) throw std::runtime_error("Unable to open the input image file.");
-
-        inp.read((char*)&file_header, sizeof(file_header));
-        if(file_header.file_type != 0x4D42) throw std::runtime_error("Error! Unrecognized file format.");
-
-        inp.read((char*)&bmp_info_header, sizeof(bmp_info_header));
-        bmp_info_header.byte_count /= 8;
-        // The BMPColorHeader is used only for transparent images
-        if(bmp_info_header.byte_count == 4) {
-            hasAlpha = true;
-            // Check if the file has bit mask color information
-            if(bmp_info_header.size >= (sizeof(BMPInfoHeader) + sizeof(BMPColorHeader))) {
-                inp.read((char*)&bmp_color_header, sizeof(bmp_color_header));
-                // Check if the pixel data is stored as BGRA and if the color space type is sRGB
-                check_color_header(bmp_color_header);
-            } else {
-                std::cerr << "Error! The file \"" << fname << "\" does not seem to contain bit mask information\n";
+        if (inp) {
+            inp.read((char*)&file_header, sizeof(file_header));
+            if(file_header.file_type != 0x4D42) {
                 throw std::runtime_error("Error! Unrecognized file format.");
             }
-        }
+            inp.read((char*)&bmp_info_header, sizeof(bmp_info_header));
 
-        // Jump to the pixel data location
-        inp.seekg(file_header.offset_data, inp.beg);
+            // The BMPColorHeader is used only for transparent images
+            if(bmp_info_header.bit_count == 32) {
+                // Check if the file has bit mask color information
+                if(bmp_info_header.size >= (sizeof(BMPInfoHeader) + sizeof(BMPColorHeader))) {
+                    inp.read((char*)&bmp_color_header, sizeof(bmp_color_header));
+                    // Check if the pixel data is stored as BGRA and if the color space type is sRGB
+                    check_color_header(bmp_color_header);
+                } else {
+                    std::cerr << "Error! The file \"" << fname << "\" does not seem to contain bit mask information\n";
+                    throw std::runtime_error("Error! Unrecognized file format.");
+                }
+            }
 
-        // Adjust the header fields for output.
-        // Some editors will put extra info in the image file, we only save the headers and the data.
-        if(hasAlpha) {
-            bmp_info_header.size = sizeof(BMPInfoHeader) + sizeof(BMPColorHeader);
-            file_header.offset_data = sizeof(BMPFileHeader) + sizeof(BMPInfoHeader) + sizeof(BMPColorHeader);
-        } else {
-            bmp_info_header.size = sizeof(BMPInfoHeader);
-            file_header.offset_data = sizeof(BMPFileHeader) + sizeof(BMPInfoHeader);
-        }
-        file_header.file_size = file_header.offset_data;
+            // Jump to the pixel data location
+            inp.seekg(file_header.offset_data, inp.beg);
 
-        if (bmp_info_header.height < 0) {
-            throw std::runtime_error("The program can treat only BMP images with the origin in the bottom left corner!");
-        }
+            // Adjust the header fields for output.
+            // Some editors will put extra info in the image file, we only save the headers and the data.
+            if(bmp_info_header.bit_count == 32) {
+                bmp_info_header.size = sizeof(BMPInfoHeader) + sizeof(BMPColorHeader);
+                file_header.offset_data = sizeof(BMPFileHeader) + sizeof(BMPInfoHeader) + sizeof(BMPColorHeader);
+            } else {
+                bmp_info_header.size = sizeof(BMPInfoHeader);
+                file_header.offset_data = sizeof(BMPFileHeader) + sizeof(BMPInfoHeader);
+            }
+            file_header.file_size = file_header.offset_data;
 
-        data.init(bmp_info_header.width,bmp_info_header.height);
+            if (bmp_info_header.height < 0) {
+                throw std::runtime_error("The program can treat only BMP images with the origin in the bottom left corner!");
+            }
 
-        // Here we check if we need to take into account row padding
-        if (bmp_info_header.width % 4 == 0) {
-            inp.read((char*)data.data(), data.size() * bmp_info_header.byte_count);
-            file_header.file_size += static_cast<uint32_t>(data.size());
+            data.resize(bmp_info_header.width * bmp_info_header.height * bmp_info_header.bit_count / 8);
+
+            // Here we check if we need to take into account row padding
+            if (bmp_info_header.width % 4 == 0) {
+                inp.read((char*)data.data(), data.size());
+                file_header.file_size += static_cast<uint32_t>(data.size());
+            }
+            else {
+                row_stride = bmp_info_header.width * bmp_info_header.bit_count / 8;
+                uint32_t new_stride = make_stride_aligned(4);
+                std::vector<uint8_t> padding_row(new_stride - row_stride);
+
+                for (int y = 0; y < bmp_info_header.height; ++y) {
+                    inp.read((char*)(data.data() + row_stride * y), row_stride);
+                    inp.read((char*)padding_row.data(), padding_row.size());
+                }
+                file_header.file_size += static_cast<uint32_t>(data.size()) + bmp_info_header.height * static_cast<uint32_t>(padding_row.size());
+            }
         }
         else {
-            row_stride = bmp_info_header.width * bmp_info_header.byte_count;
-            uint32_t new_stride = make_stride_aligned(4);
-            std::vector<uint8_t> padding_row(new_stride - row_stride);
-
-            for (int y = 0; y < bmp_info_header.height; ++y) {
-                inp.read((char*)(data.data() + row_stride * y), row_stride);
-                inp.read((char*)padding_row.data(), padding_row.size());
-            }
-            file_header.file_size += static_cast<uint32_t>(data.size()) + bmp_info_header.height * static_cast<uint32_t>(padding_row.size());
+            throw std::runtime_error("Unable to open the input image file.");
         }
-
-
-
     }
 
     BMP(int32_t width, int32_t height, bool has_alpha = true) {
@@ -178,33 +184,33 @@ struct BMP {
 
     void write(const char *fname) {
         std::ofstream of{ fname, std::ios_base::binary };
-        if (!of) throw std::runtime_error("Unable to open the output image file.");
-
-        if (bmp_info_header.bit_count == 32 || bmp_info_header.width % 4 == 0) {
-            write_headers_and_data(of);
-            return;
-        }
-
-        if (bmp_info_header.bit_count == 24) {
-
-
-            uint32_t new_stride = make_stride_aligned(4);
-            std::vector<uint8_t> padding_row(new_stride - row_stride);
-
-            write_headers(of);
-
-            for (int y = 0; y < bmp_info_header.height; ++y) {
-                of.write((const char*)(data.data() + row_stride * y), row_stride);
-                of.write((const char*)padding_row.data(), padding_row.size());
+        if (of) {
+            if (bmp_info_header.bit_count == 32) {
+                write_headers_and_data(of);
             }
+            else if (bmp_info_header.bit_count == 24) {
+                if (bmp_info_header.width % 4 == 0) {
+                    write_headers_and_data(of);
+                }
+                else {
+                    uint32_t new_stride = make_stride_aligned(4);
+                    std::vector<uint8_t> padding_row(new_stride - row_stride);
 
-            return;
+                    write_headers(of);
+
+                    for (int y = 0; y < bmp_info_header.height; ++y) {
+                        of.write((const char*)(data.data() + row_stride * y), row_stride);
+                        of.write((const char*)padding_row.data(), padding_row.size());
+                    }
+                }
+            }
+            else {
+                throw std::runtime_error("The program can treat only 24 or 32 bits per pixel BMP files");
+            }
         }
-
-        throw std::runtime_error("The program can treat only 24 or 32 bits per pixel BMP files");
-
-
-
+        else {
+            throw std::runtime_error("Unable to open the output image file.");
+        }
     }
 
     void fill_region(uint32_t x0, uint32_t y0, uint32_t w, uint32_t h, uint8_t B, uint8_t G, uint8_t R, uint8_t A) {
@@ -290,4 +296,3 @@ private:
         }
     }
 };
-

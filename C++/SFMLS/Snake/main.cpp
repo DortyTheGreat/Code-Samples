@@ -1,11 +1,12 @@
 
 
 
-#define SFML_STATIC
+///#define SFML_STATIC
 #include <SFML/Graphics.hpp>
 
 #include <ctime>
 #include <cmath>
+
 #include <iostream>
 
 #include <sstream>
