@@ -1,62 +1,29 @@
-/*
-/// Сложение двух положительных (исключительно контейнеров)
-void BigInt::_add(const BigInt& right) {
-    size_t extra_size = 1;
 
-    size_t an_sz = right.digits.size();
 
-    if (an_sz > digits.size()){
-        extra_size = an_sz - digits.size() + 1;
-    }
+template <typename T>
+inline void BigUnsigned::PositiveSanitise(const T& index){
+    for ( ubi_szt cou = index; cou < real_size -1; ++cou){
+        if (digits[cou] < BASE){ return;}
 
-    for(size_t i = 0;i < extra_size; i++){
-        digits.push_back(0);
-    }
-    /// Заполняем контейнер нулями, чтобы было место под новые возможные числа(aka разряды)
+        digits[cou] -= BASE; /// можно записать = 0 в целом, если изначальное число сбалансировано
+        ++digits[cou+1];
+	}
 
-    for(size_t i = 0; i < an_sz;i++){
-        digits[i] += right.digits[i];
-        if (digits[i] >= BASE){
-            digits[i] -= BASE;
-            digits[i+1]++;
+    if (digits[real_size - 1] >= BASE ){
+        if (real_size == alloc_size){
+            /// reallocate memory
+            CONT_TYPE * new_c = new CONT_TYPE[++alloc_size];
+            memcpy(new_c, digits, real_size * sizeof(CONT_TYPE));
+            delete [] digits;
+            digits = new_c;
         }
+
+        digits[real_size - 1] -= BASE;
+        digits[real_size++] = 1;
+
     }
-
-    while(digits[an_sz] >= BASE){
-        digits[an_sz] -= BASE;
-        an_sz++;
-        digits[an_sz]++;
-    }
-
-
-
-    _remove_leading_zeros();
 }
 
-/// Обработка вычитания двух положительных чисел (работает, если второе меньше первого)
-void BigInt::_subtract(const BigInt &another){
-
-    size_t an_sz = another.digits.size();
-
-    for(size_t i = 0; i < an_sz;i++){
-        digits[i] -= another.digits[i];
-        if (digits[i] < 0){
-            digits[i] += BASE;
-            digits[i+1]--;
-        }
-    }
-
-    while(digits[an_sz] < 0){
-        digits[an_sz] += BASE;
-        an_sz++;
-        digits[an_sz]--;
-    }
-
-
-
-    _remove_leading_zeros();
-}
-*/
 void BigUnsigned::operator +=(const BigUnsigned& right) {
     if (right.alloc_size > alloc_size){
         /// точно переполнение
@@ -123,7 +90,7 @@ void BigUnsigned::_add(const BigUnsigned& right) {
         }
     }
 
-    /// Хочется, то, что ниже сделать для флекса, но так тоже +- ничего
+
     CONT_TYPE *p = &digits[right.real_size];
     while (*p >= BASE){
         *p -= BASE;
@@ -132,14 +99,7 @@ void BigUnsigned::_add(const BigUnsigned& right) {
     }
 
 
-    /*
-    CONT_TYPE &p = digits[right.real_size];
-    while (p >= BASE){
-        p -= BASE;
-        (&p)++;
-        ++(p);
-    }
-    */
+
 
     /// Это тоже следует улучшить
     real_size = std::max(real_size, right.real_size);
@@ -152,85 +112,20 @@ void BigUnsigned::_add(const BigUnsigned& right) {
 
 }
 
-
-
-/*
-/// Верный оператор (с учётом знаков и прочего)
-void BigInt::operator-=(BigInt right){
-
-    ///std::cout << *this << " " << right << " "<<(compare(*this,right)) << std::endl;
-    bool comp_ = !(compare(*this,right));
-    if ( comp_){
-        ///std::cout << "second is hisher" << std::endl;
-        swap(right,*this);
-        _is_negative = !_is_negative;
-    }
-
-
-    if ( (_is_negative == right._is_negative) ^ (comp_) ) {
-        // Одинаковы по знаку
-        _subtract(right);
-    }else{
-        // Разные по знаку.
-        _add(right);
-    }
-
-}
-*/
-
-
-
-
-
-// возвращает копию переданного числа
-//const BigInt BigInt::operator +() const {
-//	return BigInt(*this);
-//}
-/*
-// возвращает переданное число с другим знаком
-const BigInt BigInt::operator -() const {
-	BigInt copy(*this);
-	copy._is_negative = !copy._is_negative;
-	return copy;
-}
-*/
-
-
-/**
-
-Складывает и помещает новое число в новое место в памяти (вероятнее всего присваивать его мы захотим через ->)
-
-*/
-
-
 const BigUnsigned operator +(const BigUnsigned& left, const BigUnsigned& right) {
-    if (left.real_size < right.real_size){
-        return right+left;
-    }
-
-
     BigUnsigned ret;
-    ret.assign_from_BU(left.real_size+1,left);
-
-
-
-
-    ret._add(right);
-
-	return ret;
-}
-
-
-const BigUnsigned operator +(BigUnsigned&& left, const BigUnsigned& right) {
-    ///cout << "called rvalue" << endl;
     if (left.real_size < right.real_size){
-        //return right+left;
+        ret.assign_from_BU(right.real_size+1,right);
+        ret._add(left);
+        return ret;
     }
-
-    left += right;
-
-	return left;
+    ret.assign_from_BU(left.real_size+1,left);
+    ret._add(right);
+    return ret;
 }
+
+
+
 
 
 
@@ -238,26 +133,7 @@ const BigUnsigned operator +(BigUnsigned&& left, const BigUnsigned& right) {
 void BigUnsigned::operator++() {
 
 	++digits[0];
-	for ( ubi_szt cou = 0; cou < real_size -1; ++cou){
-        if (digits[cou] < BASE){ return;}
 
-        digits[cou] -= BASE; /// можно записать = 0 в целом, если изначальное число сбалансировано
-        ++digits[cou+1];
-	}
-
-    if (digits[real_size - 1] >= BASE ){
-        if (real_size == alloc_size){
-            /// reallocate memory
-            CONT_TYPE * new_c = new CONT_TYPE[++alloc_size];
-            memcpy(new_c, digits, real_size * sizeof(CONT_TYPE));
-            new_c[real_size] = 0;
-            digits = new_c;
-        }
-
-        digits[real_size - 1] -= BASE;
-        ++digits[real_size++];
-
-    }
 }
 
 void BigUnsigned::operator--() {

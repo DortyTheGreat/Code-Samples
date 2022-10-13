@@ -1,4 +1,8 @@
 
+BigUnsigned::~BigUnsigned(){
+    delete [] digits;
+}
+
 BigUnsigned::BigUnsigned()
 : digits( new CONT_TYPE[1])
 , real_size(1)
