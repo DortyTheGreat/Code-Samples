@@ -54,36 +54,21 @@ void BigUnsigned::operator -=(const BigUnsigned& minus) {
 
 /**
 
-ѕрибавл€ет второе число к основному. ќднако оно об€зано помещатьс€ в него.
+ѕрибавл€ет второе число к основному. ќднако результат об€зан помещатьс€ в изначальное.
 
 */
 void BigUnsigned::_add(const BigUnsigned& right) {
 
     for(int i = 0;i < right.real_size; ++i){
         digits[i] += right.digits[i];
-        if (digits[i] >= BASE){
-            digits[i] -= BASE;
-            ++digits[i + 1];
-        }
+        incrSanitise(i);
     }
 
-    /// ’очетс€, то, что ниже сделать дл€ флекса, но так тоже +- ничего
-    CONT_TYPE *p = &digits[right.real_size];
-    while (*p >= BASE){
-        *p -= BASE;
-        ++p;
-        ++(*p);
-    }
+    incrSanitises(right.real_size)
 
 
-    /*
-    CONT_TYPE &p = digits[right.real_size];
-    while (p >= BASE){
-        p -= BASE;
-        (&p)++;
-        ++(p);
-    }
-    */
+
+
 
     /// Ёто тоже следует улучшить
     real_size = std::max(real_size, right.real_size);
@@ -98,53 +83,7 @@ void BigUnsigned::_add(const BigUnsigned& right) {
 
 
 
-/*
-/// ¬ерный оператор (с учЄтом знаков и прочего)
-void BigInt::operator-=(BigInt right){
 
-    ///std::cout << *this << " " << right << " "<<(compare(*this,right)) << std::endl;
-    bool comp_ = !(compare(*this,right));
-    if ( comp_){
-        ///std::cout << "second is hisher" << std::endl;
-        swap(right,*this);
-        _is_negative = !_is_negative;
-    }
-
-
-    if ( (_is_negative == right._is_negative) ^ (comp_) ) {
-        // ќдинаковы по знаку
-        _subtract(right);
-    }else{
-        // –азные по знаку.
-        _add(right);
-    }
-
-}
-*/
-
-
-
-
-
-// возвращает копию переданного числа
-//const BigInt BigInt::operator +() const {
-//	return BigInt(*this);
-//}
-/*
-// возвращает переданное число с другим знаком
-const BigInt BigInt::operator -() const {
-	BigInt copy(*this);
-	copy._is_negative = !copy._is_negative;
-	return copy;
-}
-*/
-
-
-/**
-
-—кладывает и помещает новое число в новое место в пам€ти (веро€тнее всего присваивать его мы захотим через ->)
-
-*/
 
 
 const BigUnsigned operator +(const BigUnsigned& left, const BigUnsigned& right) {
@@ -155,26 +94,12 @@ const BigUnsigned operator +(const BigUnsigned& left, const BigUnsigned& right) 
 
     BigUnsigned ret;
     ret.assign_from_BU(left.real_size+1,left);
-
-
-
-
     ret._add(right);
 
 	return ret;
 }
 
 
-const BigUnsigned operator +(BigUnsigned&& left, const BigUnsigned& right) {
-    ///cout << "called rvalue" << endl;
-    if (left.real_size < right.real_size){
-        //return right+left;
-    }
-
-    left += right;
-
-	return left;
-}
 
 
 

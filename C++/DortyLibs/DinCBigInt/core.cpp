@@ -59,6 +59,17 @@ void BigUnsigned::alloc_with_zeros(const int sz){
 
 }
 
+void BigUnsigned::alloc(const int sz){
+    alloc_size = sz;
+    digits = new CONT_TYPE[sz];
+}
+
+void BigUnsigned::resize(const int sz){
+    alloc_size = sz;
+    digits = new CONT_TYPE[sz];
+    real_size = sz;
+}
+
 /**
 
 Тоже самое, что и оператор=, но можно указать количество памяти для аллокации

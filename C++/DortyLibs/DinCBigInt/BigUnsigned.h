@@ -36,7 +36,10 @@ struct custom_array{
 //template <const int def_base = default_base, int BASE = total_base, const int container_stack = cnt_stack>
 class BigUnsigned{
 public:
-    custom_array<CONT_TYPE> digits;
+    CONT_TYPE* digits;
+
+    ubi_szt real_size;
+    ubi_szt alloc_size;
     static const CONT_TYPE BASE = total_base;
 
 public:
@@ -54,6 +57,21 @@ public:
     template <typename T>
     inline const CONT_TYPE& operator[] (const T& index) const {return digits[index];}
 
+    template <typename T>
+    inline void incrSanitise(const T& index){
+        if (digits[index] >= BASE){
+            digits[index] -= BASE;
+            ++digits[index + 1];
+        }
+    }
+
+    template <typename T>
+    inline void incrSanitises(T index){
+        while(digits[index] >= BASE){
+            digits[index] -= BASE;
+            ++digits[++index];
+        }
+    }
 
     BigUnsigned& operator= (BigUnsigned&& bu);
     BigUnsigned& operator= (const BigUnsigned& bu);
@@ -71,6 +89,7 @@ public:
 
     /// ìåìîðè ñòàôô
     void alloc_with_zeros(const int sz);
+    inline void alloc(const int sz);
     void assign_from_BU(const int alloc_space, const BigUnsigned& bu);
 
     explicit operator std::string() const;
