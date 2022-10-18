@@ -18,97 +18,119 @@
 #include<fstream>
 #include <utility>
 #include <algorithm>
+#include <vector>
 
 using namespace std;
+struct MMSieve{
+    bool *Sieve;
+    vector<unsigned int> primes;
+    unsigned int e, p, n;
 
-// ----------------------chooser---------------------
-int nextPrime(int p, bool* s)
-{
-    int i = p;
-    do
-    {
-        i++;
+    MMSieve(unsigned int _n) : n(_n){
+        Sieve= new bool[(max(n + 1u, 6u))];
+        e = 2;
+        p = 2;
+        Sieve[0] = false;
+        Sieve[1] = false;
+        Sieve[2] = true;
+        Sieve[3] = true;
+        Sieve[4] = false;
+        Sieve[5] = true;
     }
-    while (!s[i]);
-    return i;
-}
-// ------------------- end chooser --------------------
-// -----------------------generator----------------------------
-void generator(int p, int e, int n, bool* s)
-{
-    int l = (e - p + 1);
-    int start = e + 1;
-    int end = (p) * l + nextPrime(p,s) - 1;
-    if (end >= n || end < 0)
-    {
-        end = n;
-    }
-    for (int i = start; i <= end; i++)
-    {
-        s[i] = s[i - l];
-    }
-}
-// -------------------end generator------------------------
-unsigned int e, p, n;
-// ---------------------cleaning---------------------------
-/// Убирает все числа сомножаемые на p, до некого e включительно
-void cleaning(int p, int e, bool* s)
-{
 
-    for (int i = p; i <= e; ++i)
+    ~MMSieve(){
+        delete [] Sieve;
+    }
+
+    int nextPrime(int p)
+    {
+        do{++p;}while (!Sieve[p]);
+        return p;
+    }
+
+    void generator()
+    {
+        int l = (e - p + 1);
+        int start = e + 1;
+        int end = (p) * l + nextPrime(p) - 1;
+        if (end >= n || end < 0)
+        {
+            end = n;
+        }
+        for (int i = start; i <= end; i++)
+        {
+            Sieve[i] = Sieve[i - l];
+        }
+    }
+
+    /// Убирает все числа сомножаемые на p, до некого e включительно
+    void cleaning()
     {
 
-        if (s[i])
+        for (int i = p; i <= e; ++i)
         {
 
-            s[i * p] = false;
+            if (Sieve[i])
+            {
+
+                Sieve[i * p] = false;
+            }
+
         }
-
     }
-}
 
-// ----------------end cleaning------------------
-int  main()
-{
-    bool *s;
-    cout << "Enter the maximum number: ";
-    cin >> n;
-    clock_t start = clock();
-    s= new bool[(max(n + 1u, 6u))];
-    cout << "Filled array " << endl;
-    e = 2;
-    p = 2;
-    s[2] = true;
-    s[3] = true;
-    s[5] = true;
-    do
-    {
+    /// Собственно всё и делает
+    void populate(){
+    do{
 
-        generator(p, e, n, s);
-        cleaning(p, e, s);
-        e = p * (e - p + 1) + nextPrime(p, s) - 1;
-        p = nextPrime(p, s);
+        generator();
+        cleaning();
+        e = p * (e - p + 1) + nextPrime(p) - 1;
+        p = nextPrime(p);
 
     }
     while ((p * e <= n && p * e > 0));
 
-    generator(p, e, n, s);
+    generator();
 
-    do
-    {
-        cleaning(p, n/p, s);
-        p = nextPrime(p, s);
+    do{
+        e = n/p;
+        cleaning();
+        p = nextPrime(p);
     }
     while (p * p <= n);
+    }
+};
+
+
+
+// -------------------end generator------------------------
+
+// ---------------------cleaning---------------------------
+
+
+// ----------------end cleaning------------------
+int  main()
+{
+
+    int num;
+    cout << "Enter the maximum number: ";
+    cin >> num;
+    MMSieve sv(num);
+    clock_t start = clock();
+
+    cout << "Filled array " << endl;
+
+    sv.populate();
     float timeA =(float)(clock() - start)/1000;
     cout << ( "Action time  = " );
     cout << timeA << " s";
     //----------------------------- RECODR TO FILE --------------------------
     ofstream record ("prime.txt");
     int k=0;
-    for (int i=0; i<= min(n,10000u); i++)
+    for (int i=0; i<= min(num,10000); i++)
     {
-        if(s[i])
+        if(sv.Sieve[i])
         {
             k+=1;
             record << i <<" ";
@@ -121,6 +143,6 @@ int  main()
     }
     record.close();
 
-    delete [] s;
+
     return 0;
 }
