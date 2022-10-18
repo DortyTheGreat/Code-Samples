@@ -20,14 +20,32 @@
 #include <algorithm>
 #include <vector>
 
+clock_t start;
+
+#define CHAR_WORD uint64_t
+#define WORD_BYTES 8
+template<typename T>
+void InsaneMemcpy(T* pDest, const T* pSource, const std::size_t& sizeBytes)
+{
+  CHAR_WORD* p_dest = (CHAR_WORD*)pDest;
+  const CHAR_WORD* p_source = (const CHAR_WORD*)pSource;
+  *(p_dest) = *(p_source);
+  for (std::size_t i = 0; i < (sizeBytes+WORD_BYTES-1)/WORD_BYTES - 1; ++i)
+  {
+    *(++p_dest) = *(++p_source);
+  }
+}
+
 using namespace std;
 struct MMSieve{
     bool *Sieve;
     vector<unsigned int> primes;
     unsigned int e, p, n;
 
+    unsigned int size;
+
     MMSieve(unsigned int _n) : n(_n){
-        Sieve= new bool[(max(n + 1u, 6u))];
+        Sieve= new bool[(max(2*n + 1u, 6u))];
         e = 2;
         p = 2;
         Sieve[0] = false;
@@ -36,6 +54,10 @@ struct MMSieve{
         Sieve[3] = true;
         Sieve[4] = false;
         Sieve[5] = true;
+
+        primes.push_back(2);
+        primes.push_back(3);
+        primes.push_back(5);
     }
 
     ~MMSieve(){
@@ -51,28 +73,36 @@ struct MMSieve{
     void generator()
     {
         int l = (e - p + 1);
-        int start = e + 1;
-        int end = (p) * l + nextPrime(p) - 1;
-        if (end >= n || end < 0)
-        {
-            end = n;
+        size = (p) * l + nextPrime(p) - 1;
+        if (size > n) size = n;
+        cout << l << " " << p << " " << size << " " << e+1 << endl;
+
+        #define meme 1
+        #if meme
+        for(int i = 0; (i < p) && (e+1 + i*l < n);++i){
+            ///cout << e+1 + i*l << " " << p << endl;
+            memcpy(Sieve+(e+1 + i*l),Sieve+p,l * sizeof(bool));
         }
-        for (int i = start; i <= end; i++)
+        #else
+        for (int i = e + 1; i <= size; i++)
         {
             Sieve[i] = Sieve[i - l];
         }
+        #endif // meme
+
+
     }
 
     /// Убирает все числа сомножаемые на p, до некого e включительно
     void cleaning()
     {
 
-        for (int i = p; i <= e; ++i)
+        for (int i = e; i >= p; --i)
         {
 
             if (Sieve[i])
             {
-
+                ///cout << i * p << endl;
                 Sieve[i * p] = false;
             }
 
@@ -91,7 +121,15 @@ struct MMSieve{
     }
     while ((p * e <= n && p * e > 0));
 
+    float timeA =(float)(clock() - start)/1000;
+    cout << ( "Action time  = " );
+    cout << timeA << " s" << size;
+
     generator();
+
+    timeA =(float)(clock() - start)/1000;
+    cout << ( "Action time  = " );
+    cout << timeA << " s" << size;
 
     do{
         e = n/p;
@@ -113,11 +151,11 @@ struct MMSieve{
 int  main()
 {
 
-    int num;
-    cout << "Enter the maximum number: ";
-    cin >> num;
+    int num = 1000 * 1000 * 1000;
+    ///cout << "Enter the maximum number: ";
+    ///cin >> num;
     MMSieve sv(num);
-    clock_t start = clock();
+    start = clock();
 
     cout << "Filled array " << endl;
 
