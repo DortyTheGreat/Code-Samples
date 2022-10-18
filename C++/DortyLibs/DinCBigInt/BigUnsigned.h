@@ -25,16 +25,23 @@
 #endif
 
 const CONT_TYPE BASE = total_base;
+template<typename T>
+struct custom_array{
+    T* digits;
 
+    ubi_szt real_size;
+    ubi_szt alloc_size;
+};
 
 //template <const int def_base = default_base, int BASE = total_base, const int container_stack = cnt_stack>
 class BigUnsigned{
 public:
     CONT_TYPE* digits;
-    static const CONT_TYPE BASE = total_base;
 
     ubi_szt real_size;
     ubi_szt alloc_size;
+    static const CONT_TYPE BASE = total_base;
+
 public:
 
 
@@ -43,13 +50,28 @@ public:
     BigUnsigned(const BigUnsigned& bu);
     BigUnsigned (BigUnsigned&& bu);
     BigUnsigned (const std::string& str);
-    ~BigUnsigned();
 
     template <typename T>
     inline CONT_TYPE& operator[] (const T& index){return digits[index];}
 
     template <typename T>
     inline const CONT_TYPE& operator[] (const T& index) const {return digits[index];}
+
+    template <typename T>
+    inline void incrSanitise(const T& index){
+        if (digits[index] >= BASE){
+            digits[index] -= BASE;
+            ++digits[index + 1];
+        }
+    }
+
+    template <typename T>
+    inline void incrSanitises(T index){
+        while(digits[index] >= BASE){
+            digits[index] -= BASE;
+            ++digits[++index];
+        }
+    }
 
     BigUnsigned& operator= (BigUnsigned&& bu);
     BigUnsigned& operator= (const BigUnsigned& bu);
@@ -67,6 +89,7 @@ public:
 
     /// ìåìîðè ñòàôô
     void alloc_with_zeros(const int sz);
+    inline void alloc(const int sz);
     void assign_from_BU(const int alloc_space, const BigUnsigned& bu);
 
     explicit operator std::string() const;
@@ -85,11 +108,9 @@ public:
     bool friend operator >=(const BigUnsigned& left, const BigUnsigned& right);
     bool friend operator !=(const BigUnsigned& left, const BigUnsigned& right);
 
-    template <typename T>
-    inline void PositiveSanitise(const T& index);
     friend const BigUnsigned operator +(const BigUnsigned&, const BigUnsigned&);
 
-
+    friend const BigUnsigned operator +(BigUnsigned&&, const BigUnsigned&);
 
 
 
