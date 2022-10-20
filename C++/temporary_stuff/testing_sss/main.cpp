@@ -48,21 +48,13 @@ public:
 };
 
 
-#include <vector>
-vector<int> minmax(int a, int b){
-    if (a < b) return {a,b};
-    return {b,a};
-}
-
 template<typename T>
 class LCM{
 public:
     T mult, old_rand, add;
     fast_mod<T> fm;
-
-    LCM(T _mult,T _old_rand,T _add,T _mod) : mult(_mult), old_rand(_old_rand), add(_add){
-        fm = _mod;
-    }
+    LCM() = default;
+    LCM(T _mult,T _old_rand,T _add,T _mod) : mult(_mult), old_rand(_old_rand), add(_add), fm(_mod){}
 
     __attribute__((always_inline)) T get(){
         return old_rand = (mult * old_rand + add) % fm;
@@ -160,9 +152,7 @@ public:
         for (int i = 0; i < 4; i++)
             inverse *= 2 - mod * inverse;
     };
-
-
-    bool check(uint32_t data){
+    __attribute__((always_inline)) constexpr bool check(uint32_t data) const{
         return (data*inverse) <= limit;
     }
 };
@@ -183,7 +173,7 @@ int main()
     is_divisible checker(5);
     cout << checker.inverse << endl;
     for(int i = 0;i < 1000; ++i){
-        cout << i <<" " <<checker.check(i) << endl;
+        cout << i <<" " <<(checker.check(i)=1) << endl;
     }
     cout << binary_inverse(2) << endl;
 
