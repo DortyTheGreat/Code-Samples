@@ -49,7 +49,7 @@ std::pair<std::vector<uint32_t>, std::vector<uint32_t> >  soeCalc(uint32_t x){
 uint64_t Phi(uint64_t m1, uint64_t b1, const std::vector<uint32_t>& p){
     uint64_t fts = 800; // factorial table size
     uint64_t maxMem = b1 * fts + std::min(m1, fts) + 1;
-    std::vector<uint64_t> memo = std::vector<uint64_t>(maxMem);
+    std::vector<uint64_t> memo = std::vector<uint64_t>(maxMem,0);
 
     auto lambda = [&](uint64_t m, uint64_t b, auto&& lambda){
         if (b == 0 || m == 0) {
@@ -97,6 +97,11 @@ using namespace std;
 
 int main()
 {
-    cout << countPrimes(1000 * 1000) << endl;
+    auto p = soeCalc(1000 * 1000 * 1000);
+
+    for(int i = 0;i < p.first.size();++i){
+        cout << p.first[i] << endl;
+    }
+    cout << countPrimes(1000 * 1000 * 100) << endl;
     return 0;
 }
