@@ -21,7 +21,7 @@ void segmented_sieve(int64_t limit)
 
     int64_t s = 3;
 
-    std::vector<char> sieve(limit);
+    std::vector<bool> sieve(limit);
     sieve[0] = sieve[1] = false; /// some of the edge cases
 
     std::fill(sieve.begin(), sieve.end(), true);
@@ -37,8 +37,9 @@ void segmented_sieve(int64_t limit)
     // generate sieving primes using simple sieve of Eratosthenes
     for (int64_t i = 3; i < sqrt; i += 2)
       if (sieve[i])
-        for (int64_t j = i * i; j < limit; j += 2*i)
+        for (int64_t j = i * i, incr = 2*i; j < limit; j += incr)
           sieve[j] = false;
+
 
     // initialize sieving primes for segmented sieve
 
@@ -66,7 +67,7 @@ int main(int argc, char** argv)
   if (argc >= 2)
     segmented_sieve(std::atoll(argv[1]));
   else
-    segmented_sieve(1000 * 1000 * 100);
+    segmented_sieve(1000 * 1000 * 1000);
 
 
 

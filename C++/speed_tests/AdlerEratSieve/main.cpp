@@ -201,7 +201,7 @@ local vec_t *sieve(uintmax_t n) {
                 k++;
             }
             // go to the next chunk
-            start = last + 1;
+                = last + 1;
         } while (start <= n);
     }
     // prime has now been sieved by the odd primes up to the square

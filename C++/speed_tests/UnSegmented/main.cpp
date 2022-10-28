@@ -7,6 +7,10 @@
 #include <cstdlib>
 #include <stdint.h>
 
+#include <bitset>
+#include <climits>
+#include <cstring>
+#include <iostream>
 
 const int64_t L1D_CACHE_SIZE = 32768;
 
@@ -29,11 +33,11 @@ void segmented_sieve(int64_t limit)
   std::vector<int64_t> primes;
   std::vector<int64_t> multiples;
 
-    std::vector<int64_t> all_the_primes; int h = 0;
-    all_the_primes.reserve(60847534); /// insert some good pi approximation from the top
-    all_the_primes.push_back(2);
-    std::vector<char> entire_sieve(limit);
-    std::fill(entire_sieve.begin(), entire_sieve.end(), false);
+    int h = 0;
+    int64_t *all_the_primes = new int64_t[60847534];
+    all_the_primes[0] = 2;
+    bool *entire_sieve = new bool[limit];
+    memset(entire_sieve, false, limit* sizeof(bool) );
 
   for (int64_t low = 0; low <= limit; low += segment_size)
   {
@@ -97,7 +101,7 @@ int main(int argc, char** argv)
   if (argc >= 2)
     segmented_sieve(std::atoll(argv[1]));
   else
-    segmented_sieve(1000000000);
+    segmented_sieve(1000 * 1000 * 1000);
 
 
 
