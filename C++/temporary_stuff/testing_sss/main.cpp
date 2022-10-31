@@ -1,77 +1,29 @@
-
-
 #include <iostream>
 using namespace std;
 
 
-constexpr uint32_t __high_type(uint16_t) {return uint32_t(0);}
-constexpr uint64_t __high_type(uint32_t) {return uint64_t(0);}
-constexpr __uint128_t __high_type(uint64_t) {return __uint128_t(0);}
-
-#define high_type(x) decltype(__high_type(x(0)))
-
-template<typename T>
-class fast_div{
-protected:
-    high_type(T) my_magic = 1;
-    unsigned char shift;
-
-public:
-    fast_div(){}
-    fast_div(T val){
-        shift = (sizeof(high_type(T)) * 8 - 1);
-        my_magic = (my_magic << shift) / val;
-
-        while(my_magic >= (high_type(T))(1) << (sizeof(high_type(T)) * 4) ) {
-            my_magic >>= 1;--shift;
-        }
-
-        if (!((++my_magic) & 1)){my_magic >>= 1; --shift;}
-    }
 
 
-    __attribute__((always_inline)) friend T  operator/(const T& val, const fast_div<T>& fd){
-        return ((fd.my_magic * val) >> fd.shift);
-    }
-};
+#include "../../DortyLibs/fast_calculations/fast_mod.h"
 
-template<typename T>
-class fast_mod : fast_div<T>{
-private:
-    T div;
-public:
-    fast_mod(){}
-    fast_mod(T val) : fast_div<T>(val), div(val){}
-    __attribute__((always_inline)) friend T  operator%(const T& val, const fast_mod<T>& fm){
-        return val - val/fm * fm.div;
-    }
-};
 
 
 template<typename T>
-class LCM{
+class LCM : fast_mod<T>{
 public:
     T mult, old_rand, add;
-    fast_mod<T> fm;
     LCM() = default;
-    LCM(T _mult,T _old_rand,T _add,T _mod) : mult(_mult), old_rand(_old_rand), add(_add), fm(_mod){}
+    LCM(T _mult,T _old_rand,T _add,T _mod) : fast_mod<T>(_mod), mult(_mult), old_rand(_old_rand), add(_add){}
 
     __attribute__((always_inline)) T get(){
-        return old_rand = (mult * old_rand + add) % fm;
+        return old_rand = (mult * old_rand + add) % (*this);
     }
 
 };
-
-#include <iostream>
-using namespace std;
-// fastmod computes (n mod d) given precomputed c
 
 typedef unsigned int u128 __attribute__((mode(TI)));
 
-__attribute__((always_inline))
-uint32_t fastmod(const uint32_t& n,const uint64_t& c, const uint32_t& d ) {
-  return ((u128)(c * n) * d) >> 64;
-}
+
 
 
 
@@ -140,42 +92,20 @@ bool is_prime_WTF(uint32_t x) {
 }
 
 
+#include "../../DortyLibs/fast_calculations/fast_divisibility.h"
 
-class is_divisible{
-public:
-    uint32_t inverse;
-    uint32_t limit;
-public:
-    is_divisible() = default;
-    is_divisible(uint32_t mod) : inverse(mod){
-        limit = ~0 / mod;
-        for (int i = 0; i < 4; i++)
-            inverse *= 2 - mod * inverse;
-    };
-    __attribute__((always_inline)) constexpr bool check(uint32_t data) const{
-        return (data*inverse) <= limit;
-    }
-};
-uint32_t binary_inverse(uint32_t n){
-    /// 32 = 2^5
-    uint32_t inv = n;
-
-    for (int i = 0; i < 4; i++)
-        inv *= 2 - n * inv;
-    return inv;
-}
 
 
 
 
 int main()
 {
-    is_divisible checker(5);
+    fast_divisibility<uint32_t> checker(5u);
     cout << checker.inverse << endl;
     for(int i = 0;i < 1000; ++i){
-        cout << i <<" " <<(checker.check(i)=1) << endl;
+        cout << i <<" " <<checker.check(i) << endl;
     }
-    cout << binary_inverse(2) << endl;
+    cout << binary_inverse(2u) << endl;
 
     int a,ol, b,c, n;
     cin >> a >> ol >> b >> c >> n;

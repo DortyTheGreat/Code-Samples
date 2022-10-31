@@ -142,7 +142,7 @@ bool inlinePcheck(int n){
     _5c(1663,1667,1669,1693,1697, 2886601)
     _5c(1699,1709,1721,1723,1733, 3031081)
     _5c(1741,1747,1753,1759,1777, 3179089)
-    ///return 1;
+    return 1;
 }
 #undef cl
 #undef cf
@@ -166,11 +166,12 @@ int jacobi (int a, int b)
 {
 	if (a == 0)  return 0;
 	if (a == 1)  return 1;
-	if (a < 0)
+	if (a < 0){
 		if ((b & 2) == 0)
 			return jacobi (-a, b);
 		else
 			return - jacobi (-a, b);
+	}
 	int a1=a,  e=0;
 	while ((a1 & 1) == 0)
 		a1 >>= 1,  ++e;
@@ -194,7 +195,7 @@ inline T gcd(T a, T b)
     return b;
 }
 
-bool BPSW(int n){
+bool BPSW(int n, const bool& flag = 1){
 
     int intsqrt = sqrt(n);
     /// special case for Lucas tests
@@ -318,7 +319,7 @@ bool is_prime_WTF(uint32_t x) {
 }
 
 __attribute__((always_inline))
-bool is_SPRP_complex(const uint32_t& n, uint32_t pw, uint64_t a,const unsigned char& cycle) {
+bool is_SPRP_complex(const uint32_t& n, uint32_t pw, uint64_t a,const uint8_t& cycle) {
 
     uint64_t cur = 1;
     while (pw) {
@@ -448,10 +449,13 @@ bool miller_rabin (int n) {
 	return false;
 }
 
-#include <intrin.h>
+///#include <intrin.h>
+
+
 
 int main()
 {
+
     cout << miller_rabin(67777) << endl;
     /*
     const int mnogo = 10000000;
