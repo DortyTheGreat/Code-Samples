@@ -1,122 +1,14 @@
-/*
----------------------
-This File was Build Automatically by DortyBuild v 1.4.
-For More Information ask:
-Discord: �����#9030 
----Original---Code---
-
+#line 1 "main.cpp"
 #include <iostream>
 using namespace std;
 
-
-#include "../../DortyLibs/DortyBuild.h"
-#include "../../DortyLibs/fast_calculations/LCM.h"
-
-
-uint64_t factorize(int number){
-    uint64_t ret = 0;
-    while (!(number % 2)){
-        number /= 2;
-        ret += 2;
-    }
-    for(int factor = 3; factor * factor <= number; factor += 2 ){
-        while ( !(number % factor) ){
-            number /= factor;
-            ret += factor;
-        }
-    }
-    if(number != 1) ret += number;
-    return ret;
-}
-
-/**
-Это лишь интересный концпет, на практике его применение вероятнее всего будет сужено, но всё же...
-Идея в том, чтобы проверять число не на всю делимость, и даже не только по нечётным, а строго по простым, в добавок используя
-трюки из модульной арифметики выходит крутой чикибабонёнок.
-*/
-
-#include "../../DortyLibs/prime/Adler_Sieve.h"
-#include "../../DortyLibs/fast_calculations/fast_divisibility.h"
-#include <cmath>
-struct divisor : fast_divisibility<uint32_t>{
-    uint32_t div;
-    divisor(const uint32_t& n) : fast_divisibility<uint32_t>(n),div(n) {}
-    divisor() = default;
-};
-
-#include "../../DortyLibs/prime/pi_upper_bound.h"
-class PrimeFactorizer{
-    divisor *primes;
-    size_t h;
-public:
-
-    PrimeFactorizer(size_t size){
-        size = sqrt(size);
-        Sieve<uint64_t> S(size);
-        primes = new divisor[pi_upper_bound(size)];
-        h = 0;
-        for(size_t i = 3; i <= size;++i){
-            if (S.isPrime(i)){
-                primes[h++] = i;
-                ///cout << i << endl;
-            }
-        }
-    }
-
-    size_t prime_summ(size_t number){
-        if (number < 2) return 0;
-        size_t ret = 0;
-        while ( number % 2 == 0 ){ret += 2; number /= 2;}
-
-
-
-        for(size_t i = 0; i < h; ++i){
-            while ( primes[i].check(number) ){ret += primes[i].div; number /= primes[i].div;}
-        }
-
-        if (number != 1) ret += number;
-        return ret;
-    }
-
-
-};
-
-
-
-using namespace std;
-int main(void) {
-
-    PrimeFactorizer PF(1000 * 1000 * 1000);
-
-    int a,ol, b,c, n;
-    cin >> a >> ol >> b >> c >> n;
-    LCM<uint64_t> myl(a,ol,b,c);
-    uint64_t ans = 0;
-
-
-    for(int i = 0;i < n; ++i){
-        ans += PF.prime_summ(myl.get());
-    }
-    cout << ans;
-
-
-    // clean up
-
-    return 0;
-}
-
-*/
-#include <iostream>
-using namespace std;
-
-
-#include <fstream>
+#line 1 "C:\\Users\\Saha2\\Desktop\\Code-Samples\\C++\\DortyLibs\\BitsPrecision\\high_type.h"
 constexpr uint32_t __high_type(uint16_t) {return 0;}
 constexpr uint64_t __high_type(uint32_t) {return 0;}
 constexpr __uint128_t __high_type(uint64_t) {return 0;}
 
 #define high_type(x) decltype(__high_type(x(0)))
-
+#line 2 "C:\\Users\\Saha2\\Desktop\\Code-Samples\\C++\\DortyLibs\\fast_calculations\\fast_div.h"
 template<typename T>
 class fast_div{
 protected:
@@ -141,7 +33,7 @@ public:
         return ((fd.my_magic * val) >> fd.shift);
     }
 };
-
+#line 2 "C:\\Users\\Saha2\\Desktop\\Code-Samples\\C++\\DortyLibs\\fast_calculations\\fast_mod.h"
 template<typename T>
 class fast_mod : fast_div<T>{
 private:
@@ -153,7 +45,7 @@ public:
         return val - val/fm * fm.div;
     }
 };
-
+#line 2 "C:\\Users\\Saha2\\Desktop\\Code-Samples\\C++\\DortyLibs\\fast_calculations\\LCM.h"
 template<typename T>
 class LCM : fast_mod<T>{
 public:
@@ -166,7 +58,7 @@ public:
     }
 
 };
-
+#line 5 "main.cpp"
 
 
 uint64_t factorize(int number){
@@ -191,16 +83,17 @@ uint64_t factorize(int number){
 трюки из модульной арифметики выходит крутой чикибабонёнок.
 */
 
+#line 1 "C:\\Users\\Saha2\\Desktop\\Code-Samples\\C++\\DortyLibs\\prime\\Adler_Sieve.h"
 /**
 Бла-бла-бла. Немного оптимизации, чистки чужого кода.
 Сурс: https://ntheory.org/sieves/pr/adler2019.c
 */
 
-#pragma once
+#line 2 "C:\\Users\\Saha2\\Desktop\\Code-Samples\\C++\\DortyLibs\\BitsPrecision\\type_log_2.h"
 constexpr uint8_t type_log_2(uint32_t) {return 5;}
 constexpr uint8_t type_log_2(uint64_t) {return 6;}
 constexpr uint8_t type_log_2(__uint128_t) {return 7;}
-
+#line 7 "C:\\Users\\Saha2\\Desktop\\Code-Samples\\C++\\DortyLibs\\prime\\Adler_Sieve.h"
 #include <cstring>
 template < typename block_type >
 class Sieve{
@@ -369,12 +262,7 @@ public:
         free(prime);
     }
 };
-
-#pragma once
-constexpr uint8_t type_log_2(uint32_t) {return 5;}
-constexpr uint8_t type_log_2(uint64_t) {return 6;}
-constexpr uint8_t type_log_2(__uint128_t) {return 7;}
-
+#line 2 "C:\\Users\\Saha2\\Desktop\\Code-Samples\\C++\\DortyLibs\\modular\\binary_inverse.h"
 template<typename T>
 T binary_inverse(const T& n){
     T inv = n;
@@ -383,7 +271,7 @@ T binary_inverse(const T& n){
         inv *= 2 - n * inv;
     return inv;
 }
-
+#line 2 "C:\\Users\\Saha2\\Desktop\\Code-Samples\\C++\\DortyLibs\\fast_calculations\\fast_divisibility.h"
 template <typename T>
 class fast_divisibility{
 public:
@@ -399,7 +287,7 @@ public:
         return (data*inverse) <= limit;
     }
 };
-
+#line 31 "main.cpp"
 #include <cmath>
 struct divisor : fast_divisibility<uint32_t>{
     uint32_t div;
@@ -407,12 +295,13 @@ struct divisor : fast_divisibility<uint32_t>{
     divisor() = default;
 };
 
+#line 1 "C:\\Users\\Saha2\\Desktop\\Code-Samples\\C++\\DortyLibs\\prime\\pi_upper_bound.h"
 // Pierre Dusart's maximum primes: PI(x) < (x/ln x)(1 + 1.2762/ln x)
 template<typename T>
 constexpr T pi_upper_bound(const T& x){
     return x / log(x) * (1 + 1.2762 / log(x));
 }
-
+#line 39 "main.cpp"
 class PrimeFactorizer{
     divisor *primes;
     size_t h;
@@ -472,4 +361,3 @@ int main(void) {
 
     return 0;
 }
-

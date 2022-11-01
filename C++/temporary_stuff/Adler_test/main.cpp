@@ -1,8 +1,6 @@
 #include <iostream>
 using namespace std;
 
-
-#include "../../DortyLibs/DortyBuild.h"
 #include "../../DortyLibs/fast_calculations/LCM.h"
 
 
