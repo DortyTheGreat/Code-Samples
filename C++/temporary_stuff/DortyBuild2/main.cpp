@@ -6,9 +6,6 @@
 
 */
 
-"\"
-
-'asd\''
 struct BuildOptions{
     /// (1): Убирает все возможные лишние пробелы.
     bool clear_all_spaces;
@@ -37,13 +34,21 @@ struct BuildOptions{
 #include <fstream>
 std::string a = "\
 asd";
+
+std::string b = "\" asd";
 using namespace std;
 #include <iostream>
 
+int r = \
+12;
+
 const BuildOptions defaultBuildOptions = {0,0,0,0,0,1,"Hello, Build!\n"};
 
-void ProcessFile(const std::string& FileName, const std::ofstream& OutFileStream, const BuildOptions& bo, const std::string& lib_path, uint16_t depth){
+void ProcessFile(const std::string& FileName, std::ofstream& OutFileStream, const BuildOptions& bo, const std::string& lib_path, uint16_t depth){
     std::ifstream in((lib_path+FileName).c_str());
+
+
+
     std::string DataReader;
     std::string DataReader2;
 
@@ -55,11 +60,59 @@ void ProcessFile(const std::string& FileName, const std::ofstream& OutFileStream
     bool inside_long_doc_comment = 0;
     bool inside_code = 1;
 
+
+    const uint8_t INSIDE_CODE = 0;
+    const uint8_t INSIDE_COMMENT = 0;
+
+    uint8_t location = INSIDE_CODE;
+
     while (!in.eof()){
         getline(in,DataReader);
+        while (DataReader[DataReader.size() - 1] == '\\'){
+            getline(in,DataReader2);
+            DataReader += '\n';
+            DataReader += DataReader2;
+        }
+        location = INSIDE_CODE;
 
-        for(int i = 0;i<DataReader.size();++i){
+        for(size_t i = 0;i<DataReader.size();++i){
+            switch(location){
+                case INSIDE_CODE:
+                    /// #, ", ',
+
+                    switch(DataReader[i]){
+                        case '#':
+                            /// ...
+                        break;
+
+                        case '\'':
+                            /// ...
+                        break;
+
+                        case '\"':
+                            /// ...
+                        break;
+
+                        case '\\':
+                            /// skip
+                        break;
+
+                        case '\/':
+                            /// Комментарий? Деление?
+                            if (DataReader[i+1] == '\/'){OutFileStream << "\/\/"; ++i; location = INSIDE_COMMENT}
+                        break;
+
+                        default:
+                            OutFileStream << DataReader[i];
+
+                    }
+
+                break;
+
+
+            }
             cout << int(DataReader[i]) << ' ';
+            OutFileStream << endl;
         }
         cout << std::endl;
     }
