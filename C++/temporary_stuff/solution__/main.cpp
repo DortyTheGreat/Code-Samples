@@ -33,7 +33,7 @@ uint64_t transform(string path, uint64_t start){
 #include <unordered_map>
 #include <map>
 
-const int I = 3;
+const int I = 20;
 
 uint64_t find_;
 
@@ -61,24 +61,16 @@ string path2(uint64_t number){
 
 int main()
 {
-    freopen("input.txt", "r", stdin);
+
 
     cin >> L1.mult >> L1.incr >> L1.mod;
     cin >> L2.mult >> L2.incr >> L2.mod;
 
-    uint64_t start = 0;
-    find_ = start;
-    for(int i = 0; i < I; ++i){
-        if (rnd(0,1) ){
-            find_ = L1.step(find_);
-        }else{
-            find_ = L2.step(find_);
-        }
-    }
-    cout << find_ << endl;
+    uint64_t start;
+    cin >> start;
+    cin >> find_;
 
-    cout << path2(start);
-    cout <<  endl<< transform(path2(start),start);
+    cout <<path2(start);
     ///reqursion(start,"",0);
 
 
