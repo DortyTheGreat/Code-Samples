@@ -31,42 +31,40 @@ uint64_t transform(string path, uint64_t start){
 }
 #include <unordered_map>
 #include <map>
+
+const int I = 20;
+
+uint64_t find_;
+void reqursion(uint64_t num, const string& path, int depth){
+    if (depth > I) return;
+    if (num == find_){
+        cout << path << endl;
+        exit(0);
+    }
+    reqursion(L1.step(num),path+"f",depth+1);
+    reqursion(L2.step(num),path+"s",depth+1);
+}
+
 int main()
 {
     freopen("input.txt", "r", stdin);
-    const int I = 20;
+
     cin >> L1.mult >> L1.incr >> L1.mod;
     cin >> L2.mult >> L2.incr >> L2.mod;
 
     uint64_t start = 567;
-    uint64_t find = start;
+    find_ = start;
     for(int i = 0; i < I; ++i){
         if (rnd(0,1) ){
-            find = L1.step(find);
+            find_ = L1.step(find_);
         }else{
-            find = L2.step(find);
+            find_ = L2.step(find_);
         }
     }
-    cout << find << endl;
+    cout << find_ << endl;
 
-    unordered_map<uint64_t, string> mp = {{start, ""}};
+    reqursion(start,"",0);
 
-
-    for(int itter = 0; itter < I + 1; ++itter){
-        unordered_map<uint64_t, string> new_mp;
-        new_mp.reserve(1 << (itter+3) );
-
-        for (auto elem : mp){
-            if (elem.first == find){
-                cout << elem.second << " " << itter << endl;
-                return 0;
-            }
-            new_mp[L1.step(elem.first)] = elem.second+"f";
-            new_mp[L2.step(elem.first)] = elem.second+"s";
-        }
-        mp = new_mp;
-
-    }
 
 
     return 0;
