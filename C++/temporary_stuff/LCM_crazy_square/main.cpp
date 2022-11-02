@@ -46,6 +46,55 @@ void reqursion(uint64_t num, const string& path, int depth){
     reqursion(L2.step(num),path+"s",depth+1);
 }
 
+#define chk(a) if (a == 2) return ret; ret += (a == 0) ? 'f' : 's';
+
+string to_str(uint64_t a, uint64_t b,uint64_t c,uint64_t d,uint64_t e,uint64_t f,uint64_t g,uint64_t h,uint64_t i,uint64_t j,uint64_t k,uint64_t l,uint64_t m,uint64_t n,uint64_t o,uint64_t p,uint64_t q,uint64_t r,uint64_t s,uint64_t t,uint64_t u,uint64_t v,uint64_t w,uint64_t x,uint64_t y,uint64_t z){
+    string ret = "";
+    chk(a) chk(b) chk(c) chk(d) chk(e) chk(f) chk(g) chk(h) chk(i) chk(j) chk(k) chk(l) chk(m) chk(n) chk(o) chk(p) chk(q) chk(r) chk(s) chk(t) chk(u) chk(v) chk(w) chk(x) chk(y) chk(z)
+}
+
+#define step_(arg, extra) for(arg = 0; arg < 2; ++arg){ if (i == 0) number = L1.step(number); else number = L2.step(number); if (number == find_) return to_str(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z); extra }
+
+/**
+
+for(a = 0; a < 2; ++a){
+
+    if (i == 0) number = L1.step(number);
+    else number = L2.step(number);
+    if (number == find_) return to_str(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z);
+    for(){...}
+}
+
+*/
+string path(uint64_t number){
+    if (number == find_) return "";
+
+    uint8_t a = 2,b = 2,c = 2,d = 2,e = 2,f = 2,g = 2,h = 2,i = 2,j = 2,k= 2,l =2,m=2,n=2,o=2,p=2,q=2,r=2,s=2,t=2,u=2,v=2,w=2,x=2,y=2,z=2;
+
+    step_(a, step_(b,step_(c,step_(d,step_(e,step_(f,step_(g,step_(h,step_(i,step_(j,step_(k,step_(l,step_(m,step_(n,step_(o,step_(p,step_(q,step_(r,step_(s,step_(t,step_(u,step_(v,step_(w,step_(x,step_(y,step_(z, ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ))
+
+}
+
+string path2(uint64_t number){
+    for (int mask = 0; mask < (1 << I); ++mask) {
+        int cur = number;
+        for (int i = 0; i < I; ++i) {
+            if ((mask >> i) & 1)
+                cur = L1.step(cur);
+            else
+                cur = L2.step(cur);
+            if (cur == find_) {
+                string ret = "";
+                for (int j = 0; j <= i; ++j) {
+                    ret += (((mask >> j) & 1) == 0) ? 'f' : 's';
+                }
+                return ret;
+            }
+        }
+    }
+}
+
+
 int main()
 {
     freopen("input.txt", "r", stdin);
@@ -64,23 +113,8 @@ int main()
     }
     cout << find_ << endl;
 
-
-    for (int mask = 0; mask < (1 << I); ++mask) {
-        int cur = start;
-        for (int i = 0; i < I; ++i) {
-            if ((mask >> i) & 1)
-                cur = L1.step(cur);
-            else
-                cur = L2.step(cur);
-            if (cur == find_) {
-                for (int j = 0; j <= i; ++j) {
-                    cout << ((mask >> j) & 1);
-                }
-                cout << '\n';
-                return 0;
-            }
-        }
-    }
+    cout << path2(start);
+    cout <<  endl<< transform(path2(start),start);
     ///reqursion(start,"",0);
 
 
