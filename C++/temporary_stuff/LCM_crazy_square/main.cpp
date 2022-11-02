@@ -6,7 +6,8 @@ using namespace std;
 
 struct LCM{
     uint64_t mult, incr, mod;
-    pure uint64_t step(uint64_t arg){ return (arg*mult + incr) % mod; }
+    pure uint64_t step(const uint64_t& arg){ return (arg*mult + incr) % mod; }
+    ///pure void step(uint64_t& arg){ arg = (arg*mult + incr) % mod; }
 };
 LCM L1, L2;
 #include <random>
@@ -63,7 +64,24 @@ int main()
     }
     cout << find_ << endl;
 
-    reqursion(start,"",0);
+
+    for (int mask = 0; mask < (1 << I); ++mask) {
+        int cur = start;
+        for (int i = 0; i < I; ++i) {
+            if ((mask >> i) & 1)
+                cur = L1.step(cur);
+            else
+                cur = L2.step(cur);
+            if (cur == find_) {
+                for (int j = 0; j <= i; ++j) {
+                    cout << ((mask >> j) & 1);
+                }
+                cout << '\n';
+                return 0;
+            }
+        }
+    }
+    ///reqursion(start,"",0);
 
 
 
