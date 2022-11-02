@@ -18,6 +18,10 @@ struct maxint{
         if (value < other) value = other;
     }
 
+    pure void operator= (const maxint& other){
+        if (value < other.value) value = other.value;
+    }
+
     pure operator int() const{return value;}
 
 };
@@ -91,7 +95,7 @@ int get_x() {
     for (l += n, r += n; l < r; l >>= 1, r >>= 1) {
         if (l&1) {
             if (t[l])
-                res =  get_y(t[l], 0, n);
+                res = get_y(t[l], 0, n);
             ++l;
         }
         if (r&1) {
