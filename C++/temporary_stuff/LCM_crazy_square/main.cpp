@@ -33,7 +33,7 @@ uint64_t transform(string path, uint64_t start){
 #include <unordered_map>
 #include <map>
 
-const int I = 3;
+const int I = 25;
 
 uint64_t find_;
 
@@ -76,9 +76,10 @@ int main()
         }
     }
     cout << find_ << endl;
-
-    cout << path2(start);
-    cout <<  endl<< transform(path2(start),start);
+    string p = path2(start);
+    cout << p.size() << " ";
+    cout << p;
+    cout <<  endl<< transform(p,start);
     ///reqursion(start,"",0);
 
 
