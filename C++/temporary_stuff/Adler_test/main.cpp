@@ -26,7 +26,7 @@ uint64_t factorize(int number){
 трюки из модульной арифметики выходит крутой чикибабонёнок.
 */
 
-#include "../../DortyLibs/prime/Adler_Sieve.h"
+#include "../../DortyLibs/prime/hprime_sieve.h"
 #include "../../DortyLibs/fast_calculations/fast_divisibility.h"
 #include <cmath>
 struct divisor : fast_divisibility<uint32_t>{
