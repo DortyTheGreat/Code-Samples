@@ -113,36 +113,17 @@ public:
 
     void gen_apple(){
 
-        int amount_of_empty = 0;
-        for( const Vector2i& vc : VectorField){
-            amount_of_empty += !(get_cell(vc).age);
-        }
-
-        int rand_tile = rand() % amount_of_empty;
-        amount_of_empty = 0;
-        for( const Vector2i& vc : VectorField){
-            if (get_cell(vc).age) continue;
-            if ((amount_of_empty++) == rand_tile){
-                apple = vc;
-                std::cout << apple.x << " " << apple.y << std::endl;
-                break;
-            }
-        }
+        cin >> apple.x >> apple.y;
 
     }
 
     void end_game(){
         isAlive = false;
-        std::cout << "Game is Ended" << std::endl;
     }
 
-    void warn(){
-        ///isAlive = false;
-        std::cout << "WARN" << std::endl;
-    }
 
     void move(const Vector2i& mv){
-        std::cout << mv.x << " " << mv.y << std::endl;
+
         if (abs(mv.x) + abs(mv.y) != 1){end_game(); return;}
         if (outOfBounds(head + mv)){end_game(); return;}
 
@@ -279,6 +260,12 @@ void ai_turn(Board& b){
 #include <chrono>
 #include <thread>
 
+int sign(int a){
+    if (a == 0) return 0;
+    if (a < 0) return -1;
+    return 1;
+}
+
 int main(int argc, char* argv[])
 {
 
@@ -294,42 +281,41 @@ int main(int argc, char* argv[])
 
     int n,m;
     cin >> n >> m;
-    std::cout << n <<" " << m;
+
     /// n - x; m - y
     Board MainBoard(n,m);
 
-    char** slova = new char*[1];
 
 
 
     unsigned long ticks = 0;
     while (MainBoard.isAlive)
     {
-        char inp;
-        cin >> inp;
+        if (MainBoard.head.x != MainBoard.apple.x){
+            int dx = -sign(MainBoard.head.x - MainBoard.apple.x);
 
-        switch(inp){
-            case 'd':
-                MainBoard.move({0,1});
-            break;
+            if (dx == -1){
+                std::cout << "l";
+            }else{
+                std::cout << "r";
+            }
 
-            case 'u':
-                MainBoard.move({0,-1});
-            break;
+            MainBoard.move({dx,0});
 
-            case 'r':
-                MainBoard.move({1,0});
-            break;
+        }else{
+            int dy = -sign(MainBoard.head.y - MainBoard.apple.y);
 
-            case 'l':
-                MainBoard.move({-1,0});
-            break;
+            if (dy == -1){
+                std::cout << "u";
+            }else{
+                std::cout << "d";
+            }
 
-            default:
-                /// WARN
-                cout << "PE" << endl;
-            break;
+            MainBoard.move({0,dy});
+
         }
+
+
 
         if ( (++ticks) % 1 == 0){
             ///MainBoard.draw();
@@ -340,7 +326,6 @@ int main(int argc, char* argv[])
 
     }
 
-    cout << n * m * MainBoard.size - ticks; /// score
 
     return 0;
 }
