@@ -47,12 +47,15 @@ T extended_gcd(T a,T b, T& x, T& y){
     x = 0;
     y = 1;
     T bn;
+
     while (b){
         bn = a / b;
         unPrev -= bn * x;
         vnPrev -= bn * y;
         /// Теперь prev - это новый cur
         if (! (a%=b) ) return b;
+
+
 
         bn = b / a;
         b %= a;
@@ -65,12 +68,32 @@ T extended_gcd(T a,T b, T& x, T& y){
     y = vnPrev;
     return a;
 }
+/// https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm
+template <typename T>
+T wiki_extended_gcd(T a,T b, T& x, T& y){
+    T s = 0, old_s = 1;
+    T r = b, old_r = a;
+
+    while (r){
+        T quotient = old_r / r;
+        old_r -= quotient *r;
+        old_s -= quotient * s;
+        swap(old_r,r);
+        swap(old_s,s);
+    }
+
+    x = old_s;
+    if (b == 0){y = 0; return old_r;}
+    y = (old_r - old_s * a) / b;
+    return old_r;
+
+}
 /// a*x + b*y = c
 /// даёт (-1,-1), если решения нет, в ином случае решение с минимальным неотрицательным x.
 pair<int,int> diophantus(int a, int b, int c){
     int x0,y0;
 
-    int d=extended_gcd(a,b,x0,y0);
+    int d=wiki_extended_gcd(a,b,x0,y0);
     if(c%d){
         return {-1,-1};
     }
@@ -95,10 +118,10 @@ bool f_(int n, int a, int b) {
 int main()
 {
     cout << f3(15,5,7) << endl;
-
-    for(int n = 1;n < 300;++n){
-        for(int x = 1;x < 300; ++x){
-            for (int y = 1; y < 300; ++y){
+    const int sz = 200;
+    for(int n = 1;n < sz;++n){
+        for(int x = 1;x < sz; ++x){
+            for (int y = 1; y < sz; ++y){
                 if (f_(n,x,y) != f3(n,x,y)){
                     cout << n << " " << x << " "  << y << endl;
                     cout << "gosunov: " << f_(n,x,y) << endl;
