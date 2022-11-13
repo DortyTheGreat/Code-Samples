@@ -7,24 +7,28 @@ int n;
 
 
 
-int solve(int arg, int depth){
-    if (arg < b) return 0;
-    int ans = 0;
-    for(int i = depth == 0 ? b : 0; i < 10; i+= b){
-        ans++;
-        ans += solve((arg-i) / 10, depth+1);
+/// Сколько нужно ещё чисел?
+
+const int buff_sz = 100 * 10000;
+
+int buffer[buff_sz];
+int f(int n){
+    if (n == 0) return 0;
+    if (n < buff_sz && buffer[n] != -1) return buffer[n];
+
+    for(int k = 1, p = 2; p <= n; ++k, p = (k)*(k+1)){
+
     }
-    return ans;
+
+
 }
 
 signed main()
 {
-    int t;
-    cin >> t;
-    while(t--){
-        cin >> n >> b;
-        cout << solve(n,0) << endl;
-    }
+
+    int n;
+    cin >> n;
+    cout << f(n);
 
     return 0;
 }

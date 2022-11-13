@@ -112,8 +112,10 @@ public:
 
 
     void gen_apple(){
+        if (size != H*W){cin >> apple.x >> apple.y;}else{
+            exit(0);
 
-        cin >> apple.x >> apple.y;
+        }
 
     }
 
@@ -124,7 +126,17 @@ public:
 
     void move(const Vector2i& mv){
 
+
+
         if (abs(mv.x) + abs(mv.y) != 1){end_game(); return;}
+
+        if (mv.x == -1){std::cout << "l";}
+        if (mv.x == 1){std::cout << "r";}
+
+        if (mv.y == -1){std::cout << "u";}
+        if (mv.y == 1){std::cout << "d";}
+
+
         if (outOfBounds(head + mv)){end_game(); return;}
 
         if (head + mv == apple){
@@ -291,31 +303,25 @@ int main(int argc, char* argv[])
     unsigned long ticks = 0;
     while (MainBoard.isAlive)
     {
+        /*
         if (MainBoard.head.x != MainBoard.apple.x){
             int dx = -sign(MainBoard.head.x - MainBoard.apple.x);
 
-            if (dx == -1){
-                std::cout << "l";
-            }else{
-                std::cout << "r";
-            }
+
 
             MainBoard.move({dx,0});
 
         }else{
             int dy = -sign(MainBoard.head.y - MainBoard.apple.y);
 
-            if (dy == -1){
-                std::cout << "u";
-            }else{
-                std::cout << "d";
-            }
+
 
             MainBoard.move({0,dy});
 
         }
+        */
 
-
+        hamilton_basic(MainBoard);
 
         if ( (++ticks) % 1 == 0){
             ///MainBoard.draw();
