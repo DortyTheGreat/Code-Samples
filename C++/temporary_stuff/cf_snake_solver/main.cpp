@@ -1,4 +1,3 @@
-
 #include <iostream>
 
 using namespace std;
@@ -21,6 +20,20 @@ std::string to_str ( T any )
 template<typename T>
 inline T sqr(const T& a){return a * a;}
 
+#define pure __attribute__((always_inline))
+
+struct LCM{
+    uint64_t mult, incr, mod;
+    uint64_t old_rand;
+    pure uint64_t step(const uint64_t& arg){ return (arg*mult + incr) % mod; }
+
+    pure uint64_t get(const uint64_t& arg){ return (old_rand = step(old_rand)) % arg; }
+
+    ///pure void step(uint64_t& arg){ arg = (arg*mult + incr) % mod; }
+};
+
+LCM rrd;
+
 struct Vector2i{
     int x,y;
     Vector2i() = default;
@@ -42,80 +55,108 @@ public:
     uint64_t age; /// 0 - empty
 };
 
-class Board{
+template<typename T>
+class Array2D{
+    T** Field;
 public:
 
-    int H = 20;
-    int W = 20;
+    size_t H,W;
+    Array2D() = default;
 
-    Cell** Field;
+
+    Array2D(const size_t& _H, const size_t& _W, const T& val = 0) : H(_H), W(_W){
+        Field = new T*[H];
+        for(int i = 0;i < H; ++i){
+            Field[i] = new T[W];
+            for(int j = 0; j < W; ++j){
+                Field[i][j] = val;
+            }
+        }
+    }
+
+    inline bool outOfBounds(int x, int y) const{ return (x < 0 || y < 0 || x >= W || y >= H);}
+    inline bool outOfBounds(const Vector2i& vc) const{ return (vc.x < 0 || vc.y < 0 || vc.x >= W || vc.y >= H);}
+
+    inline Cell& operator[](const Vector2i& vc){return Field[vc.y][vc.x];}
+    inline const Cell& operator[](const Vector2i& vc)const {return Field[vc.y][vc.x];}
+    inline const T* operator[](const size_t& index) const {return Field[index];}
+};
+
+class Board{
+public:
+    Array2D<Cell> Field;
     std::vector<Vector2i> VectorField;
 
-    Vector2i head;
-    Vector2i tail;
-    Vector2i apple;
+    Vector2i head, tail, apple;
 
     uint64_t age = 0;
-    unsigned int size = 1;
+    uint16_t size = 1;
     bool isAlive = true;
 
     void add_segment(const Vector2i& vc){
-        get_cell(vc).age = ++age;
+        Field[vc].age = ++age;
     }
 
     void delete_segment(const Vector2i& vc){
-        get_cell(vc).age = 0;
+        Field[vc].age = 0;
     }
 
     void find_new_tail(){
         for( const Vector2i& vc : { Vector2i(-1,0),{1,0},{0,1},{0,-1}, }){
-            if (outOfBounds(vc + tail) ) continue;
-            if (get_cell(vc + tail).age == (age-size+1 )){
+            if (Field.outOfBounds(vc + tail) ) continue;
+            if (Field[vc + tail].age == (age-size+1 )){
                 tail = vc + tail; break;
             }
         }
     }
 
-    Board(int _n = 20, int _m = 20){
-        W = _n;
-        H = _m;
-        Field = new Cell*[H];
-        for(int i = 0; i < H; ++i)
-            Field[i] = new Cell[W];
-
-        VectorField.resize(H*W);
-
-
-        ///std::cout << "seed : " << seed << std::endl;
-
-        for(int i = 0;i < H; ++i){
-            for(int j = 0; j < W; ++j){
-                VectorField[i*W + j] = Vector2i(j,i);
-                Field[i][j].age = 0;
-            }
-        }
-
+    Board(int _n = 20, int _m = 20) : Field(_n,_m,{0}){
         add_segment(head = tail = Vector2i(0,0));
-
-
         gen_apple();
     }
 
 
 
-    inline bool outOfBounds(int x, int y) const{ return (x < 0 || y < 0 || x >= W || y >= H);}
-    inline bool outOfBounds(const Vector2i& vc) const{ return (vc.x < 0 || vc.y < 0 || vc.x >= W || vc.y >= H);}
-    inline Cell& get_cell(const Vector2i& vc){return Field[vc.y][vc.x];}
-    inline const Cell& get_cell_const(const Vector2i& vc)const {return Field[vc.y][vc.x];}
+
+
 
 
 
 
     void gen_apple(){
-        if (size != H*W){cin >> apple.x >> apple.y;}else{
+
+        if (size != Field.H*Field.W){cin >> apple.x >> apple.y;}else{
             exit(0);
 
         }
+
+        /*
+        if (size != H*W){
+            int amount_of_empty = 0;
+            for( const Vector2i& vc : VectorField){
+                amount_of_empty += !(get_cell(vc).age);
+            }
+            if (amount_of_empty == 0){
+
+                ///finish();
+            }
+            int rand_tile = rrd.get(amount_of_empty);
+            amount_of_empty = 0;
+            for( const Vector2i& vc : VectorField){
+                if (get_cell(vc).age) continue;
+                if ((amount_of_empty++) == rand_tile){
+                    apple = vc;
+                    std::cout << apple.x << " " << apple.y << std::endl;
+                    break;
+                }
+            }
+
+
+        }else{
+            exit(0);
+
+        }
+        */
 
     }
 
@@ -137,15 +178,15 @@ public:
         if (mv.y == 1){std::cout << "d";}
 
 
-        if (outOfBounds(head + mv)){end_game(); return;}
+        if (Field.outOfBounds(head += mv)){end_game(); return;}
 
-        if (head + mv == apple){
-            add_segment(head += mv);
+        if (head == apple){
+            add_segment(head);
             ++size;
             gen_apple();
         }else{
             delete_segment(tail);
-            if (get_cell(head += mv).age){end_game(); return;}
+            if (Field[head].age){end_game(); return;}
             add_segment(head);
             find_new_tail();
         }
@@ -160,8 +201,8 @@ public:
             return;
         }
 
-        for(int i = 0;i<H;i++){
-            for(int j = 0;j<W;j++){
+        for(int i = 0;i<Field.H;i++){
+            for(int j = 0;j<Field.W;j++){
                 if (apple == Vector2i(j,i) ){std::cout << "* "; continue;}
                 std::cout << "# "[Field[i][j].age == 0] << " ";
             }
@@ -174,9 +215,9 @@ public:
 
 void hamilton_basic(Board& b){
     if((b.head.x == 0) && (b.head.y == 0)){b.move({0,1});return;}
-    if((b.head.x == (b.W-1) ) && (b.head.y == 1)){b.move({0,-1});return;}
+    if((b.head.x == (b.Field.W-1) ) && (b.head.y == 1)){b.move({0,-1});return;}
 
-    if( (b.head.y == (b.W-1)) && (b.head.x %2 == 0) ){b.move({1,0}); return;}
+    if( (b.head.y == (b.Field.W-1)) && (b.head.x %2 == 0) ){b.move({1,0}); return;}
     if( (b.head.y == 1) && (b.head.x %2 == 1 )){b.move({1,0}); return;}
 
     ///Работает только для SIZE_ кратного четырём
@@ -186,6 +227,82 @@ void hamilton_basic(Board& b){
     if(b.head.x %2 == 1 ){b.move({0,-1});return;}
     if(b.head.x %2 == 0 ){b.move({0,1});return;}
 }
+
+void hamilton_better(Board& b) {
+    //int skip = 1;
+
+    if ((b.head.x == 0) && (b.head.y == 0)) { /// самая контактная точка
+        b.move({0, 1});
+        return;
+    }
+    if ((b.head.x == (b.Field.W - 1)) && (b.head.y == 1)) {
+        b.move({0, -1});
+        return;
+    }
+    if (b.head.x != (b.Field.W - 1)){
+        bool NewReighn = (b.Field[b.Field.H - 1][b.head.x+1].age == 0) && (b.Field[1][b.head.x+1].age == 0);
+        if( (b.size - 1) > (b.Field.H*b.Field.W/2) ){NewReighn = 0;}
+        if (NewReighn){ /// Вся механика скипов
+            ///cout << "trying to skip" << endl;
+            if ((b.head.y == (b.Field.H - 1))) { /// Скип в самой нижней строчке
+                ///cout << "in the lowest" << endl;
+                if (b.head.x < (b.apple.x -  1 )){ /// Условие скипа # 1 (Яблоко справа)
+                    b.move({1, 0});
+                    return;
+                }
+
+                if ( (b.head.x > (b.apple.x)) ){ /// Условие скипа # 2 (Яблоко слева)
+                    if(b.head.x < (b.Field.W - 1)){ /// Проверка для того, чтобы змейка не врезалась в стену
+                        b.move({1, 0});
+                        return;
+                    }
+                }
+
+            }
+
+            if ((b.head.y == (1))) { /// Скип в самой(предсамой) ВЕРХНЕЙ строчке
+                if (b.head.x < (b.apple.x - 1 )){ /// Условие скипа # 1 (Яблоко справа)
+                    b.move({1, 0});
+                    return;
+                }
+
+                if ( (b.head.x > (b.apple.x)) ){ /// Условие скипа # 2 (Яблоко слева)
+                    if(b.head.x < (b.Field.W - 1)){ /// Проверка для того, чтобы змейка не врезалась в стену
+                        b.move({1, 0});
+                        return;
+                    }
+                }
+
+            }
+        }
+    }
+
+    if (b.head.y == (0)) { /// Возврат в самой САМОЙ верхней полоске
+        b.move({-1, 0});
+        return;
+    }
+
+
+    if ((b.head.y == (b.Field.H - 1)) && (b.head.x % 2 == 0)) { /// В самом низу
+        b.move({1, 0});
+        return;
+    }
+    if ((b.head.y == 1) && (b.head.x % 2 == 1)) {
+        b.move({1, 0});
+        return;
+    }
+
+    if (b.head.x % 2 == 1) {
+        b.move({0, -1});
+        return;
+    }
+
+    if (b.head.x % 2 == 0) {
+        b.move({0, 1});
+        return;
+    }
+}
+
 
 class RelaxRequest{
 public:
@@ -213,7 +330,7 @@ public:
 #include <vector>
 
 bool isIllegalMove(const Board& b,const Vector2i& n_head){
-    if (n_head.x >= b.W || n_head.x < 0 || n_head.y >= b.H || n_head.y < 0){
+    if (n_head.x >= b.Field.W || n_head.x < 0 || n_head.y >= b.Field.H || n_head.y < 0){
         return true;
     }
     return (b.Field[n_head.y][n_head.x].age);
@@ -225,8 +342,8 @@ void BFS(Board& b){
 
     std::queue<Vector2i> que;
     que.push(b.head);
-    std::vector<std::vector<int> > d(b.W, std::vector<int>(b.H));
-    std::vector<std::vector<Vector2i> > p(b.W, std::vector<Vector2i>(b.H));
+    std::vector<std::vector<int> > d(b.Field.W, std::vector<int>(b.Field.H));
+    std::vector<std::vector<Vector2i> > p(b.Field.W, std::vector<Vector2i>(b.Field.H));
     const std::vector<Vector2i> neighs = {
         {0, 1},
         {0, -1},
@@ -294,6 +411,11 @@ int main(int argc, char* argv[])
     int n,m;
     cin >> n >> m;
 
+    rrd.mult = 1000002449;
+    rrd.incr = 1000000411;
+    rrd.mod = 1000010029;
+    rrd.old_rand = 13;
+
     /// n - x; m - y
     Board MainBoard(n,m);
 
@@ -321,11 +443,12 @@ int main(int argc, char* argv[])
         }
         */
 
-        hamilton_basic(MainBoard);
+        hamilton_better(MainBoard);
 
         if ( (++ticks) % 1 == 0){
             ///MainBoard.draw();
         }
+        ///this_thread::sleep_for(chrono::milliseconds(30));
 
 
 
@@ -335,5 +458,3 @@ int main(int argc, char* argv[])
 
     return 0;
 }
-
-

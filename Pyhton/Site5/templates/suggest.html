@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Suggest
+{% endblock %}
+
+{% block content %}
+<h1>Предложить</h1>
+<form method="post">
+	<input type=text name=suggestion placeholder="Солёные огурцы">
+	<input type=submit value=Suggest>
+</form>
+
+<h2> {% for elem in sugs %} {{elem}} {% endfor %} </h2>
+<small>Не зарегистрированы? <a href="{{url_for('register')}}">Регистрация</a></small>
+{% endblock %}
