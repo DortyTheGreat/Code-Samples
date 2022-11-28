@@ -318,6 +318,8 @@ bool is_prime_WTF(uint32_t x) {
     return is_SPRP(x,bases[h]);
 }
 
+
+
 __attribute__((always_inline))
 bool is_SPRP_complex(const uint32_t& n, uint32_t pw, uint64_t a,const uint8_t& cycle) {
 
