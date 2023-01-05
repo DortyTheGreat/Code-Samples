@@ -234,7 +234,7 @@ int main(void) {
 
     int a,ol, b,c, n;
     cin >> a >> ol >> b >> c >> n;
-    LCM<uint64_t> myl(a,ol,b,c);
+    LCM<uint64_t, fast_mod64> myl(a,ol,b,c);
     uint64_t ans = 0;
     for(int i = 0;i< n;++i){
         ans += S.isPrime( myl.get());
