@@ -1,27 +1,59 @@
-def getSum(n):
-    sum = 0
-    for digit in str(n):
-        sum += int(digit)
-    return sum
+import requests
+from PIL import Image  # install by > python3 -m pip install --upgrade Pillow  # ref. https://pillow.readthedocs.io/en/latest/installation.html#basic-installation
+import os
+url_base = "https://cdn.rawdex.net/manga_"
+manga = "634b42d85d128"
 
-n = int(input())
-for i in range(n):
-    s = input()
-    stuff = s.split(',')
-    #print(stuff)
-    diff = 0
-    d = set()
-    for i in range(3):
-        for j in range(len(stuff[i])):
-            if stuff[i][j] in d:
-                pass
-            else:
-                d.add(stuff[i][j])
-                diff += 1
+# [f,l]
+first = 7
+last = 22
+
+pdf_bytes = 0
+arr_of_files = []
+
+pdf_number = 1
+
+for chapter in range(first,last):
+
+    for page in range(1, 99):
+        #
+
+        url_actual = url_base + manga + "/" + "{:02d}".format(chapter) + "/" + "{:02d}".format(page) + ".jpg"
+        file_name = str('dw/' + "{:02d}".format(chapter) + "-" + "{:02d}".format(page) + ".jpg")
 
 
 
-    cyp = diff + 64 * (getSum(stuff[3]) + getSum(stuff[4])) + 256 * ( ord(stuff[0][0].lower()) - ord('a') + 1)
-    cyp %= (16 * 16 * 16)
-    print( (f'{cyp:03x}').upper() )
+        r = requests.get(url_actual)
+        if r.text[0] == '<':
+            break
 
+
+
+        open(file_name, 'wb').write(r.content)
+        pdf_bytes += os.stat(file_name).st_size
+        if pdf_bytes > 5 * 1000 * 1000:
+            images = [Image.open(f) for f in arr_of_files]
+            pdf_path = "dw/" + "{:02d}".format(pdf_number) + ".pdf"
+
+            pdf_number += 1
+
+            images[0].save(
+                pdf_path, "PDF", resolution=100.0, save_all=True,
+                append_images=images[1:]
+            )
+            pdf_bytes = os.stat(file_name).st_size
+            arr_of_files = []
+
+        arr_of_files += [file_name]
+
+
+
+        print(os.stat(file_name).st_size)
+
+images = [Image.open(f) for f in arr_of_files]
+pdf_path = "dw/" + "{:02d}".format(99) + ".pdf"
+
+images[0].save(
+    pdf_path, "PDF", resolution=100.0, save_all=True,
+    append_images=images[1:]
+)
