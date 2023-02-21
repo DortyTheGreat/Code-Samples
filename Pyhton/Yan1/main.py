@@ -1,23 +1,6 @@
 import requests
 from PIL import Image  # install by > python3 -m pip install --upgrade Pillow  # ref. https://pillow.readthedocs.io/en/latest/installation.html#basic-installation
 import os
-import io
-
-# Считывает массив с картинками, создаёт новую
-def PILage_stack(arr_of_PIL):
-    widths, heights = zip(*(i.size for i in arr_of_PIL))
-    total_width = max(widths)
-    max_height = sum(heights)
-
-    new_im = Image.new('RGB', (total_width, max_height))
-
-    y_offset = 0
-    for im in arr_of_PIL:
-        new_im.paste(im, (0, y_offset))
-        y_offset += im.size[1]
-    return new_im
-
-
 url_base = "https://cdn.rawdex.net/manga_"
 manga = "634b42d85d128"
 
@@ -26,11 +9,11 @@ first = 7
 last = 22
 
 pdf_bytes = 0
-arr_of_PILages = []
+arr_of_files = []
 
-jpg_number = 1
+pdf_number = 1
 
-
+strin = "<!DOCTYPE html>\n<html>\n<head>\n<style>\nimg { \nwidth: 100%;\n}\n</style>\n</head>\n<body>\n"
 
 for chapter in range(first,last):
 
@@ -46,19 +29,28 @@ for chapter in range(first,last):
         if r.text[0] == '<':
             break
 
-        prev_array_of_PILages = arr_of_PILages  # Это чтобы можно было бэкапнутся.
-        open("temp.jpg", 'wb').write(r.content) # Запихнём данные в опер. память
-        arr_of_PILages += [Image.open("temp.jpg")] # ПИЛ их оттуда читает
-
-        # Пытаемся сделать картинку -> больше 5 Мб, тогда делаем из на одну картинку меньше
-
-        PILage_stack(arr_of_PILages).save("temp2.jpg", 'JPEG')
-
-        if (os.stat("temp2.jpg").st_size > 4.2 * 1000 * 1000):
-            (PILage_stack(prev_array_of_PILages)).save("dw/" + str(jpg_number), 'JPEG')
-            jpg_number += 1
-            arr_of_PILages = [Image.open("temp2.jpg")]
-        #
+        strin += "<img src=\"" + url_actual + "\">\n"
+        print(url_actual)
+        open(file_name, 'wb').write(r.content)
 
 
-(PILage_stack(arr_of_PILages)).save("dw/" + str(jpg_number), 'jpg', quality='keep')
+
+        arr_of_files += [file_name]
+
+
+
+        print(os.stat(file_name).st_size)
+
+images = [Image.open(f) for f in arr_of_files]
+pdf_path = "dw/" + "{:02d}".format(99) + ".pdf"
+
+images[0].save(
+    pdf_path, "PDF", resolution=100.0, save_all=True,
+    append_images=images[1:]
+)
+
+strin += "</body>\n</html>\n"
+
+text_file = open("web.html", "w")
+n = text_file.write(strin)
+text_file.close()

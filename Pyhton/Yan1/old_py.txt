@@ -1,0 +1,80 @@
+import requests
+from PIL import Image  # install by > python3 -m pip install --upgrade Pillow  # ref. https://pillow.readthedocs.io/en/latest/installation.html#basic-installation
+import os
+import io
+
+# Считывает массив с картинками, создаёт новую
+def PILage_stack(arr_of_PIL):
+    widths, heights = zip(*(i.size for i in arr_of_PIL))
+    total_width = max(widths)
+    max_height = sum(heights)
+
+    new_im = Image.new('RGB', (total_width, max_height))
+
+    y_offset = 0
+    for im in arr_of_PIL:
+        new_im.paste(im, (0, y_offset))
+        y_offset += im.size[1]
+    return new_im
+
+
+url_base = "https://cdn.rawdex.net/manga_"
+manga = "634b42d85d128"
+
+# [f,l]
+first = 7
+last = 22
+
+pdf_bytes = 0
+arr_of_PILages = []
+
+jpg_number = 1
+
+
+
+for chapter in range(first,last):
+
+    for page in range(1, 99):
+        #
+
+        url_actual = url_base + manga + "/" + "{:02d}".format(chapter) + "/" + "{:02d}".format(page) + ".jpg"
+        file_name = str('dw/' + "{:02d}".format(chapter) + "-" + "{:02d}".format(page) + ".jpg")
+
+
+
+        r = requests.get(url_actual)
+        if r.text[0] == '<':
+            break
+
+        prev_array_of_PILages = arr_of_PILages  # Это чтобы можно было бэкапнутся.
+        open("temp.jpg", 'wb').write(r.content) # Запихнём данные во временный файл
+        new_img = Image.open("temp.jpg") # Прочтём их оттуда, я хз как по-другому
+
+        if len(arr_of_PILages) != 0:
+            widths, heights = zip(*(i.size for i in arr_of_PILages))
+
+            total_height = sum(heights)
+
+            wid,hei = new_img.size
+
+            if (hei + total_height > 15000):
+                (PILage_stack(prev_array_of_PILages)).save("dw/" + str(jpg_number) + '.jpg', 'JPEG')
+                jpg_number += 1
+                arr_of_PILages = [new_img]
+                continue
+
+        arr_of_PILages += [new_img] # ПИЛ их оттуда читает
+
+        # Пытаемся сделать картинку -> больше 5 Мб, тогда делаем из на одну картинку меньше
+
+        PILage_stack(arr_of_PILages).save("temp2.jpg", 'JPEG')
+
+        if (os.stat("temp2.jpg").st_size > 5 * 1000 * 1000): # Если больше 5 Мб, то не поддерживает Яндекс
+            (PILage_stack(prev_array_of_PILages)).save("dw/" + str(jpg_number) + '.jpg', 'JPEG')
+            jpg_number += 1
+            arr_of_PILages = [Image.open("temp2.jpg")]
+            continue
+        #
+
+
+(PILage_stack(arr_of_PILages)).save("dw/" + str(jpg_number), 'jpg', quality='keep')
