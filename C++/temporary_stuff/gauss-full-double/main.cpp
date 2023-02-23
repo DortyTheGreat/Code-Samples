@@ -31,34 +31,32 @@ struct Whatever{
 
 template<typename T>
 bool isWhole(T val){
-    return floorl(val) == ceill(val);
+    return floor(val) == ceil(val);
 }
 
 ///
 template<typename T>
 int64_t gauss(int64_t n){
-    int64_t sn = ceill(sqrtl(n));
+    int64_t sn = ceil(sqrtl(n));
     int64_t res = 0;
 
-    stack<Whatever<int64_t>> stk;
+    stack<Whatever<T>> stk;
     stk.push({ {1,0,0,  0,1,0,  0,0,-n}, sn, sn });
 
     while (!stk.empty()){
         /// TO-DO использовать Стак Госунова (ака просто массив)
-        Whatever<int64_t> matr = stk.top();
+        Whatever<T> matr = stk.top();
         stk.pop();
 
         if ((matr.w <= 0) || matr.h <= 0)
             continue;
 
-
-
-        int64_t a = matr.Matrix.a;
-        int64_t b = matr.Matrix.b * 2;
-        int64_t d = matr.Matrix.c * 2;
-        int64_t c = matr.Matrix.e;
-        int64_t e = matr.Matrix.f * 2;
-        int64_t f = matr.Matrix.i;
+        T a = matr.Matrix.a;
+        T b = matr.Matrix.b * 2;
+        T d = matr.Matrix.c * 2;
+        T c = matr.Matrix.e;
+        T e = matr.Matrix.f * 2;
+        T f = matr.Matrix.i;
 
 
         if ( (d * d - 4 * a * f < 0) || (e * e - 4 * c * f < 0) ){
@@ -66,17 +64,17 @@ int64_t gauss(int64_t n){
             continue;
         }
 
-        T x0 = ( (T(-d)) + sqrtl(d * d - 4 * a * f)) / (T(2*a));
-        T y0 = ( (T(-e)) + sqrtl(e * e - 4 * c * f)) / (T(2*c));
+        T x0 = (- d + sqrtl(d * d - 4 * a * f)) / 2 / a;
+        T y0 = (- e + sqrtl(e * e - 4 * c * f)) / 2 / c;
 
         cout << "x0: " << x0 << endl;
         cout << "y0: " << y0 << endl;
 
-        bool xint = isWhole(x0), yint=isWhole(y0); ///uint=0, vint=0, flag = 0;
-        bool flag = 0;
-
         int64_t x0_c = ceill(x0);
         int64_t y0_c = ceill(y0);
+
+        bool xint = isWhole(x0), yint=isWhole(y0); ///uint=0, vint=0, flag = 0;
+        bool flag = 0;
 
         if (matr.w <= 1){
             res += (matr.h - y0_c) * matr.w - yint;
@@ -89,7 +87,7 @@ int64_t gauss(int64_t n){
         }
         if (matr.w - x0 > 1){
             res += (matr.w - x0_c) * matr.h - xint;
-            stk.push({matr.Matrix, x0_c, matr.h});
+            stk.push({matr.Matrix, ceil(x0), matr.h});
             continue;
         }
         if (matr.h - y0 > 1){
@@ -101,7 +99,7 @@ int64_t gauss(int64_t n){
         if (temp < 0)
             continue;
 
-        T u = ( (T) (((a - b + c) * (b * e - 2 * c * d) - (b - 2 * c) * sqrtl(temp)))) / (a - b + c) / (4 * a * c - b * b);
+        T u = ((a - b + c) * (b * e - 2 * c * d) - (b - 2 * c) * sqrtl(temp)) / (a - b + c) / (4 * a * c - b * b);
         bool uint = isWhole(u);
 
         if (u > matr.w){
@@ -117,7 +115,7 @@ int64_t gauss(int64_t n){
         if (temp < 0)
             continue;
 
-        T v = ( (T) (  (- e - b * u + sqrtl(temp)))) / (T(2*c)) ;
+        T v = (- e - b * u + sqrtl(temp)) / 2 / c;
         cout << "v: " << v << endl;
         bool vint = isWhole(v);
 
@@ -126,22 +124,26 @@ int64_t gauss(int64_t n){
 
         int64_t u_c = ceill(u);
         int64_t v_c = ceill(v);
-        if (u_c == matr.w && v_c == matr.h)
+
+        if (u == matr.w && v == matr.h)
             continue;
         if (uint == 1 && vint == 1 && flag == 0)
             res -= 1;
-        res += (matr.w - u_c + matr.h - 1 - v_c) * (matr.w - u_c + matr.h - v_c) / 2;
+        res += floor((matr.w - u + matr.h - 1 - v) * (matr.w - u + matr.h - v) / 2);
 
-        Matrix3x3<int64_t> al = {1,0,0,  -1, 1, 0,  matr.h-v_c, v_c, 1};
-        Matrix3x3<int64_t> ak = {1, -1, matr.h-v_c,  0,1,v_c,  0,0,1};
+        Matrix3x3<T> al = {1,0,0,  -1, 1, 0,  matr.h-v_c, v_c, 1};
+        Matrix3x3<T> ak = {1, -1, matr.h-v_c,  0,1,v_c,  0,0,1};
 
         stk.push( { (al * matr.Matrix) * ak, u_c - (matr.h - v_c), matr.h - v_c  });
 
-        Matrix3x3<int64_t> bl = {1,-1,0,  0,1,0,  u_c, matr.w-u_c, 1};
-        Matrix3x3<int64_t> bk = {1,0,u_c,  -1, 1, matr.w - u_c, 0,0,1};
+        Matrix3x3<T> bl = {1,-1,0,  0,1,0,  u_c, matr.w-u_c, 1};
+        Matrix3x3<T> bk = {1,0,u_c,  -1, 1, matr.w - u_c, 0,0,1};
 
 
         stk.push({(bl * matr.Matrix) * bk, matr.w - u_c, v_c - (matr.w - u_c)});
+
+
+        stk.push({(bl * matr.Matrix) * bk, matr.w - u, v - (matr.w - u)});
     }
     res = (sn - 1) * (sn - 1) - res;
     res += sn - 1;
@@ -154,7 +156,7 @@ int64_t gauss(int64_t n){
 }
 
 int main(){
-    cout << "INT" << endl;
+    cout << "double" << endl;
     int64_t r;
     cin >> r;
 
