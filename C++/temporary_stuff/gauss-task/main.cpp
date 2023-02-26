@@ -48,9 +48,23 @@ int64_t gauss(int64_t n){
         Whatever<__int128_t> matr = stk.top();
         stk.pop();
 
-        if ((matr.w <= 0) || matr.h <= 0)
-            continue;
+        //if ((matr.w <= 0) || matr.h <= 0)
+            //continue;
 
+        /**
+        Матрица
+
+        a b c
+        d e f
+        g h i
+
+
+        ->
+
+        Уравнение
+        1) a*x^2 + c*2x + i = 0
+        2) e*x^2 + f*2x + i = 0
+        */
         __int128_t a = matr.Matrix.a;
         __int128_t b = matr.Matrix.b * 2;
         __int128_t d = matr.Matrix.c * 2;
@@ -59,17 +73,24 @@ int64_t gauss(int64_t n){
         __int128_t f = matr.Matrix.i;
 
 
-        if ( (d * d - 4 * a * f < 0) || (e * e - 4 * c * f < 0) ){
+        __int128_t Disc_1 = d * d - 4 * a * f;
+        __int128_t Disc_2 = e * e - 4 * c * f;
+
+
+        /// Если (1) или (2) не имеют корней, то ...
+        if ( (Disc_1 < 0) || (Disc_2 < 0) ){
             res += matr.w * matr.h;
             continue;
         }
 
-        T x0 = (- d + sqrtl(d * d - 4 * a * f)) / (2*a);
-        T y0 = (- e + sqrtl(e * e - 4 * c * f)) / (2*c);
+        /// В ином случае просто решить эти уравнения
+        T x0 = T(- d + sqrtl(Disc_1)) / T(2*a);
+        T y0 = T(- e + sqrtl(Disc_2)) / T(2*c);
 
         bool xint = isWhole(x0), yint=isWhole(y0); ///uint=0, vint=0, flag = 0;
         bool flag = 0;
 
+        /// Какие-то вычисления...
         if (matr.w <= 1){
             res += (matr.h - ceil(y0)) * matr.w - yint;
             continue;
@@ -89,11 +110,19 @@ int64_t gauss(int64_t n){
             stk.push({matr.Matrix, matr.w, ceil(y0)});
             continue;
         }
-        T temp = (a - b + c) * (c * d * d - b * d * e + a * e * e + b * b * f - 4 * a * c * f);
+
+
+        __int128_t idk_1 = a - b + c;
+        __int128_t Disc_3 = b*b - 4*a*c;
+
+
+        /// Тоже некая переменная temp. WTF? ((a) - b + c) * (d*(c*d - b*e) + (a) * e * e + f*(b*b - 4*a*c))
+        T temp = (T(a) - b + c) * (c * d * d - b * d * e + T(a) * e * e + b * b * f - 4 * T(a) * c * f);
 
         if (temp < 0)
             continue;
 
+        /// b*b - 4*a*c, a - b + c, все они встречаются
         T u = ((a - b + c) * (b * e - 2 * c * d) - (b - 2 * c) * sqrtl(temp)) / (a - b + c) / (4 * a * c - b * b);
         bool uint = isWhole(u);
 
@@ -105,11 +134,14 @@ int64_t gauss(int64_t n){
             u = 0;
             flag = 1;
         }
-        temp = T((e  + b * u) * (e + b * u)) - 4 * c * (f + u * (d + a * u));
+
+        T idk_2 = e  + b * u;
+
+        temp = T(idk_2 * idk_2) - 4 * c * (f + u * (d + a * u));
         if (temp < 0)
             continue;
 
-        T v = T(- e - b * u + sqrtl(temp)) / T(2*c);
+        T v = T(sqrtl(temp) - (idk_2)) / T(2*c);
         bool vint = isWhole(v);
 
         if (v < 0)
@@ -122,17 +154,20 @@ int64_t gauss(int64_t n){
         if (uint == 1 && vint == 1 && flag == 0)
             res -= 1;
         res += floor((matr.w - u + matr.h - 1 - v) * (matr.w - u + matr.h - v) / 2);
+        if ((u - (matr.h - v) > 0) && matr.h - v > 0){
+            Matrix3x3<__int128_t> al = {1,0,0,  -1, 1, 0,  matr.h-v, v, 1};
+            Matrix3x3<__int128_t> ak = {1, -1, matr.h-v,  0,1,v,  0,0,1};
 
-        Matrix3x3<__int128_t> al = {1,0,0,  -1, 1, 0,  matr.h-v, v, 1};
-        Matrix3x3<__int128_t> ak = {1, -1, matr.h-v,  0,1,v,  0,0,1};
+            stk.push( { (al * matr.Matrix) * ak, u - (matr.h - v), matr.h - v  });
+        }
 
-        stk.push( { (al * matr.Matrix) * ak, u - (matr.h - v), matr.h - v  });
+        if ((matr.w - u > 0) && v - (matr.w - u) > 0){
+            Matrix3x3<__int128_t> bl = {1,-1,0,  0,1,0,  u, matr.w-u, 1};
+            Matrix3x3<__int128_t> bk = {1,0,u,  -1, 1, matr.w - u, 0,0,1};
 
-        Matrix3x3<__int128_t> bl = {1,-1,0,  0,1,0,  u, matr.w-u, 1};
-        Matrix3x3<__int128_t> bk = {1,0,u,  -1, 1, matr.w - u, 0,0,1};
 
-
-        stk.push({(bl * matr.Matrix) * bk, matr.w - u, v - (matr.w - u)});
+            stk.push({(bl * matr.Matrix) * bk, matr.w - u, v - (matr.w - u)});
+        }
     }
     res = (sn - 1) * (sn - 1) - res;
     res += sn - 1;
