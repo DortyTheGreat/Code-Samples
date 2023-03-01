@@ -87,16 +87,76 @@ inline T gcd(T a, T b)
 /// since (a == 0) === !a
 
 
-#include <iostream>
-using namespace std;
+// Finds 2^-64 mod m and (-m)^-1 mod m for odd m (hacker's delight).
+// equivalent to xbinGCD ?
+
+/// since (a == 0) === !a
+
+#include <utility> /// pair
+
+
+// Computes aR * bR mod N with R = 2**64.
+template<typename T>
+T mont_mul(T a, T b, T N, T Nneginv) {
+    T Th, Tl, m, mNh, mNl;
+
+    Tl = mult(a, b, Th);
+    m = Tl * Nneginv;
+    mNl = mult(m, N, mNh);
+
+
+    /*
+    T tl2, th2;
+    uint32_t low_carry_in = 0;
+
+    uint32_t carryL = _addcarry_u64(low_carry_in, Tl, mNl, &tl2);
+    uint32_t carryH = _addcarry_u64(carryL, Th, mNh, &th2);
+
+    if (carryH || (th2 >= N)) th2 = th2 - N;
+
+    return th2;
+    */
+
+    bool lc = Tl + mNl < Tl;
+    T th = Th + mNh + lc;
+    bool hc = (th < Th) || (th == Th && lc);
+
+    if (hc > 0 || th >= N) th = th - N;
+
+    return th;
+}
+
+
+template <typename T>
+inline std::pair<T, T> mont_modinv(T m) {
+    const size_t shift = sizeof(m) * 8 - 1;
+    T a = T(1) << shift;
+    T u = 1;
+    T v = 0;
+
+    while (a) {
+        a >>= 1;
+        if (u & 1) {
+            u = ((u ^ m) >> 1) + (u & m);
+            v = (v >> 1) + (T(1) << shift);
+        }
+        else {
+            u >>= 1; v >>=1;
+        }
+    }
+    return std::make_pair(u, v);
+}
+
 
 // Returns a factor of n, assumes n is odd.
 
-uint64_t pollard_brent_montgomery(uint64_t n) {
-    /*
+
+
+template <typename T>
+T pollard_brent_montgomery(T n) {
+
     if (!(n & 1))
         return 2;
-    */
 
 
     // Random number Linear Congruential Generator MMIX from D.E. Knuth
@@ -106,32 +166,32 @@ uint64_t pollard_brent_montgomery(uint64_t n) {
     rng = (a + b) ^ (a * b);
 
     // y and c are "montgomery space" numbers
-    uint64_t y = 1 + a % (n - 1);
-    uint64_t c = 1 + b % (n - 1);
-    uint64_t m = 100;
+    T y = 1 + a % (n - 1);
+    T c = 1 + b % (n - 1);
+    const T m = 100;
 
     // nneginv is m' (mprime) in Warren
-
-    uint64_t inv = n;
-    for(int i = 0;i < 5; ++i) inv *= 2 - n * inv;
+    T nneginv = mont_modinv(n).second;
 
 
-
-
-    uint64_t factor = 1, r, q, x, ys;
+    T factor = 1, r, q, x, ys,tries;
     q = r = 1;
 
     while(factor == 1){
         x = y;
         for (size_t i = 0; i < r; ++i) {
-            y = addmod(montmul(y, y, n, inv), c, n);
+            y = addmod(mont_mul(y, y, n, nneginv), c, n);
         }
 
         for (size_t k = 0; k < r && factor == 1; k += m) {
             ys = y;
-            for (size_t i = 0; i < std::min(m, r - k); ++i) {
-                y = addmod(montmul(y, y, n, inv), c, n);
-                q = montmul(q, x < y ? y - x : x - y, n, inv);
+
+            tries = (r - k);
+            if (tries > m){tries = m;}
+
+            for (size_t i = 0; i < tries; ++i) {
+                y = addmod(mont_mul(y, y, n, nneginv), c, n);
+                q = mont_mul(q, x < y ? y - x : x - y, n, nneginv);
             }
 
             factor = gcd(q, n);
@@ -140,13 +200,13 @@ uint64_t pollard_brent_montgomery(uint64_t n) {
         r *= 2;
     }
 
-    if (factor == n) {
+    if(factor == n) {
         do {
-            ys = addmod(montmul(ys, ys, n, inv), c, n);
+            ys = addmod(mont_mul(ys, ys, n, nneginv), c, n);
             factor = gcd(x < ys ? ys - x : x - ys, n);
         } while (factor == 1);
     }
-    //cout << n << " " << factor << endl;
+
     if (factor == n){return pollard_brent_montgomery(n);}
     return factor;
 }
@@ -244,7 +304,6 @@ bool isPrime(unsigned long long n) {
     for (int p : jp) {
         if (n % p == 0)
             return n == p;
-
         x = mod_pow(p, r, n);
 
         for (int t = 0; t < e && x > 1; ++t) {
@@ -296,9 +355,6 @@ std::map<unsigned long long,int> factor(__uint128_t num){
 
     for(size_t i = 0;i < size + 1; ){
         if(arr[i] == 1){++i; continue;}
-
-
-        //cout << "P: " << arr[i] << " "
         if (isPrime(arr[i])) { ++ret[arr[i++]]; continue; } /// got here n as a factor
         arr[++size] = pollard_brent_montgomery( arr[i]);
 
@@ -306,7 +362,7 @@ std::map<unsigned long long,int> factor(__uint128_t num){
 
     }
 
-
+    delete[] arr;
 
 
 
@@ -397,11 +453,7 @@ uint64_t f(uint64_t n){
         uint64_t summ_inside = 0;
 
         for(auto elem2 : vc2){
-            uint64_t add = elem2;
-            /// gcd = elem2
-            add *= phi(n/elem2);
-            add %= mod;
-            summ_inside += add;
+            summ_inside += (elem2%mod) * (phi(n/elem2)%mod);
             summ_inside %= mod;
         }
 
@@ -409,39 +461,25 @@ uint64_t f(uint64_t n){
         //cout << phi(n/elem) << endl;
         //cout << phi(n) << " " << phi(n/elem) << " " << phi(elem) << " " << elem << endl;
 
-        uint64_t mult = phi(n/elem);
-
         summ_inside *= summ_inside;
         summ_inside %= mod;
 
-        summ_inside *= mult;
-        summ_inside %= mod;
 
 
-        //cout << elem << " " << summ_inside << " " << mult << endl;
-
-        summ += summ_inside;
+        summ += summ_inside * (phi(n/elem)%mod);
         summ %= mod;
     }
 
-    uint64_t zeros = n;
-    zeros *= zeros;
-    zeros %= mod;
-    summ += zeros;
+    n %= mod;
+
+    summ += n*n;
     summ %= mod;
 
     return summ;
 
 }
 
-bool IsPrime(uint64_t a){
-    if(a < 2){return 0;}
-    uint64_t limit = sqrtl(a);
-    for(uint64_t i=2;i<=limit;i++){
-        if(a%i == 0){return 0;}
-    }
-    return 1;
-}
+
 
 int main()
 {
