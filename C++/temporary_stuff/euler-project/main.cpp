@@ -56,15 +56,15 @@ uint64_t f(uint64_t n){
         for(auto elem2 : vc2){
             uint64_t add = elem2;
             /// gcd = elem2
-            add *= (phi(n) / phi(n/elem2) * phi(elem2) / elem2);
+            add *= phi(n/elem2);
             add %= mod;
             summ_inside += add;
             summ_inside %= mod;
         }
 
-        cout << n/elem << endl;
-        cout << phi(n/elem) << endl;
-        cout << phi(n) << " " << phi(n/elem) << " " << phi(elem) << " " << elem << endl;
+        //cout << n/elem << endl;
+        //cout << phi(n/elem) << endl;
+        //cout << phi(n) << " " << phi(n/elem) << " " << phi(elem) << " " << elem << endl;
 
         uint64_t mult = phi(n/elem);
 
@@ -75,21 +75,46 @@ uint64_t f(uint64_t n){
         summ_inside %= mod;
 
 
-        cout << elem << " " << summ_inside << " " << mult << endl;
+        //cout << elem << " " << summ_inside << " " << mult << endl;
 
         summ += summ_inside;
         summ %= mod;
     }
 
+    uint64_t zeros = n;
+    zeros *= zeros;
+    zeros %= mod;
+    summ += zeros;
+    summ %= mod;
+
     return summ;
 
 }
 
+bool IsPrime(uint64_t a){
+    if(a < 2){return 0;}
+    uint64_t limit = sqrtl(a);
+    for(uint64_t i=2;i<=limit;i++){
+        if(a%i == 0){return 0;}
+    }
+    return 1;
+}
 
 int main()
 {
-    cout << phi(1) << endl;;
-    cout << f(4);
+    uint64_t num_10_16 = 10000000000000000;
+    uint64_t num_10_6 = 1000000;
+
+    uint64_t BIG_BOY = 0;
+
+    for(uint64_t i = num_10_16; i <= num_10_16 + num_10_6; ++i){
+        if (IsPrime(i)){
+            BIG_BOY += f(i);
+            BIG_BOY %= mod;
+        }
+        cout << i << endl;
+    }
+    cout << BIG_BOY;
 
     ///cout << "Hello world!" << endl;
     return 0;
