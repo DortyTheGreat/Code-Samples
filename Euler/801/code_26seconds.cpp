@@ -3,34 +3,6 @@
 #include <cmath>
 #include <vector>
 
-
-/// https://github.com/armchaircaver/Factors/blob/c475fd6d4116ed9da6b34f20be35f712cf92235a/Pollard%20Rho%20trials/Pollard%20Rho%20Montgomery.cpp
-
-
-// source : http://coliru.stacked-crooked.com/a/f57f11426d06acd8
-// referenced in https://projecteuler.chat/viewtopic.php?t=3776
-
-/*
- A fun property of Pollard-Brent's factorization algorithm
-Post by nightcracker » Mon Jan 12, 2015 12:15 pm
-As some of you know, you can speed up repeated modular multiplication using Montgomery reduction.
-The conversion takes some time, but if you do quite some multiplications it should speed up by a lot.
-At first look Pollard-Brent doesn't seem like it could benefit that much from this,
-since it doesn't do too many modular multiplications in a row,
-so you'd think you'd spend too much time converting back and forth.
-However, as it turns out, absolutely no conversions are needed!
-The initial random parameters are supposed to be uniform over [1, N),
-so there's absolutely no reason to convert them - the result would be another uniform random variable over [1, N).
-So we'll just generate random parameters as usual, and treat them as if they were of the form aR mod N.
-Then in the algorithm you replace all multiplications with Montgomery multiplication.
-I don't know exactly how the end result is still correct,
-but it I think just so happens to be because you are working with aR mod N and R and N are coprime,
-thus not affecting the algorithm logic which checks gcd(aR mod N, N) = 1.
-Either way, here's some code implementing this
-(sorry, only GCC on x86-64 because I need inline assembly): http://coliru.stacked-crooked.com/a/f57f11426d06acd8
-This trick made the implementation 4 times faster.
-*/
-
 #include <cstdint>
 #include <iostream>
 #include <tuple>
@@ -81,21 +53,11 @@ inline T gcd(T a, T b)
 
 
 
-// Finds 2^-64 mod m and (-m)^-1 mod m for odd m (hacker's delight).
-// equivalent to xbinGCD ?
 
-/// since (a == 0) === !a
+#include <utility> // pair
 
 
-// Finds 2^-64 mod m and (-m)^-1 mod m for odd m (hacker's delight).
-// equivalent to xbinGCD ?
 
-/// since (a == 0) === !a
-
-#include <utility> /// pair
-
-
-// Computes aR * bR mod N with R = 2**64.
 template<typename T>
 T mont_mul(T a, T b, T N, T Nneginv) {
     T Th, Tl, m, mNh, mNl;
@@ -103,19 +65,6 @@ T mont_mul(T a, T b, T N, T Nneginv) {
     Tl = mult(a, b, Th);
     m = Tl * Nneginv;
     mNl = mult(m, N, mNh);
-
-
-    /*
-    T tl2, th2;
-    uint32_t low_carry_in = 0;
-
-    uint32_t carryL = _addcarry_u64(low_carry_in, Tl, mNl, &tl2);
-    uint32_t carryH = _addcarry_u64(carryL, Th, mNh, &th2);
-
-    if (carryH || (th2 >= N)) th2 = th2 - N;
-
-    return th2;
-    */
 
     bool lc = Tl + mNl < Tl;
     T th = Th + mNh + lc;
@@ -215,48 +164,7 @@ T pollard_brent_montgomery(T n) {
 
 
 
-/**
 
-911787119
-911838119
-911868119
-911919119
-912161219
-912323219
-912373219
-912464219
-912484219
-912535219
-912707219
-912727219
-912797219
-912808219
-912898219
-913050319
-913212319
-913272319
-913282319
-913323319
-913404319
-913414319
-913474319
-913575319
-913747319
-913878319
-913939319
-913969319
-914151419
-914252419
-914282419
-914393419
-914505419
-914565419
-914676419
-914909419
-
-1073741827ull * 1073741831ull
-
-*/
 
 
 #include <map>
@@ -277,23 +185,11 @@ __uint128_t mod_pow(__uint128_t a, __uint128_t t, __uint128_t mod) {
 
 
 bool isPrime(unsigned long long n) {
-    /// Китаец сказал, что 2, 3, 5, 7, 11, 13, 17, 19 для ull
-    /// 2, 3, 5 - наверное следует использовать для интов, но 2 и 3 заходит для https://vjudge.net/problem/SPOJ-PRIME1
+
     static const int jp[] = { 2, 3, 5, 7, 11, 13, 17, 19};
 
     if (n == 1)
         return false;
-
-    /*
-    if (n % 2 == 0)
-        return n == 2;
-
-    if (n % 3 == 0)
-        return n == 3;
-
-    if (n % 5 == 0)
-        return n == 5;
-    */
 
 
     unsigned long long r = n - 1, x, y;
@@ -323,22 +219,6 @@ bool isPrime(unsigned long long n) {
     return true;
 }
 
-#include <algorithm>
-///  const __uint128_t& ui128, но у меня всё деструктивно
-std::ostream& operator <<(std::ostream& os, __uint128_t ui128) {
-
-    string buff;
-    while(ui128){
-        buff += (ui128%10+'0');
-        ui128 /= 10;
-    }
-
-
-
-    reverse(buff.begin(),buff.end());
-
-	return (os << buff);
-}
 
 #define cf(k) while (!(num % k)){++ret[k]; num /= k;}
 
@@ -364,19 +244,12 @@ std::map<uint64_t,int> factor(__uint128_t num){
 
     delete[] arr;
 
-
-
-
     return ret;
 }
 
 
 
 
-
-
-
-using namespace std;
 
 const uint64_t mod = 993353399;
 
@@ -394,33 +267,17 @@ uint64_t phi(uint64_t n) {
         result -= result / pa.first;
     }
 
-
-
-
     return phi_precalc[orig_n] = result;
 }
 
-bool IsSquare(uint64_t number){
-    return (uint64_t)(sqrtl( number)) == sqrtl( number);
-}
 
-/// return all divisors
-vector<uint64_t> all_divisers(uint64_t number){
-    vector<uint64_t> ans;
-    uint64_t sqrt_= sqrtl( number );
-    for(uint64_t i=1;i<=sqrt_;i++){
-        if(number%i==0){ans.push_back(i);}
-    }
-    for(uint64_t counter = (ans.size()) - (IsSquare(number));counter !=0;ans.push_back(number / (ans[--counter]))){}
-    return ans;
-}
 
 vector<uint64_t> all_divisers2(uint64_t number){
     auto mp = factor(number);
     vector<uint64_t> abobus = {1};
 
     for(auto pair_ : mp){
-        //cout << pair_.first << " " << pair_.second << endl;
+
     }
 
     for(auto pair_ : mp){
@@ -428,7 +285,7 @@ vector<uint64_t> all_divisers2(uint64_t number){
         for(int i = 0; i < abobus.size();++i){
             uint64_t mult = 1;
             for(int j = 0; j < pair_.second + 1; ++j){
-                //cout << abobus[i] * mult << endl;
+
                 new_vc.push_back(abobus[i] * mult);
                 mult *= pair_.first;
             }
@@ -457,9 +314,6 @@ uint64_t f(uint64_t n){
             summ_inside %= mod;
         }
 
-        //cout << n/elem << endl;
-        //cout << phi(n/elem) << endl;
-        //cout << phi(n) << " " << phi(n/elem) << " " << phi(elem) << " " << elem << endl;
 
         summ_inside *= summ_inside;
         summ_inside %= mod;
