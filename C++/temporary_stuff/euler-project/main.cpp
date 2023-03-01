@@ -28,13 +28,13 @@ uint64_t phi(uint64_t n) {
 }
 
 bool IsSquare(uint64_t number){
-    return (uint64_t)(sqrt( number)) == sqrt( number);
+    return (uint64_t)(sqrtl( number)) == sqrtl( number);
 }
 
 /// return all divisors
 vector<uint64_t> all_divisers(uint64_t number){
     vector<uint64_t> ans;
-    uint64_t sqrt_= sqrt( number );
+    uint64_t sqrt_= sqrtl( number );
     for(uint64_t i=1;i<=sqrt_;i++){
         if(number%i==0){ans.push_back(i);}
     }
@@ -109,10 +109,11 @@ int main()
 
     for(uint64_t i = num_10_16; i <= num_10_16 + num_10_6; ++i){
         if (IsPrime(i)){
-            BIG_BOY += f(i);
+            cout << i << endl;
+            BIG_BOY += f(i-1);
             BIG_BOY %= mod;
         }
-        cout << i << endl;
+        ///cout << i << endl;
     }
     cout << BIG_BOY;
 
