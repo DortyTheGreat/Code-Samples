@@ -385,18 +385,18 @@ map<uint64_t, uint64_t> phi_precalc;
 uint64_t phi(uint64_t n) {
 
     if (phi_precalc.find(n) != phi_precalc.end()) return phi_precalc[n];
+    auto mp = factor(n);
 
     uint64_t orig_n = n;
     uint64_t result = n;
-    for (uint64_t i = 2; i * i <= n; i++) {
-        if (n % i == 0) {
-            while (n % i == 0)
-                n /= i;
-            result -= result / i;
-        }
+
+    for(auto pa : mp){
+        result -= result / pa.first;
     }
-    if (n > 1)
-        result -= result / n;
+
+
+
+
     return phi_precalc[orig_n] = result;
 }
 
