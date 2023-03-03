@@ -1,6 +1,10 @@
-# install by > python3 -m pip install --upgrade moviepy
+# install by > python3 -m pip install --upgrade ffmpeg-python
 from moviepy.editor import VideoFileClip
 from moviepy.editor import concatenate_videoclips
+import ffmpeg
+
+
+
 
 '''
 Как использовать?
@@ -23,21 +27,15 @@ def concatenate(video_clip_paths):
     number_of_clips = 0
     input_clips = 0
     duration = 0
-    compiled_number = 60
+    compiled_number = 0
 
     for c in video_clip_paths:
-        # 535 - 550 ?
-        input_clips += 1
-        if (input_clips < 514):
-            continue
 
-        if (input_clips > 535):
-            continue
+        input_clips += 1
         print('memory stuff', input_clips, 'out of', len(video_clip_paths), 'clips:', number_of_clips, 'total duration:', duration)
         new_clip = VideoFileClip(c)
         if new_clip.duration >= MIN_DURATION:
-            print('new clip', c)
-            clips.append(new_clip)
+            clips.append(c) #
             duration += new_clip.duration
             number_of_clips += 1
 
@@ -46,21 +44,21 @@ def concatenate(video_clip_paths):
             duration = 0
             number_of_clips = 0
 
-            # concatenate the final video with the compose method provided by moviepy
-            final_clip = concatenate_videoclips(clips, method="compose")
-            # write the output video file
+
+
+
+
             output_path = "new" + str(compiled_number) + ".mp4"
-            final_clip.write_videofile(output_path, threads = 8)
+
+
+
+            open('concat'+ str(compiled_number)+ '.txt', 'w').writelines([('file %s\n' % input_path) for input_path in clips])
+            #ffmpeg.input('concat.txt', format='concat', safe=0).output(output_path, c='copy').run()
+
             clips = []
 
 
 
-    # concatenate the final video with the compose method provided by moviepy
-    final_clip = concatenate_videoclips(clips, method="compose")
-    # write the output video file
-    output_path = "new" + str(compiled_number) + ".mp4"
-    final_clip.write_videofile(output_path)
-    clips = []
 
 
 

@@ -1,0 +1,1 @@
+ffmpeg -safe 0 -f concat -segment_time_metadata 1 -i concat.txt -vf select=concatdec_select -af aselect=concatdec_select,aresample=async=1 out.mp4
