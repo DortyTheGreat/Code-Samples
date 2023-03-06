@@ -32,7 +32,7 @@ bool Roll(double percent){
 
 
 
-const int LIMIT = 100;
+const int LIMIT = 4;
 const int CUBE_SIDES = 6;
 const int CUBE_SIDES_SQR = 36;
 
@@ -49,6 +49,7 @@ double N(int M, int Op, int C);
 double F(int M, int Op);
 
 double F(int M, int Op){
+    std::cout << "F: " << " " << M <<" " << Op << std::endl;
     double ret = 0;
 
     ret += N(M,Op,0);
@@ -59,14 +60,22 @@ double F(int M, int Op){
 }
 
 double N(int M, int Op, int C){
+    std::cout << "N: " << " " << M <<" " << Op <<" " << C << std::endl;
     return (P(M,Op,C+2)+P(M,Op,C+3)+P(M,Op,C+4)+P(M,Op,C+5)+P(M,Op,C+6))/CUBE_SIDES;
 
 }
 
 
+int c = 0;
+
 double P(int M, int Op, int C){
+
     if (C + M >= LIMIT) return 1; /// просто забанкуй!
     if (PP[M][Op][C] > -0.5) return PP[M][Op][C]; /// Отмемоизируй!
+
+    c++;
+    std::cout << c << std::endl;
+    std::cout << "P: " << " " << M <<" " << Op << " " << C << std::endl;
 
     if (C == 0) return F(M,Op); /// Хотя бы 1 бросок
 
@@ -217,6 +226,7 @@ sf::Font Board::font;
 int main()
 {
     std::cout << "main started" << std::endl;
+    std::cout.flush();
 
     PP.resize(LIMIT);
     for(int i = 0;i < LIMIT; ++i){
