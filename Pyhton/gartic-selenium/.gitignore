@@ -1,0 +1,10 @@
+.idea
+.gitignor
+geckodriver*
+__pycache__
+venv_windows
+venv
+msedgedriver.exe
+mkbitmap.exe
+potrace.exe
+/data/images/jpg_png/DSC08339.JPG
