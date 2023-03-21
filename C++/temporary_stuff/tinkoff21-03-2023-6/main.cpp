@@ -4,6 +4,8 @@
 #include <algorithm>
 using namespace std;
 
+#define int int64_t
+
 vector<int> l;
 vector<int> r;
 
@@ -46,7 +48,7 @@ int cost(int x) {
 }
 
 
-int main()
+signed main()
 {
 
     int s_low, s_high;

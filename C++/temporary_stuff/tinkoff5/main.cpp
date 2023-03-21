@@ -3,7 +3,9 @@
 #include <map>
 using namespace std;
 
-int main()
+#define int int64_t
+
+signed main()
 {
     int n;
     cin >> n;
@@ -11,9 +13,9 @@ int main()
 
     set<pair<int,int> > new_st; /// [l,r]
 
-    map<int,int> mp; /// value -> index of last seen
+    map<int64_t,int> mp; /// value -> index of last seen
 
-    long long summ = 0;
+    int64_t summ = 0;
 
     mp[0] = -1;
     for(int i = 0;i < n; ++i){
@@ -46,7 +48,7 @@ int main()
     cout << endl << endl;
     */
 
-    int minim = 1000 * 1000 * 1000;
+    int minim = 1001 * 1001 * 1001;
     for (auto rit = st.rbegin(); rit != st.rend(); rit++){
         ///cout << (*rit).first << " " << (*rit).second << " " << endl;
         if ( (*rit).second > minim ){
@@ -72,10 +74,10 @@ int main()
 
     int prev_open = -1;
 
-    long long ans = 0;
+    int64_t ans = 0;
     for(auto elem : new_st){
 
-        ans += (elem.first - prev_open) * (n - elem.second);
+        ans += int64_t(elem.first - prev_open) * (n - elem.second);
 
         prev_open = elem.first;
 
