@@ -13,7 +13,7 @@ ffmpeg -y -r 30 -f image2 -s 1920x1080 -i out%0d.bmp -vcodec libx264 -crf 25 -pi
 
 
 
-
+thx to http://trac.ffmpeg.org/wiki/Create%20a%20mosaic%20out%20of%20several%20input%20videos for magic spell
 ffmpeg
 	-i 50.mp4 -i 120.mp4 -i 200.mp4 -i 300.mp4
 	-filter_complex "
