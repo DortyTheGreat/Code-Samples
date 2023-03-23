@@ -1,7 +1,7 @@
 
 
 
-///#define SFML_STATIC
+#define SFML_STATIC
 #include <SFML/Graphics.hpp>
 
 #include <ctime>
@@ -242,7 +242,7 @@ bool isIllegalMove(const Board& b,const sf::Vector2i& n_head){
     if (n_head.x >= b.W || n_head.x < 0 || n_head.y >= b.H || n_head.y < 0){
         return true;
     }
-    return (b.Field[n_head.x][n_head.y].age);
+    return (b.Field[n_head.y][n_head.x].age);
 }
 
 void BFS(Board& b){
@@ -258,6 +258,15 @@ void BFS(Board& b){
     que.push(b.head);
     std::vector<std::vector<int> > d(b.W, std::vector<int>(b.H));
     std::vector<std::vector<sf::Vector2i> > p(b.W, std::vector<sf::Vector2i>(b.H));
+
+    for(int i = 0; i < b.W; ++i){
+        for(int j = 0; j < b.H; ++j){
+            d[i][j] = 0;
+            p[i][j] = {-1337,-1337};
+        }
+    }
+
+
     const std::vector<sf::Vector2i> neighs = {
         {0, 1},
         {0, -1},
@@ -273,7 +282,7 @@ void BFS(Board& b){
         que.pop();
 
         for (auto& neigh: neighs) {
-            sf::Vector2i t = { current_pos.x + neigh.x, current_pos.y + neigh.y };
+            sf::Vector2i t = current_pos + neigh;
 
             if (!isIllegalMove(b,t) && !d[t.x][t.y]) {
                 d[t.x][t.y] = d[current_pos.x][current_pos.y] + 1;
@@ -286,9 +295,23 @@ void BFS(Board& b){
 
 
     std::vector<sf::Vector2i> ans;
+    std::cout << "isOk: " <<p[b.apple.x][b.apple.y].x << " " << p[b.apple.x][b.apple.y].y << std::endl;
+    if (p[b.apple.x][b.apple.y] == sf::Vector2i(-1337,-1337)){
+        /// no way, do random navigation
+        for (auto& neigh: neighs) {
+            sf::Vector2i t = b.head + neigh;
+            if (!isIllegalMove(b,t) ){
+                b.move(neigh);
+                return;
+            }
+        }
+        /// stuck, commit suicide
+        b.move({0,1});
+        return;
+    }
     for (sf::Vector2i cur = b.apple; cur != b.head; cur = p[cur.x][cur.y]) ans.push_back(cur);
     reverse(ans.begin(), ans.end());
-    ///cout << ans.size() << "    ";
+    std::cout << ans.size() << "    ";
     b.move(ans.front() - b.head);
 }
 
@@ -364,7 +387,7 @@ int main()
     unsigned long ticks = 0;
     while (window.isOpen())
     {
-        if ( (++ticks) % 30 == 0){
+        if ( (++ticks) % 10 == 0){
             ///std::cout << "ai goes" << std::endl;
             ai_turn(MainBoard);
         }
