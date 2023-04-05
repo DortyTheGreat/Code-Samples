@@ -46,13 +46,12 @@ int main()
         if (real_i < 0 || real_i >= aria.getNumSamplesPerChannel() ){
             real_i = i;
         }
-        if (offset == 1){
-            new_aria.samples[0][i] = aria.samples[0][real_i];
-            new_aria.samples[1][i] = aria.samples[1][real_i];
-        }else{
-            new_aria.samples[1][i] = aria.samples[0][real_i];
-            new_aria.samples[0][i] = aria.samples[1][real_i];
-        }
+
+        //for(int channel = 0; channel < 2; channel++){
+        float one = pow(abs(sin( double(i) /Hz)),3);
+        new_aria.samples[0][i] = aria.samples[0][real_i] * one;
+        new_aria.samples[1][i] = aria.samples[1][real_i] * (1-one);
+        //}
 
             ///gangsta.samples[channel][i] = 2 * sgn(gangsta.samples[channel][i]) / ( 1/abs(gangsta.samples[channel][i]) + 1/abs(aria.samples[channel][i]) ) ;
             ///gangsta.samples[channel][i] = (gangsta.samples[channel][i] * max( (abs(aria.samples[channel][i]) / max_aria ), 0.2f) );
