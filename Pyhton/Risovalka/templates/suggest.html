@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Suggest
+{% endblock %}
+
+{% block content %}
+
+{% if logined %} 
+<h1>Предложить</h1>
+<form method="post">
+	<input type=text name=suggestion placeholder="Солёные огурцы">
+	<input type=submit value=Suggest>
+</form>
+<form method="post">
+{% for index in range(Len) %}  
+  <input type=submit name={{index}} value="{{sugs[index]}}"> </input>
+{% endfor %}
+</form>
+{% else %}
+<h1>Вы не авторизированы. Поэтому не можете предлагать слова</h1>
+<small>Не зарегистрированы? <a href="{{url_for('register')}}">Регистрация</a></small>
+{% endif %}
+{% endblock %}

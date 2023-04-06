@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Suggest
+{% endblock %}
+
+{% block content %}
+
+
+
+
+{% if hasLobby != -1 %} <form method="post"> <h1> У Вас уже есть лобби: ССЫЛКА. </h1>
+<input type=submit name=delete value='Удалить его?'>  </input> </form> {% else %}
+
+<h1> Давайте сделаем Лобби!</h1>
+<form method="post">
+	<input type=text name=Name placeholder="Название Лобби">
+	<input type=text name=PL1 placeholder="12344">
+	<input type=text name=PL2 placeholder="456">
+
+	<input type=submit value='Создать лобби'>
+</form>
+
+{% endif %}
+{% endblock %}

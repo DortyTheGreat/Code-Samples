@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Suggest
+{% endblock %}
+
+{% block content %}
+<h1>ИГРАЙТЕ. ЮХУ!</h1>
+<div>Всего лобби: 228 </div>
+
+	<a href={{url_for('createLobby')}}> <input type=submit value='Создать лобби'> </a>
+
+
+<br>
+
+
+<form method="post">
+{% for index in range(Len) %}    <input type=submit name={{index}} value='{{text[index]}}' >  </input>
+{% endfor %}
+</form>
+{% if not logined %} <small>Не зарегистрированы? <a href="{{url_for('register')}}">Регистрация</a></small> {% endif %}
+{% endblock %}

@@ -12,7 +12,7 @@ for image in res:
         continue
     image_path = 'content\\hero\\18\\' + image
     img = cv2.imread(image_path)
-
+    print(image_path)
     d = pytesseract.image_to_data(img, output_type=Output.DICT, lang="eng", config="hocr")
     print(d)
     n_boxes = len(d['level'])

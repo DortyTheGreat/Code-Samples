@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Suggest
+{% endblock %}
+
+{% block content %}
+<h1>ТОЛЬКО ДЛЯ АДМИНОВ</h1>
+
+<form method="post">
+	<input type=password name=activation_key placeholder="2+2=?">
+	<input type=submit value=Login>
+	{% if admin %} <input type=submit name="deleteBD" value='Очистить ВСЕ БД'> {% endif %}
+</form>
+
+{% if admin %}
+
+
+
+<h1>ПОЛЬЗОВАТЕЛИ: </h1>
+
+{% for str in user_str %}    <div> {{str}} </div>
+{% endfor %}
+
+
+
+
+{% endif %}
+
+
+{% endblock %}

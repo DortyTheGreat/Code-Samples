@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Suggest
+{% endblock %}
+
+{% block content %}
+<h1>gcd c++ Benchmarks</h1>
+<div> Бенчмарки были проведены 15.02.2023. c++20 -O3 На серверах onlineGDB.</div>
+
+<table border="1">
+   <caption>Скорости Алгоритмов Наибольшего Общего Делителя c++</caption>
+   <tr>
+    <th>Наименование Алгоритма</th>
+    <th>Описание</th>
+    <th>Sample данных(разброс рандома-количество пар)</th>
+    <th>Скорость, ms</th>
+   </tr>
+   <tr><td>__gcd</td><td>STL алгоритм из algorithm</td><td>10^2-10m</td><td>678</td></tr>
+   <tr><td>__gcd</td><td>STL алгоритм из algorithm</td><td>10^4-10m</td><td>1670</td></tr>
+   <tr><td>__gcd</td><td>STL алгоритм из algorithm</td><td>10^5-10m</td><td>1921</td></tr>
+   <tr><td>__gcd</td><td>STL алгоритм из algorithm</td><td>10^9-10m</td><td>3150</td></tr>
+
+    <tr><td>inline_gcd</td><td>Улучшенный алгоритм Евклида.</td><td>10^2-10^7</td><td>593</td></tr>
+    <tr><td>inline_gcd</td><td>Улучшенный алгоритм Евклида.</td><td>10^4-10^7</td><td>1484</td></tr>
+    <tr><td>inline_gcd</td><td>Улучшенный алгоритм Евклида.</td><td>10^5-10^7</td><td>1828</td></tr>
+    <tr><td>inline_gcd</td><td>Улучшенный алгоритм Евклида.</td><td>10^9-10^7</td><td>2973</td></tr>
+
+    <tr><td>binary_gcd</td><td>Бинарная Оптимизация Алгоритма Евклида.</td><td>10^2-10^7</td><td>643</td></tr>
+   <tr><td>binary_gcd</td><td>Бинарная Оптимизация Алгоритма Евклида.</td><td>10^4-10^7</td><td>1786</td></tr>
+   <tr><td>binary_gcd</td><td>Бинарная Оптимизация Алгоритма Евклида.</td><td>10^5-10^7</td><td>2175</td></tr>
+   <tr><td>binary_gcd</td><td>Бинарная Оптимизация Алгоритма Евклида.</td><td>10^9-10^7</td><td>3580</td></tr>
+
+  </table>
+
+
+
+<br>
+
+<div> По результату тестирования можно зметить, что STL-функцию __gcd можно немного ускорить, используя лишь 5 строчек кода. Бинарная оптимизация даёт ощутимый прирост в скорости лишь для больших чисел(больших примерно 10^13)</div>
+
+
+<img src="/static/gcd_benchmarks.png" alt="User Image">
+
+{% endblock %}
+
