@@ -1,0 +1,40 @@
+ffmpeg -y -i video.mp4 -vsync 0 in/in%d.bmp
+Получить картинки
+
+ffmpeg -y -i video.mp4 -vn -acodec copy output-audio.aac
+Получить аудио
+
+24 - framerate
+
+
+ffmpeg -y -framerate 24 -i out/out%0d.bmp -vcodec libx264 -crf 25 -pix_fmt yuv420p 50.mp4
+
+
+
+
+
+
+
+
+thx to http://trac.ffmpeg.org/wiki/Create%20a%20mosaic%20out%20of%20several%20input%20videos for magic spell
+ffmpeg
+	-i 50.mp4 -i 120.mp4 -i 200.mp4 -i 300.mp4
+	-filter_complex "
+		nullsrc=size=3840x2160 [base];
+		[0:v] setpts=PTS-STARTPTS, scale=1920x1080 [upperleft];
+		[1:v] setpts=PTS-STARTPTS, scale=1920x1080 [upperright];
+		[2:v] setpts=PTS-STARTPTS, scale=1920x1080 [lowerleft];
+		[3:v] setpts=PTS-STARTPTS, scale=1920x1080 [lowerright];
+		[base][upperleft] overlay=shortest=1 [tmp1];
+		[tmp1][upperright] overlay=shortest=1:x=1920 [tmp2];
+		[tmp2][lowerleft] overlay=shortest=1:y=1080 [tmp3];
+		[tmp3][lowerright] overlay=shortest=1:x=1920:y=1080
+	"
+	-c:v libx264 output.mp4
+
+https://www.textfixer.com/tools/remove-line-breaks.php
+ffmpeg -i 50.mp4 -i 120.mp4 -i 200.mp4 -i 300.mp4 -filter_complex " nullsrc=size=3840x2160 [base]; [0:v] setpts=PTS-STARTPTS, scale=1920x1080 [upperleft]; [1:v] setpts=PTS-STARTPTS, scale=1920x1080 [upperright]; [2:v] setpts=PTS-STARTPTS, scale=1920x1080 [lowerleft]; [3:v] setpts=PTS-STARTPTS, scale=1920x1080 [lowerright]; [base][upperleft] overlay=shortest=1 [tmp1]; [tmp1][upperright] overlay=shortest=1:x=1920 [tmp2]; [tmp2][lowerleft] overlay=shortest=1:y=1080 [tmp3]; [tmp3][lowerright] overlay=shortest=1:x=1920:y=1080 " -c:v libx264 output.mp4
+
+
+
+ffmpeg -y -i output.mp4 -i output-audio.aac -c copy -map 0:v:0 -map 1:a:0 with_audio.mp4
