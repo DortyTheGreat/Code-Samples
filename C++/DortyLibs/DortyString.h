@@ -17,3 +17,18 @@ std::string to_str ( T any )
     }
     return ret;
   }
+
+
+/**
+vector<string> split(string s, const string& delimiter=" "){
+    vector<string> ret;
+
+    std::string token;
+    for (size_t pos = 0;(pos = s.find(delimiter)) != std::string::npos;s.erase(0, pos + delimiter.length())) {
+        ret.push_back(s.substr(0, pos));
+
+    }
+    ret.push_back(s);
+    return ret;
+}
+*/
