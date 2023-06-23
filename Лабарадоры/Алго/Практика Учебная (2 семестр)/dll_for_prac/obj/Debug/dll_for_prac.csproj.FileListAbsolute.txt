@@ -1,0 +1,6 @@
+C:\Users\Saha2\source\repos\dll_for_prac\bin\Debug\dll_for_prac.dll
+C:\Users\Saha2\source\repos\dll_for_prac\bin\Debug\dll_for_prac.pdb
+C:\Users\Saha2\source\repos\dll_for_prac\obj\Debug\dll_for_prac.csproj.AssemblyReference.cache
+C:\Users\Saha2\source\repos\dll_for_prac\obj\Debug\dll_for_prac.csproj.CoreCompileInputs.cache
+C:\Users\Saha2\source\repos\dll_for_prac\obj\Debug\dll_for_prac.dll
+C:\Users\Saha2\source\repos\dll_for_prac\obj\Debug\dll_for_prac.pdb

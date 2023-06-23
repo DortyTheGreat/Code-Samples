@@ -1,0 +1,6 @@
+C:\Users\Saha2\source\repos\DLL Borisov\DLL Borisov\bin\Debug\DLL Borisov.dll
+C:\Users\Saha2\source\repos\DLL Borisov\DLL Borisov\bin\Debug\DLL Borisov.pdb
+C:\Users\Saha2\source\repos\DLL Borisov\DLL Borisov\obj\Debug\DLL Borisov.csproj.AssemblyReference.cache
+C:\Users\Saha2\source\repos\DLL Borisov\DLL Borisov\obj\Debug\DLL Borisov.csproj.CoreCompileInputs.cache
+C:\Users\Saha2\source\repos\DLL Borisov\DLL Borisov\obj\Debug\DLL Borisov.dll
+C:\Users\Saha2\source\repos\DLL Borisov\DLL Borisov\obj\Debug\DLL Borisov.pdb
