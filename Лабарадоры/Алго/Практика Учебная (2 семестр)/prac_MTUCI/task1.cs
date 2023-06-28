@@ -23,12 +23,14 @@ namespace prac_MTUCI
         {
             double x1, x2, x3;
             double ans1, ans2, ans3 = 0;
-
+            String final_content = "Задание №1\n\n";
             if (Input(textBox1, out x1, errorProvider1, "В поля для ввода данных допускается лишь ввод числовых значений с плавающей точкой"))
             {
                 try
                 {
                     ans1 = func_for_zad1(x1);
+                    final_content += "Входные данные(return): " + x1 + '\n';
+                    final_content += "Выходные данные(return): " + ans1 + "\n\n";
                     Output(textBox4, ans1, errorProvider1, "Результатом вычисления является не действительное число");
                 }
                 catch (Exception Ex)
@@ -43,6 +45,8 @@ namespace prac_MTUCI
                 try
                 {
                     func_for_zad1_out(x2, out ans2);
+                    final_content += "Входные данные(out): " + x2 + '\n';
+                    final_content += "Выходные данные(out): " + ans2 + "\n\n";
                     Output(textBox5, ans2, errorProvider1, "Результатом вычисления является не действительное число");
                 }
                 catch (Exception Ex)
@@ -57,6 +61,8 @@ namespace prac_MTUCI
                 try
                 {
                     func_for_zad1_ref(x3, ref ans3);
+                    final_content += "Входные данные(ref): " + x3 + '\n';
+                    final_content += "Выходные данные(ref): " + ans3 + "\n\n";
                     Output(textBox6, ans3, errorProvider1, "Результатом вычисления является не действительное число");
                 }
                 catch (Exception Ex)
@@ -65,6 +71,8 @@ namespace prac_MTUCI
                 }
 
             }
+
+            System.IO.File.WriteAllText("task1.txt", final_content);
         }
 
         private void task1_Load(object sender, EventArgs e)

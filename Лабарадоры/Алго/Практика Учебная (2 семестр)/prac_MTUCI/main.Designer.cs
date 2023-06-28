@@ -34,6 +34,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.Exit = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -76,7 +77,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(632, 322);
+            this.button2.Location = new System.Drawing.Point(242, 322);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(101, 41);
             this.button2.TabIndex = 4;
@@ -86,7 +87,7 @@
             // 
             // Exit
             // 
-            this.Exit.Location = new System.Drawing.Point(348, 322);
+            this.Exit.Location = new System.Drawing.Point(626, 322);
             this.Exit.Name = "Exit";
             this.Exit.Size = new System.Drawing.Size(101, 41);
             this.Exit.TabIndex = 5;
@@ -94,11 +95,22 @@
             this.Exit.UseVisualStyleBackColor = true;
             this.Exit.Click += new System.EventHandler(this.Exit_Click);
             // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(432, 322);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(101, 41);
+            this.button3.TabIndex = 6;
+            this.button3.Text = "Задание №3";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 461);
+            this.Controls.Add(this.button3);
             this.Controls.Add(this.Exit);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.label3);
@@ -121,6 +133,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button Exit;
+        private System.Windows.Forms.Button button3;
     }
 }
 

@@ -35,5 +35,12 @@ namespace prac_MTUCI
         {
             Application.Exit();
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            task3_statement f = new task3_statement();
+            this.Hide();
+            f.ShowDialog();
+        }
     }
 }

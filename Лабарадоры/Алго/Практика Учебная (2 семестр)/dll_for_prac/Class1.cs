@@ -42,7 +42,7 @@ namespace dll_for_prac
         // Функция для решения первого задания (через return)
         public static double func_for_zad1(double x)
         {
-             return Math.Abs(x * Math.Log(x) - 4d / 7d) * Math.Sqrt(x) / Math.Exp((4 * x - 1.1d) / 5);
+            return Math.Abs(x * Math.Log(x) - 4d / 7d) * Math.Sqrt(x) / Math.Exp((4 * x - 1.1d) / 5);
         }
 
         // Функция для решения первого задания (через out)
@@ -83,5 +83,31 @@ namespace dll_for_prac
             double S = Math.PI * R * R;
             res = S;
         }
+
+        public static double func_for_zad3(double x, double y, double a)
+        {
+            if (x < 0)
+            {
+                double m = 0;
+                if (a < Math.Pow(x, a)) m = a; else m = Math.Pow(x, a);
+                if (Math.Exp(x * a) < m) m = Math.Exp(x * a);
+                if (a * x + 1 > m) m = a * x + 1;
+                return m;
+            }
+            else
+            {
+                if (x >= 0 && x < 7)
+                {
+                    double m = 0;
+                    if (x > y) m = x; else m = y;
+                    return Math.Pow(Math.Cos(x), 2) + Math.Sin(Math.Pow(x, 2)) * m;
+                }
+                else
+                {
+                    return 1 + 3 * Math.Cos(Math.Abs(x + y));
+                }
+            }
+        }
+
     }
 }
