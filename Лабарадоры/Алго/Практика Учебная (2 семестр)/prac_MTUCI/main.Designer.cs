@@ -70,10 +70,10 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(545, 210);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(169, 52);
+            this.label3.Size = new System.Drawing.Size(209, 52);
             this.label3.TabIndex = 3;
-            this.label3.Text = "Выполнил: студент гр. БЭИ2202\r\nКулешов А.С.\r\nВариант 15\r\nПроверил: доц. Гуриков Р" +
-    ".С.\r\n";
+            this.label3.Text = "Выполнил: студент гр. БЭИ2202\r\nКулешов А.С.\r\nВариант 15\r\nПроверил: доцент каф. ИТ" +
+    " Гуриков С.Р.\r\n";
             // 
             // button2
             // 

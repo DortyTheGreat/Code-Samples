@@ -78,5 +78,20 @@ namespace prac_MTUCI
 
             System.IO.File.WriteAllText("task2.txt", final_content);
         }
+
+        private void textBoxL1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            NumberLimiter(e, textBoxL1);
+        }
+
+        private void textBoxL2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            NumberLimiter(e, textBoxL2);
+        }
+
+        private void textBoxL3_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            NumberLimiter(e, textBoxL3);
+        }
     }
 }

@@ -86,5 +86,20 @@ namespace prac_MTUCI
             this.Hide();
             f.ShowDialog();
         }
+
+        private void textBox3_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            NumberLimiter(e, textBox3);
+        }
+
+        private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            NumberLimiter(e, textBox2);
+        }
+
+        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            NumberLimiter(e, textBox1);
+        }
     }
 }

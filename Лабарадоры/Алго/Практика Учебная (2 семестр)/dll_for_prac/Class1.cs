@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 
+
 namespace dll_for_prac
 {
     public class Class1
@@ -106,6 +107,15 @@ namespace dll_for_prac
                 {
                     return 1 + 3 * Math.Cos(Math.Abs(x + y));
                 }
+            }
+        }
+
+        public static void NumberLimiter(KeyPressEventArgs e, TextBox t)
+        {
+            if (!Char.IsDigit(e.KeyChar) && !(Char.IsControl(e.KeyChar)))
+            {
+                if (!(e.KeyChar.ToString() == "," && t.Text.IndexOf(",") == -1) && !(e.KeyChar.ToString() == "-"))
+                    e.Handled = true;
             }
         }
 

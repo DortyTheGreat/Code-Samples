@@ -55,6 +55,7 @@
             // 
             // textBox_return
             // 
+            this.textBox_return.Enabled = false;
             this.textBox_return.Location = new System.Drawing.Point(322, 198);
             this.textBox_return.Name = "textBox_return";
             this.textBox_return.Size = new System.Drawing.Size(124, 20);
@@ -75,6 +76,7 @@
             this.textBoxA.Name = "textBoxA";
             this.textBoxA.Size = new System.Drawing.Size(124, 20);
             this.textBoxA.TabIndex = 23;
+            this.textBoxA.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxA_KeyPress);
             // 
             // textBoxY
             // 
@@ -82,6 +84,7 @@
             this.textBoxY.Name = "textBoxY";
             this.textBoxY.Size = new System.Drawing.Size(124, 20);
             this.textBoxY.TabIndex = 22;
+            this.textBoxY.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxY_KeyPress);
             // 
             // textBoxX
             // 
@@ -89,6 +92,7 @@
             this.textBoxX.Name = "textBoxX";
             this.textBoxX.Size = new System.Drawing.Size(124, 20);
             this.textBoxX.TabIndex = 21;
+            this.textBoxX.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxX_KeyPress);
             // 
             // label3
             // 
