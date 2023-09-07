@@ -6,10 +6,10 @@ block_cipher = None
 
 a = Analysis(
     ['main.py'],
-    pathex=['C:\\Users\\Saha2\\AppData\\Local\\Programs\\Python\\Python310\\Lib\\site-packages'],
+    pathex=[],
     binaries=[],
     datas=[],
-    hiddenimports=['javascript'],
+    hiddenimports=[],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],

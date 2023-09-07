@@ -1,0 +1,175 @@
+create table employees(
+	id integer primary key AUTO_INCREMENT, -- код сотрудника
+    name varchar(50), -- ФИО
+    BirthDate date, -- дата рождения
+    gender varchar(50), -- пол
+    phone varchar(50), -- номер телефона
+    job_id integer, -- код должности
+    rank_id integer -- звание
+);
+
+
+insert into employees (name, BirthDate, gender, phone, job_id, rank_id) 
+values 
+('Некрасов Иван Тарасович', '2001-04-30' , 'Мужчина', '7 (228) 047-95-11', 1, 1),
+('Воробьёв Устин Серапионович', '1999-11-18', 'Мужчина', '7 (522) 178-09-49', 1, 2),
+('Павлов Абрам Онисимович', '1990-05-24', 'Мужчина', '7 (067) 118-33-96', 1, 3),
+('Кузьмина Екатерина Эдуардовна', '1996-12-15', 'Женщина', '7 (467) 145-21-90', 1, 2),
+('Корнилова Лидия Александровна', '1993-10-19', 'Женщина', '7 (798) 145-47-50', 2, 4),
+('Корнилов Павел Мэлсович', '1970-01-19', 'Мужчина', '7 (102) 884-76-68', 3, 5);
+
+
+select * from employees;
+
+create table jobs(
+	id integer primary key AUTO_INCREMENT, -- код должности
+    name varchar(50), -- Название должности
+    salary integer -- оклад
+);
+
+insert into jobs (name, salary) 
+values 
+('инспектор службы ', 60000),
+('начальник контрольного поста милиции', 100000),
+('командир взвода', 80000);
+
+
+select * from jobs;
+
+create table ranks(
+	id integer primary key AUTO_INCREMENT, -- код звания
+    name varchar(50), -- Наименование
+    extra_salary integer -- надбавка
+);
+
+insert into ranks (name, extra_salary) 
+values 
+('Рядовой', 0),
+('Младший начальствующий', 5000),
+('Средний начальствующий', 10000),
+('Старший начальствующий', 20000),
+('Высший начальствующий', 30000);
+
+select * from ranks;
+
+
+create table auto_models(
+	id integer primary key AUTO_INCREMENT, -- код модели
+    name varchar(50), -- Наименование
+    engine_power integer, -- двигателя мощность ( в лошадиных силах)
+    engine_volume float -- объём двигателя (в литрах)
+);
+
+
+insert into auto_models(name, engine_power, engine_volume) values
+('Hyundai Solaris', 123, 1.6),
+('Kia Rio', 100, 1.4),
+('Ford Mondeo', 140, 1.8);
+
+select * from auto_models;
+
+
+create table owners(
+	id integer primary key AUTO_INCREMENT, -- код владельца
+    name varchar(50), -- ФИО
+    BirthDate date, -- дата рождения
+    address varchar(50), -- адрес
+    passport varchar(100) -- пасспортные данные
+);
+
+insert into owners(name, BirthDate, address, passport) values
+('Воробьёв Устин Серапионович', '1999-11-18','Тверская улица, дом 13', '4507-691234-772-050'),
+('Павлов Абрам Онисимович', '1990-05-24','Проспект вернадского, 43, кв 29', '4507-691234-772-050'),
+('Корнилова Лидия Александровна', '1993-10-19', 'Улица Стандартная, дом 21 корпус корп.1', '7492-920142-714-924'),
+('Корнилов Павел Мэлсович', '1970-01-19', 'Новорязанская ул., д. 38.', '037288-920164-937-824');
+
+select * from owners;
+
+
+
+create table registrations(
+	reg_num varchar(50), -- рег. знак
+    register_date date, -- дата регистрации
+    VIN varchar(50), -- VIN
+    model_id integer, -- код модели
+    launchYear integer, -- год выпуска
+    carcase_num varchar(50), -- номер кузова
+    engine_num varchar(50), -- номер двигателя
+    color varchar(50), -- цвет
+    techpass_num varchar(50), -- номер техпасспорта
+    owner_id integer, -- код владельца
+    job_id integer -- код сотрудника
+);
+
+
+
+insert into registrations(reg_num, register_date, VIN, model_id, launchYear, carcase_num, engine_num, color, techpass_num, owner_id, job_id) values
+('Е037УТ', '2006-11-18', 'JYAVP18E07A005321', 1, 2006, '55ABC10828', '52WVC10338', 'Чёрный', '8192746193', 1, 5),
+('А031АС', '2005-12-01', 'JF2SH63619H797346', 2, 2005, '12CEF10619', '56DGH82631', 'Чёрный', '3810238111', 2, 5),
+('У603АК', '2009-04-24', '1LNHM81V87Y600143', 3, 2008, '91JHG01638', '81BNM65437', 'Белый',  '9183649101', 3, 6),
+('Н143УА', '2014-11-22', '1GTDK14K4JZ512094', 3, 2014, '01BEB65439', '41FDS71924', 'Белый',  '9172839149', 4, 6);
+
+select * from registrations;
+
+
+create table hijacked_cars(
+	register_num varchar(50), -- рег. знак
+    hijack_date date, -- дата угона
+    application_date date, -- дата обращения
+    found_date date, -- дата нахождения
+    employee_id integer -- код сотрудника 
+);
+
+
+insert into hijacked_cars(register_num, hijack_date, application_date, found_date, employee_id) values
+('Н143УА', '2022-11-22', '2022-11-30', '1970-01-01', 1),
+('У603АК', '2023-01-15', '2023-02-13', '2023-03-13', 2),
+('А031АС', '2023-08-11', '2023-09-04', '1970-01-01', 3);
+
+select * from hijacked_cars;
+
+
+
+
+-- ЗАДАНИЕ №1. Список сотрудников со всеми реквизитами
+select * from employees
+JOIN jobs AS j on j.id = employees.job_id
+JOIN ranks AS r on r.id = employees.job_id;
+
+
+-- ЗАДАНИЕ №2. Список моделей авто с количеством регистраций
+select * from auto_models join 
+(select model_id, 
+COUNT(model_id) 
+FROM registrations
+GROUP BY model_id) as temp on temp.model_id = id;
+
+
+-- Задание №3 список владельцев угнаных автомобилей
+select name from (
+select * from hijacked_cars
+join registrations on registrations.reg_num = hijacked_cars.register_num
+join owners on owners.id = owner_id) as temp;
+
+
+-- Задание №4 Список регистрации заданным сотрудником за заданный период 
+select * from registrations
+where job_id=5 and -- ВСТАВИТЬ ИМЯ СОТРУДНИКА
+register_date >= '2005-11-01' -- ВСТАВИТЬ НАЧАЛО ПЕРИОДА
+ and register_date <= '2005-12-1-0'; -- ВСТАВИТЬ КОНЕЦ ПЕРИОДА
+ 
+ 
+ -- Задание №5 Список авто, находящихся в угоне более 3х месяцев и до сих пор не найденных
+select * from  hijacked_cars
+where found_date = '1970-01-01' and
+DATEDIFF(CURDATE(), application_date) > 3*30;
+
+
+-- Задание №6 Список из 3 самых угоняемых моделей авто
+select model_id, 
+COUNT(model_id) 
+FROM (select * from hijacked_cars
+join registrations on registrations.reg_num = hijacked_cars.register_num) as temp
+GROUP BY model_id
+ORDER BY `COUNT(model_id)` DESC
+LIMIT 3;
