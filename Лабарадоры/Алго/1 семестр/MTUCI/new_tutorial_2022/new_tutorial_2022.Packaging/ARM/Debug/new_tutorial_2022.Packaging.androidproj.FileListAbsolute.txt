@@ -1,0 +1,13 @@
+C:\Users\Saha2\Desktop\МТУСИ VC++\new_tutorial_2022\new_tutorial_2022.Packaging\ARM\Debug\new_tutorial_2022.apk.recipe
+C:\Users\Saha2\Desktop\МТУСИ VC++\new_tutorial_2022\new_tutorial_2022.Packaging\ARM\Debug\new_tutorial_2022.apk.recipe.merged
+C:\Users\Saha2\Desktop\МТУСИ VC++\new_tutorial_2022\new_tutorial_2022.Packaging\ARM\Debug\Package\libs\armeabi-v7a\libnew_tutorial_2022.so
+C:\Users\Saha2\Desktop\МТУСИ VC++\new_tutorial_2022\new_tutorial_2022.Packaging\ARM\Debug\Package\libs\armeabi-v7a\gdbserver
+C:\Users\Saha2\Desktop\МТУСИ VC++\new_tutorial_2022\new_tutorial_2022.Packaging\ARM\Debug\Package\libs\armeabi-v7a\libc++_static.a
+C:\Users\Saha2\Desktop\МТУСИ VC++\new_tutorial_2022\new_tutorial_2022.Packaging\ARM\Debug\Package\libs\armeabi-v7a\libc++abi.a
+C:\Users\Saha2\Desktop\МТУСИ VC++\new_tutorial_2022\new_tutorial_2022.Packaging\ARM\Debug\Package\res\values\strings.xml
+C:\Users\Saha2\Desktop\МТУСИ VC++\new_tutorial_2022\new_tutorial_2022.Packaging\ARM\Debug\Package\AndroidManifest.xml
+C:\Users\Saha2\Desktop\МТУСИ VC++\new_tutorial_2022\new_tutorial_2022.Packaging\ARM\Debug\Package\project.properties
+C:\Users\Saha2\Desktop\МТУСИ VC++\new_tutorial_2022\new_tutorial_2022.Packaging\ARM\Debug\Package\build.xml
+C:\Users\Saha2\Desktop\МТУСИ VC++\new_tutorial_2022\new_tutorial_2022.Packaging\ARM\Debug\FileStringReplace.incremental
+C:\Users\Saha2\Desktop\МТУСИ VC++\new_tutorial_2022\new_tutorial_2022.Packaging\ARM\Debug\new_tutorial_2022.apk
+C:\Users\Saha2\Desktop\МТУСИ VC++\new_tutorial_2022\new_tutorial_2022.Packaging\ARM\Debug\new_tutorial_2022.lastsuccessfuldeploy

@@ -1,0 +1,6 @@
+C:\Users\Saha2\Desktop\МТУСИ VC++\Android1\Android1.Packaging\ARM\Debug\Android1.apk.recipe
+C:\Users\Saha2\Desktop\МТУСИ VC++\Android1\Android1.Packaging\ARM\Debug\Android1.apk.recipe.merged
+C:\Users\Saha2\Desktop\МТУСИ VC++\Android1\Android1.Packaging\ARM\Debug\Package\libs\armeabi-v7a\libAndroid1.so
+C:\Users\Saha2\Desktop\МТУСИ VC++\Android1\Android1.Packaging\ARM\Debug\FileStringReplace.incremental
+C:\Users\Saha2\Desktop\МТУСИ VC++\Android1\Android1.Packaging\ARM\Debug\Android1.apk
+C:\Users\Saha2\Desktop\МТУСИ VC++\Android1\Android1.Packaging\ARM\Debug\Android1.lastsuccessfuldeploy
