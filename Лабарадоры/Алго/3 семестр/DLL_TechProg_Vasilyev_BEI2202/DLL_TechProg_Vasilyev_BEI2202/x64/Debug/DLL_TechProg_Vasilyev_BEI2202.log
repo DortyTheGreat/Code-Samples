@@ -1,0 +1,5 @@
+﻿  DLL_TechProg_Vasilyev_BEI2202.cpp
+C:\Users\vasil\OneDrive\Документы\VSprojects\DLL_TechProg_Vasilyev_BEI2202\DLL_TechProg_Vasilyev_BEI2202\DLL_TechProg_Vasilyev_BEI2202.cpp(42,13): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+C:\Users\vasil\OneDrive\Документы\VSprojects\DLL_TechProg_Vasilyev_BEI2202\DLL_TechProg_Vasilyev_BEI2202\DLL_TechProg_Vasilyev_BEI2202.cpp(75,21): warning C4244: аргумент: преобразование "unsigned __int64" в "double", возможна потеря данных
+  AssemblyInfo.obj : обнаружен модуль MSIL; для MSIL последовательная компоновка отключена; выполняется полная компоновка
+  DLL_TechProg_Vasilyev_BEI2202.vcxproj -> C:\Users\vasil\OneDrive\Документы\VSprojects\DLL_TechProg_Vasilyev_BEI2202\x64\Debug\DLL_TechProg_Vasilyev_BEI2202.dll

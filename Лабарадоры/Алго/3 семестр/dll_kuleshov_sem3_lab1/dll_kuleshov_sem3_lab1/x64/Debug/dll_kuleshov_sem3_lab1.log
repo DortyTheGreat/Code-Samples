@@ -1,0 +1,9 @@
+﻿  dll_kuleshov_sem3_lab1.cpp
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\Алго\3 семестр\dll_kuleshov_sem3_lab1\dll_kuleshov_sem3_lab1\dll_kuleshov_sem3_lab1.h(27,17): error C2871: System: пространство имен с таким именем не существует
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\Алго\3 семестр\dll_kuleshov_sem3_lab1\dll_kuleshov_sem3_lab1\dll_kuleshov_sem3_lab1.h(27,17): error C2065: System: необъявленный идентификатор
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\Алго\3 семестр\dll_kuleshov_sem3_lab1\dll_kuleshov_sem3_lab1\dll_kuleshov_sem3_lab1.h(28,17): error C2653: System: не является именем класса или пространства имен
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\Алго\3 семестр\dll_kuleshov_sem3_lab1\dll_kuleshov_sem3_lab1\dll_kuleshov_sem3_lab1.h(28,34): error C2871: Forms: пространство имен с таким именем не существует
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\Алго\3 семестр\dll_kuleshov_sem3_lab1\dll_kuleshov_sem3_lab1\dll_kuleshov_sem3_lab1.h(28,17): error C2065: System: необъявленный идентификатор
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\Алго\3 семестр\dll_kuleshov_sem3_lab1\dll_kuleshov_sem3_lab1\dll_kuleshov_sem3_lab1.h(31,2): error C2059: синтаксическая ошибка: public
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\Алго\3 семестр\dll_kuleshov_sem3_lab1\dll_kuleshov_sem3_lab1\dll_kuleshov_sem3_lab1.h(32,2): error C2143: синтаксическая ошибка: отсутствие ";" перед "{"
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\Алго\3 семестр\dll_kuleshov_sem3_lab1\dll_kuleshov_sem3_lab1\dll_kuleshov_sem3_lab1.h(32,2): error C2447: {: отсутствует заголовок функции (возможно, используется формальный список старого типа)
