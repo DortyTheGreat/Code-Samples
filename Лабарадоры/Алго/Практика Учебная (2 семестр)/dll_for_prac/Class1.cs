@@ -59,29 +59,30 @@ namespace dll_for_prac
         }
 
         // Функция для решения второго задания (через return)
-        public static double func_for_zad2(double L)
+        public static double get_Radius(double L)
         {
             // L = 2 PI R => R = L/(2 * PI)
-            double R = L / (2 * Math.PI);
-            double S = Math.PI * R * R;
+            return  L / (2 * Math.PI);
+        }
+
+        // Функция для решения второго задания (через return)
+        public static double func_for_zad2(double L)
+        {
+            double S = Math.PI * Math.Pow(get_Radius(L),2);
             return S;
         }
 
         // Функция для решения второго задания (через out)
         public static void func_for_zad2_out(double L, out double res)
         {
-            // L = 2 PI R => R = L/(2 * PI)
-            double R = L / (2 * Math.PI);
-            double S = Math.PI * R * R;
+            double S = Math.PI * Math.Pow(get_Radius(L), 2);
             res = S;
         }
 
         // Функция для решения второго задания (через ref)
         public static void func_for_zad2_ref(double L, ref double res)
         {
-            // L = 2 PI R => R = L/(2 * PI)
-            double R = L / (2 * Math.PI);
-            double S = Math.PI * R * R;
+            double S = Math.PI * Math.Pow(get_Radius(L), 2);
             res = S;
         }
 
