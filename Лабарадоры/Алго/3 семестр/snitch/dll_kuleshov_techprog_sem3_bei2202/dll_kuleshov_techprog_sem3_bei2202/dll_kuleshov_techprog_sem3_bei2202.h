@@ -13,14 +13,14 @@ namespace dll_kuleshov_techprog_sem3_bei2202 {
 			static void output(double x, TextBox^ t);
 
 			static double get_Radius(double L);
-			static double get_Length(double L);
+			static double get_Area(double L);
 
 			// ЛР #2
-			static void gen_mas(int* mas, int n);
-			static void output_mas(int* mas, int len, DataGridView^ grid);
+			static void gen_mas(double* mas, int n);
+			static void output_mas(double* mas, int len, DataGridView^ grid);
 
-			static int count_in_bounds(int* mas, int n);
-			static void set_mas(int* mas, int n, int* rezmas);
+			static int count_in_bounds(double* mas, int n);
+			static int set_mas(double* mas, int n, double* rezmas);
 
 	};
 }

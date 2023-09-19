@@ -47,6 +47,8 @@ namespace kuleshov_techprog_sem3_bei2202 {
 	private: System::Windows::Forms::Button^ button1;
 	private: System::Windows::Forms::Label^ label3;
 
+
+
 	private:
 		/// <summary>
 		/// Обязательная переменная конструктора.
@@ -88,12 +90,13 @@ namespace kuleshov_techprog_sem3_bei2202 {
 			dataGridViewCellStyle3->SelectionForeColor = System::Drawing::SystemColors::HighlightText;
 			dataGridViewCellStyle3->WrapMode = System::Windows::Forms::DataGridViewTriState::False;
 			this->dataGridView1->DefaultCellStyle = dataGridViewCellStyle3;
-			this->dataGridView1->Location = System::Drawing::Point(27, 56);
+			this->dataGridView1->Location = System::Drawing::Point(11, 31);
+			this->dataGridView1->Margin = System::Windows::Forms::Padding(2);
 			this->dataGridView1->Name = L"dataGridView1";
 			this->dataGridView1->RowHeadersVisible = false;
 			this->dataGridView1->RowHeadersWidth = 51;
 			this->dataGridView1->RowTemplate->Height = 24;
-			this->dataGridView1->Size = System::Drawing::Size(295, 74);
+			this->dataGridView1->Size = System::Drawing::Size(300, 100);
 			this->dataGridView1->TabIndex = 0;
 			// 
 			// label1
@@ -101,9 +104,10 @@ namespace kuleshov_techprog_sem3_bei2202 {
 			this->label1->AutoSize = true;
 			this->label1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label1->Location = System::Drawing::Point(33, 11);
+			this->label1->Location = System::Drawing::Point(25, 9);
+			this->label1->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(184, 25);
+			this->label1->Size = System::Drawing::Size(146, 20);
 			this->label1->TabIndex = 1;
 			this->label1->Text = L"Исходный массив:";
 			// 
@@ -112,11 +116,12 @@ namespace kuleshov_techprog_sem3_bei2202 {
 			this->label2->AutoSize = true;
 			this->label2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label2->Location = System::Drawing::Point(33, 154);
+			this->label2->Location = System::Drawing::Point(25, 228);
+			this->label2->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(253, 25);
+			this->label2->Size = System::Drawing::Size(121, 20);
 			this->label2->TabIndex = 3;
-			this->label2->Text = L"Результирующий массив:";
+			this->label2->Text = L"Новый массив:";
 			// 
 			// dataGridView2
 			// 
@@ -132,21 +137,23 @@ namespace kuleshov_techprog_sem3_bei2202 {
 			dataGridViewCellStyle4->SelectionForeColor = System::Drawing::SystemColors::HighlightText;
 			dataGridViewCellStyle4->WrapMode = System::Windows::Forms::DataGridViewTriState::False;
 			this->dataGridView2->DefaultCellStyle = dataGridViewCellStyle4;
-			this->dataGridView2->Location = System::Drawing::Point(27, 199);
+			this->dataGridView2->Location = System::Drawing::Point(11, 250);
+			this->dataGridView2->Margin = System::Windows::Forms::Padding(2);
 			this->dataGridView2->Name = L"dataGridView2";
 			this->dataGridView2->RowHeadersVisible = false;
 			this->dataGridView2->RowHeadersWidth = 51;
 			this->dataGridView2->RowTemplate->Height = 24;
-			this->dataGridView2->Size = System::Drawing::Size(295, 74);
+			this->dataGridView2->Size = System::Drawing::Size(300, 100);
 			this->dataGridView2->TabIndex = 2;
 			// 
 			// button3
 			// 
 			this->button3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 10.2F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->button3->Location = System::Drawing::Point(509, 255);
+			this->button3->Location = System::Drawing::Point(470, 302);
+			this->button3->Margin = System::Windows::Forms::Padding(2);
 			this->button3->Name = L"button3";
-			this->button3->Size = System::Drawing::Size(137, 59);
+			this->button3->Size = System::Drawing::Size(103, 48);
 			this->button3->TabIndex = 27;
 			this->button3->Text = L"Выйти из приложения";
 			this->button3->UseVisualStyleBackColor = true;
@@ -156,9 +163,10 @@ namespace kuleshov_techprog_sem3_bei2202 {
 			// 
 			this->button2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 10.2F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->button2->Location = System::Drawing::Point(509, 160);
+			this->button2->Location = System::Drawing::Point(470, 134);
+			this->button2->Margin = System::Windows::Forms::Padding(2);
 			this->button2->Name = L"button2";
-			this->button2->Size = System::Drawing::Size(137, 59);
+			this->button2->Size = System::Drawing::Size(103, 48);
 			this->button2->TabIndex = 26;
 			this->button2->Text = L"Вернуться к условию";
 			this->button2->UseVisualStyleBackColor = true;
@@ -168,9 +176,10 @@ namespace kuleshov_techprog_sem3_bei2202 {
 			// 
 			this->button1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 10.2F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->button1->Location = System::Drawing::Point(509, 56);
+			this->button1->Location = System::Drawing::Point(470, 11);
+			this->button1->Margin = System::Windows::Forms::Padding(2);
 			this->button1->Name = L"button1";
-			this->button1->Size = System::Drawing::Size(137, 59);
+			this->button1->Size = System::Drawing::Size(103, 48);
 			this->button1->TabIndex = 25;
 			this->button1->Text = L"Вычислить";
 			this->button1->UseVisualStyleBackColor = true;
@@ -179,19 +188,19 @@ namespace kuleshov_techprog_sem3_bei2202 {
 			// label3
 			// 
 			this->label3->AutoSize = true;
-			this->label3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label3->Location = System::Drawing::Point(35, 311);
+			this->label3->Location = System::Drawing::Point(7, 179);
 			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(17, 25);
+			this->label3->Size = System::Drawing::Size(362, 24);
 			this->label3->TabIndex = 28;
-			this->label3->Text = L" ";
+			this->label3->Text = L"Количество чисел в диапазоне [2;10]: 0";
 			// 
 			// lab2_solution
 			// 
-			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
+			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(694, 346);
+			this->ClientSize = System::Drawing::Size(584, 361);
 			this->Controls->Add(this->label3);
 			this->Controls->Add(this->button3);
 			this->Controls->Add(this->button2);
@@ -200,9 +209,10 @@ namespace kuleshov_techprog_sem3_bei2202 {
 			this->Controls->Add(this->dataGridView2);
 			this->Controls->Add(this->label1);
 			this->Controls->Add(this->dataGridView1);
+			this->Margin = System::Windows::Forms::Padding(2);
 			this->Name = L"lab2_solution";
 			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
-			this->Text = L"lab2_solution";
+			this->Text = L"Лабараторная Работа №2";
 			this->Load += gcnew System::EventHandler(this, &lab2_solution::lab2_solution_Load);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView2))->EndInit();
@@ -221,26 +231,35 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 	this->Close();
 }
 private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
-	int j;
-	double mean = 0;
+
 	String^ g = Microsoft::VisualBasic::Interaction::InputBox("Введите количество элементов в массиве",
-															  "Ввод", "", -1, -1);
-	int n = Convert::ToInt16(g);
-	int* mas = new int[n];
-	int* rezmas = new int[n];
+														  "Ввод", "", -1, -1);
+
+	int n;
+	double* mas;
+	double* rezmas;
+	
+	try {
+		n = Convert::ToInt16(g);
+		mas = new double[n];
+		rezmas = new double[n];
+	}
+	catch (System::FormatException^ e) {
+		MessageBox::Show("Ошибка при вводе данных", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Error);
+		return;
+	}
 
 	Functions_Class::gen_mas(mas, n);
 	Functions_Class::output_mas(mas, n, dataGridView1);
-	mean = 456;
-
-	//MessageBox::Show("Среднее геометрическое квадратов = " + Convert::ToString(mean), "", MessageBoxButtons::OK, MessageBoxIcon::Information);
-	label3->Text = "Среднее геометрическое квадратов = " + Convert::ToString(mean);
 	
-	Functions_Class::set_mas(mas, n, rezmas);
-	Functions_Class::output_mas(rezmas, j, dataGridView2);
+	int sz = Functions_Class::set_mas(mas, n, rezmas);
+	Functions_Class::output_mas(rezmas, sz, dataGridView2);
+
+	label3->Text = "  Количество чисел в диапазоне[2; 10]: " + Functions_Class::count_in_bounds(mas, n);
 
 	delete[] mas;
 	delete[] rezmas;
 }
+
 };
 }

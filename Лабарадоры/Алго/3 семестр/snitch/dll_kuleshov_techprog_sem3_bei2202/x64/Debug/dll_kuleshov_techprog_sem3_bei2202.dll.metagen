@@ -17,8 +17,8 @@ Class dll_kuleshov_techprog_sem3_bei2202.Functions_Class: AutoLayout, AnsiClass,
     input(TextBox): PrivateScope, Public, Static, HideBySig
     output(Double, TextBox): PrivateScope, Public, Static, HideBySig
     get_Radius(Double): PrivateScope, Public, Static, HideBySig
-    get_Length(Double): PrivateScope, Public, Static, HideBySig
-    gen_mas(Int32*, Int32): PrivateScope, Public, Static, HideBySig
-    output_mas(Int32*, Int32, DataGridView): PrivateScope, Public, Static, HideBySig
-    count_in_bounds(Int32*, Int32): PrivateScope, Public, Static, HideBySig
-    set_mas(Int32*, Int32, Int32*): PrivateScope, Public, Static, HideBySig
+    get_Area(Double): PrivateScope, Public, Static, HideBySig
+    gen_mas(Double*, Int32): PrivateScope, Public, Static, HideBySig
+    output_mas(Double*, Int32, DataGridView): PrivateScope, Public, Static, HideBySig
+    count_in_bounds(Double*, Int32): PrivateScope, Public, Static, HideBySig
+    set_mas(Double*, Int32, Double*): PrivateScope, Public, Static, HideBySig

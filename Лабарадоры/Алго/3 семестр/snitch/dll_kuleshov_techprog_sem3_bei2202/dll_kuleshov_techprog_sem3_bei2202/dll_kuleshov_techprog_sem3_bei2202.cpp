@@ -20,7 +20,7 @@ namespace dll_kuleshov_techprog_sem3_bei2202 {
 		return L / (2 * Math::PI);
 	}
 
-	double Functions_Class::get_Length(double L) {
+	double Functions_Class::get_Area(double L) {
 		double S = Math::PI * Math::Pow(get_Radius(L), 2);
 		return S;
 	}
@@ -28,14 +28,14 @@ namespace dll_kuleshov_techprog_sem3_bei2202 {
 	
 
 // ЛР №2
-	void Functions_Class::gen_mas(int* mas, int n) {
+	void Functions_Class::gen_mas(double* mas, int n) {
 		srand(time(0));
 		for (int i = 0; i < n; i++) {
-			mas[i] = (int)(rand() % 100) - 50;
+			mas[i] = ((double)((int)(rand() % 600) - 300)) / 10.0;
 		}
 	}
 
-	int Functions_Class::count_in_bounds(int* mas, int n) {
+	int Functions_Class::count_in_bounds(double* mas, int n) {
 		int count = 0;
 		for (int i = 0; i < n; i++) {
 			if (mas[i] >= 2 && mas[i] <= 10) {
@@ -47,7 +47,7 @@ namespace dll_kuleshov_techprog_sem3_bei2202 {
 
 	
 
-	void Functions_Class::output_mas(int* mas, int len, DataGridView^ grid) {
+	void Functions_Class::output_mas(double* mas, int len, DataGridView^ grid) {
 		grid->ColumnCount = len;
 		grid->RowCount = 2;
 		for (int i = 0; i < len; i++) {
@@ -64,7 +64,7 @@ namespace dll_kuleshov_techprog_sem3_bei2202 {
 		}
 	}
 
-	void Functions_Class::set_mas(int* mas, int n, int* rezmas) {
+	int Functions_Class::set_mas(double* mas, int n, double* rezmas) {
 		int cou = count_in_bounds(mas, n);
 		int j = 0;
 		for (int i = 0; i < n; i++) {
@@ -73,5 +73,6 @@ namespace dll_kuleshov_techprog_sem3_bei2202 {
 				j++;
 			}
 		}
+		return j;
 	}
 }
