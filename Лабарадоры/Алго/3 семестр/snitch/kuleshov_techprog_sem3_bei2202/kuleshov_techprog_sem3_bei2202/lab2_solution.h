@@ -255,7 +255,7 @@ private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e
 	int sz = Functions_Class::set_mas(mas, n, rezmas);
 	Functions_Class::output_mas(rezmas, sz, dataGridView2);
 
-	label3->Text = "  Количество чисел в диапазоне[2; 10]: " + Functions_Class::count_in_bounds(mas, n);
+	label3->Text = "Количество чисел в диапазоне[2; 10]: " + Functions_Class::count_in_bounds(mas, n);
 
 	delete[] mas;
 	delete[] rezmas;

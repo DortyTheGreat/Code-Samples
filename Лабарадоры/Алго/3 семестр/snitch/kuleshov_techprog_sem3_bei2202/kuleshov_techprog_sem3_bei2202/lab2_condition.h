@@ -145,5 +145,6 @@ namespace kuleshov_techprog_sem3_bei2202 {
 		f->Show();
 		this->Hide();
 	}
+
 };
 }
