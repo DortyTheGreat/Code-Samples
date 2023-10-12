@@ -1,0 +1,16 @@
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\Алго\3 семестр\snitch\kuleshov_techprog_sem3_bei2202\kuleshov_techprog_sem3_bei2202\x64\Debug\kuleshov_techprog_sem3_bei2202.vcxproj.AssemblyReference.cache
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\Алго\3 семестр\snitch\kuleshov_techprog_sem3_bei2202\kuleshov_techprog_sem3_bei2202\x64\Debug\kuleshov_techprog_sem3_bei2202.lab1_condition.resources
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\Алго\3 семестр\snitch\kuleshov_techprog_sem3_bei2202\kuleshov_techprog_sem3_bei2202\x64\Debug\kuleshov_techprog_sem3_bei2202.lab1_solution.resources
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\Алго\3 семестр\snitch\kuleshov_techprog_sem3_bei2202\kuleshov_techprog_sem3_bei2202\x64\Debug\kuleshov_techprog_sem3_bei2202.lab2_condition.resources
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\Алго\3 семестр\snitch\kuleshov_techprog_sem3_bei2202\kuleshov_techprog_sem3_bei2202\x64\Debug\kuleshov_techprog_sem3_bei2202.lab2_solution.resources
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\Алго\3 семестр\snitch\kuleshov_techprog_sem3_bei2202\kuleshov_techprog_sem3_bei2202\x64\Debug\kuleshov_techprog_sem3_bei2202.Main.resources
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\Алго\3 семестр\snitch\kuleshov_techprog_sem3_bei2202\kuleshov_techprog_sem3_bei2202\x64\Debug\kuleshov_techprog_sem3_bei2202.vcxproj.GenerateResource.cache
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\Алго\3 семестр\snitch\kuleshov_techprog_sem3_bei2202\kuleshov_techprog_sem3_bei2202\x64\Debug\kuleshov_techprog_sem3_bei2202.vcxproj.CopyComplete
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\1-2 сем\Алго\3 семестр\snitch\kuleshov_techprog_sem3_bei2202\kuleshov_techprog_sem3_bei2202\x64\Debug\kuleshov_techprog_sem3_bei2202.vcxproj.AssemblyReference.cache
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\1-2 сем\Алго\3 семестр\snitch\kuleshov_techprog_sem3_bei2202\kuleshov_techprog_sem3_bei2202\x64\Debug\kuleshov_techprog_sem3_bei2202.lab1_condition.resources
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\1-2 сем\Алго\3 семестр\snitch\kuleshov_techprog_sem3_bei2202\kuleshov_techprog_sem3_bei2202\x64\Debug\kuleshov_techprog_sem3_bei2202.lab1_solution.resources
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\1-2 сем\Алго\3 семестр\snitch\kuleshov_techprog_sem3_bei2202\kuleshov_techprog_sem3_bei2202\x64\Debug\kuleshov_techprog_sem3_bei2202.lab2_condition.resources
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\1-2 сем\Алго\3 семестр\snitch\kuleshov_techprog_sem3_bei2202\kuleshov_techprog_sem3_bei2202\x64\Debug\kuleshov_techprog_sem3_bei2202.lab2_solution.resources
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\1-2 сем\Алго\3 семестр\snitch\kuleshov_techprog_sem3_bei2202\kuleshov_techprog_sem3_bei2202\x64\Debug\kuleshov_techprog_sem3_bei2202.Main.resources
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\1-2 сем\Алго\3 семестр\snitch\kuleshov_techprog_sem3_bei2202\kuleshov_techprog_sem3_bei2202\x64\Debug\kuleshov_techprog_sem3_bei2202.vcxproj.GenerateResource.cache
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\1-2 сем\Алго\3 семестр\snitch\kuleshov_techprog_sem3_bei2202\kuleshov_techprog_sem3_bei2202\x64\Debug\kuleshov_techprog_sem3_bei2202.vcxproj.CopyComplete

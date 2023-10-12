@@ -1,0 +1,5 @@
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\Алго\3 семестр\Kuleshov_ProjPrac_sem3\Kuleshov_ProjPrac_sem3\x64\Debug\Kuleshov_ProjPrac_sem3.vcxproj.AssemblyReference.cache
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\Алго\3 семестр\Kuleshov_ProjPrac_sem3\Kuleshov_ProjPrac_sem3\x64\Debug\Kuleshov_ProjPrac_sem3.vcxproj.GenerateResource.cache
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\Алго\3 семестр\Kuleshov_ProjPrac_sem3\Kuleshov_ProjPrac_sem3\x64\Debug\Kuleshov_ProjPrac_sem3.vcxproj.CopyComplete
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\Алго\3 семестр\Kuleshov_ProjPrac_sem3\Kuleshov_ProjPrac_sem3\x64\Debug\KuleshovProjPracsem3.Titul.resources
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\Алго\3 семестр\Kuleshov_ProjPrac_sem3\Kuleshov_ProjPrac_sem3\x64\Debug\KuleshovProjPracsem3.Quests.resources

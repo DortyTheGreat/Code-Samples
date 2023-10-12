@@ -1,0 +1,4 @@
+﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets(2992,5): warning MSB3290: Не удалось создать сборку-оболочку для библиотеки типов "{215d64d2-031c-33c7-96e3-61794cd1ee61}". Библиотека типов "System_Windows_Forms" экспортирована из сборки CLR и не может быть повторно импортирована как сборка CLR.
+  dll_kuleshov_projprac_sem3.cpp
+  AssemblyInfo.obj : обнаружен модуль MSIL; для MSIL последовательная компоновка отключена; выполняется полная компоновка
+  dll_kuleshov_projprac_sem3.vcxproj -> C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\Алго\3 семестр\dll_kuleshov_projprac_sem3\x64\Debug\dll_kuleshov_projprac_sem3.dll
