@@ -1,0 +1,3 @@
+﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets(2992,5): warning MSB3288: ссылка COM "{238aa1ac-786f-4c17-baab-253670b449b9}" конфликтует со ссылкой "ONAddInForWord.1.0" — проект ссылается на библиотеки другого типа с именами библиотек такого же типа. Пропускается ссылка "{238aa1ac-786f-4c17-baab-253670b449b9}".
+  lab1_condition.obj : обнаружен модуль MSIL; для MSIL последовательная компоновка отключена; выполняется полная компоновка
+  kuleshov_techprog_sem3_bei2202.vcxproj -> C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\3 сем\ТехПрога\kuleshov_techprog_sem3_bei2202\x64\Debug\kuleshov_techprog_sem3_bei2202.exe

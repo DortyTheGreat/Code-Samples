@@ -1,0 +1,843 @@
+ImageRuntimeVersion: v4.0.30319
+Assembly Interop.AccWizObjects.8.2, Version=8.2.*, Culture=Инвариантный язык (Инвариантная страна): 
+	hash=SHA1, flags=PublicKey
+Assembly mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a: 
+	hash=None, flags=None
+Struct AccWizObjects.WIZ_FILETIME: AutoLayout, AnsiClass, Class, Public, SequentialLayout, Sealed, BeforeFieldInit
+  :System.ValueType
+  Fields:
+    Int32 dwLowDateTime : Public
+    Int32 dwHighDateTime : Public
+Struct AccWizObjects.WIZ_WIN32_FIND_DATA: AutoLayout, AnsiClass, Class, Public, SequentialLayout, Sealed, BeforeFieldInit
+  :System.ValueType
+  Fields:
+    Int32 dwFileAttributes : Public
+    AccWizObjects.WIZ_FILETIME ftCreationTime : Public
+    AccWizObjects.WIZ_FILETIME ftLastAccessTime : Public
+    AccWizObjects.WIZ_FILETIME ftLastWriteTime : Public
+    Int32 nFileSizeHigh : Public
+    Int32 nFileSizeLow : Public
+    Int32 dwReserved0 : Public
+    Int32 dwReserved1 : Public
+    Byte[] cFileName : Public, HasFieldMarshal
+    Byte[] cAlternate : Public, HasFieldMarshal
+Struct AccWizObjects.WIZ_SLR_FLAGS: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    AccWizObjects.WIZ_SLR_FLAGS WIZ_SLR_NO_UI = 1 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_SLR_FLAGS WIZ_SLR_ANY_MATCH = 2 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_SLR_FLAGS WIZ_SLR_UPDATE = 4 : Public, Static, Literal, HasDefault
+Struct AccWizObjects.WIZ_SLGP_FLAGS: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    AccWizObjects.WIZ_SLGP_FLAGS WIZ_SLGP_SHORTPATH = 1 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_SLGP_FLAGS WIZ_SLGP_UNCPRIORITY = 2 : Public, Static, Literal, HasDefault
+Struct AccWizObjects.WIZ_CSIDL_FLAGS: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    AccWizObjects.WIZ_CSIDL_FLAGS WIZ_CSIDL_DESKTOP = 0 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_CSIDL_FLAGS WIZ_CSIDL_PROGRAMS = 2 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_CSIDL_FLAGS WIZ_CSIDL_CONTROLS = 3 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_CSIDL_FLAGS WIZ_CSIDL_PRINTERS = 4 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_CSIDL_FLAGS WIZ_CSIDL_PERSONAL = 5 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_CSIDL_FLAGS WIZ_CSIDL_FAVORITES = 6 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_CSIDL_FLAGS WIZ_CSIDL_STARTUP = 7 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_CSIDL_FLAGS WIZ_CSIDL_RECENT = 8 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_CSIDL_FLAGS WIZ_CSIDL_SENDTO = 9 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_CSIDL_FLAGS WIZ_CSIDL_BITBUCKET = 10 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_CSIDL_FLAGS WIZ_CSIDL_STARTMENU = 11 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_CSIDL_FLAGS WIZ_CSIDL_DESKTOPDIRECTORY = 16 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_CSIDL_FLAGS WIZ_CSIDL_DRIVES = 17 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_CSIDL_FLAGS WIZ_CSIDL_NETWORK = 18 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_CSIDL_FLAGS WIZ_CSIDL_NETHOOD = 19 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_CSIDL_FLAGS WIZ_CSIDL_FONTS = 20 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_CSIDL_FLAGS WIZ_CSIDL_TEMPLATES = 21 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_CSIDL_FLAGS WIZ_CSIDL_COMMON_STARTMENU = 22 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_CSIDL_FLAGS WIZ_CSIDL_COMMON_PROGRAMS = 23 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_CSIDL_FLAGS WIZ_CSIDL_COMMON_STARTUP = 24 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_CSIDL_FLAGS WIZ_CSIDL_COMMON_DESKTOPDIRECTORY = 25 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_CSIDL_FLAGS WIZ_CSIDL_APPDATA = 26 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_CSIDL_FLAGS WIZ_CSIDL_PRINTHOOD = 27 : Public, Static, Literal, HasDefault
+Struct AccWizObjects.WIZ_SW_FLAGS: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    AccWizObjects.WIZ_SW_FLAGS WIZ_SW_NORMAL = 5 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_SW_FLAGS WIZ_SW_MAXIMIZE = 3 : Public, Static, Literal, HasDefault
+    AccWizObjects.WIZ_SW_FLAGS WIZ_SW_MINIMIZE = 7 : Public, Static, Literal, HasDefault
+Interface AccWizObjects.IImexGrid: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract, Import
+  Properties:
+    Boolean ShowRowHeaders 'get set' : 
+    Boolean AllowColumnSizing 'get set' : 
+    Boolean ShowColLines 'get set' : 
+    Int16 RowCount 'get ' : 
+    Int16 ColumnCount 'get ' : 
+    System.String Delimiters 'get set' : 
+    Boolean Painting 'get set' : 
+    Int16 GridHeader 'get set' : 
+    System.String StringDelimiters 'get set' : 
+    System.String Caption 'get set' : 
+    Int16 ColumnClickBehavior 'get set' : 
+    stdole.IFontDisp Font 'get set' : 
+    System.Object ColumnState 'get set' : 
+    Int16 FirstRowNumber 'get set' : 
+    UInt32 GridBackColor 'get set' : 
+    UInt32 BackColor 'get set' : 
+    System.String RowText [Int16] 'get set' : 
+    System.Object Columns [Int16] 'get set' : 
+    stdole.IFontDisp GridFont 'get set' : 
+    Boolean DrawTextLogicalOrder 'get set' : 
+  Methods:
+    get_ShowRowHeaders(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_ShowRowHeaders(Boolean(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_AllowColumnSizing(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_AllowColumnSizing(Boolean(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_ShowColLines(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_ShowColLines(Boolean(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_RowCount(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_ColumnCount(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_Delimiters(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_Delimiters(String(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_Painting(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_Painting(Boolean(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_GridHeader(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_GridHeader(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_StringDelimiters(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_StringDelimiters(String(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_Caption(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_Caption(String(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_ColumnClickBehavior(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_ColumnClickBehavior(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_Font(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_Font(IFontDisp(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_ColumnState(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_ColumnState(Object(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_FirstRowNumber(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_FirstRowNumber(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_GridBackColor(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_GridBackColor(UInt32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_BackColor(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_BackColor(UInt32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_RowText(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_RowText(Int16(In), String(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_Columns(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_Columns(Int16(In), Object(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    AddRow(String(In, HasFieldMarshal), Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    DeleteRow(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    Refresh(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    ClearRows(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    AddColumn(String(In, HasFieldMarshal), Int16(In), Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    DeleteColumn(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    ClearColumns(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    CalcBestColumns(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    ResetHScrollPos(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    ResetVScrollPos(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    get_GridFont(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_GridFont(IFontDisp(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_DrawTextLogicalOrder(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_DrawTextLogicalOrder(Boolean(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+Interface AccWizObjects.DImexGridEvents: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract, Import
+  Methods:
+    ColumnSelected(Int16): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    ColumnDeleted(Int16): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    ColumnCreated(Int16): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    ColumnSized(Int16): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+Class AccWizObjects.ImexGridClass: AutoLayout, AnsiClass, Class, Public, Import
+  :System.__ComObject
+    Void .ctor(): PrivateScope, Public, SpecialName, RTSpecialName
+  Interfaces:
+    AccWizObjects.IImexGrid
+    AccWizObjects.ImexGrid
+    AccWizObjects.DImexGridEvents_Event
+  Properties:
+    Boolean ShowRowHeaders 'get set' : 
+    Boolean AllowColumnSizing 'get set' : 
+    Boolean ShowColLines 'get set' : 
+    Int16 RowCount 'get ' : 
+    Int16 ColumnCount 'get ' : 
+    System.String Delimiters 'get set' : 
+    Boolean Painting 'get set' : 
+    Int16 GridHeader 'get set' : 
+    System.String StringDelimiters 'get set' : 
+    System.String Caption 'get set' : 
+    Int16 ColumnClickBehavior 'get set' : 
+    stdole.IFontDisp Font 'get set' : 
+    System.Object ColumnState 'get set' : 
+    Int16 FirstRowNumber 'get set' : 
+    UInt32 GridBackColor 'get set' : 
+    UInt32 BackColor 'get set' : 
+    System.String RowText [Int16] 'get set' : 
+    System.Object Columns [Int16] 'get set' : 
+    stdole.IFontDisp GridFont 'get set' : 
+    Boolean DrawTextLogicalOrder 'get set' : 
+  Events:
+    AccWizObjects.DImexGridEvents_ColumnSelectedEventHandler ColumnSelected: 
+    AccWizObjects.DImexGridEvents_ColumnDeletedEventHandler ColumnDeleted: 
+    AccWizObjects.DImexGridEvents_ColumnCreatedEventHandler ColumnCreated: 
+    AccWizObjects.DImexGridEvents_ColumnSizedEventHandler ColumnSized: 
+  Methods:
+    get_ShowRowHeaders(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_ShowRowHeaders(Boolean(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_AllowColumnSizing(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_AllowColumnSizing(Boolean(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_ShowColLines(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_ShowColLines(Boolean(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_RowCount(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_ColumnCount(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_Delimiters(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_Delimiters(String(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_Painting(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_Painting(Boolean(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_GridHeader(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_GridHeader(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_StringDelimiters(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_StringDelimiters(String(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_Caption(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_Caption(String(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_ColumnClickBehavior(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_ColumnClickBehavior(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_Font(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_Font(IFontDisp(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_ColumnState(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_ColumnState(Object(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_FirstRowNumber(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_FirstRowNumber(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_GridBackColor(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_GridBackColor(UInt32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_BackColor(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_BackColor(UInt32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_RowText(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_RowText(Int16(In), String(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_Columns(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_Columns(Int16(In), Object(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    AddRow(String(In, HasFieldMarshal), Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    DeleteRow(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    Refresh(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    ClearRows(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    AddColumn(String(In, HasFieldMarshal), Int16(In), Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    DeleteColumn(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    ClearColumns(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    CalcBestColumns(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    ResetHScrollPos(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    ResetVScrollPos(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    get_GridFont(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_GridFont(IFontDisp(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_DrawTextLogicalOrder(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_DrawTextLogicalOrder(Boolean(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    add_ColumnSelected(DImexGridEvents_ColumnSelectedEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    remove_ColumnSelected(DImexGridEvents_ColumnSelectedEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    add_ColumnDeleted(DImexGridEvents_ColumnDeletedEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    remove_ColumnDeleted(DImexGridEvents_ColumnDeletedEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    add_ColumnCreated(DImexGridEvents_ColumnCreatedEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    remove_ColumnCreated(DImexGridEvents_ColumnCreatedEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    add_ColumnSized(DImexGridEvents_ColumnSizedEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    remove_ColumnSized(DImexGridEvents_ColumnSizedEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+Interface AccWizObjects.DImexGridEvents_Event: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract
+  Events:
+    AccWizObjects.DImexGridEvents_ColumnSelectedEventHandler ColumnSelected: 
+    AccWizObjects.DImexGridEvents_ColumnDeletedEventHandler ColumnDeleted: 
+    AccWizObjects.DImexGridEvents_ColumnCreatedEventHandler ColumnCreated: 
+    AccWizObjects.DImexGridEvents_ColumnSizedEventHandler ColumnSized: 
+  Methods:
+    add_ColumnSelected(DImexGridEvents_ColumnSelectedEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    remove_ColumnSelected(DImexGridEvents_ColumnSelectedEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    add_ColumnDeleted(DImexGridEvents_ColumnDeletedEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    remove_ColumnDeleted(DImexGridEvents_ColumnDeletedEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    add_ColumnCreated(DImexGridEvents_ColumnCreatedEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    remove_ColumnCreated(DImexGridEvents_ColumnCreatedEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    add_ColumnSized(DImexGridEvents_ColumnSizedEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    remove_ColumnSized(DImexGridEvents_ColumnSizedEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+Class AccWizObjects.DImexGridEvents_ColumnSelectedEventHandler: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.MulticastDelegate
+    Void .ctor(System.Object, UIntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(Int16): PrivateScope, Public, Virtual
+Class AccWizObjects.DImexGridEvents_ColumnDeletedEventHandler: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.MulticastDelegate
+    Void .ctor(System.Object, UIntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(Int16): PrivateScope, Public, Virtual
+Class AccWizObjects.DImexGridEvents_ColumnCreatedEventHandler: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.MulticastDelegate
+    Void .ctor(System.Object, UIntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(Int16): PrivateScope, Public, Virtual
+Class AccWizObjects.DImexGridEvents_ColumnSizedEventHandler: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.MulticastDelegate
+    Void .ctor(System.Object, UIntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(Int16): PrivateScope, Public, Virtual
+Interface AccWizObjects.ImexGrid: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract, Import
+  Interfaces:
+    AccWizObjects.IImexGrid
+    AccWizObjects.DImexGridEvents_Event
+Interface AccWizObjects.IImexGridColumn: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract, Import
+  Properties:
+    Int16 Width 'get set' : 
+    Int16 DataType 'get set' : 
+    Int16 IndexType 'get set' : 
+    Int32 Flags 'get set' : 
+    System.String Caption 'get set' : 
+    Boolean Selected 'get set' : 
+    System.String Text [Int16] 'get ' : 
+    Int32 IntWidth 'get ' : 
+  Methods:
+    set_Width(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_Width(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_DataType(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_DataType(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_IndexType(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_IndexType(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_Flags(Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_Flags(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_Caption(String(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_Caption(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_Selected(Boolean(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_Selected(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_Text(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_IntWidth(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+Interface AccWizObjects.IImexGridColState: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract, Import
+Interface AccWizObjects.IFieldList: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract, Import
+  Properties:
+    Int16 FieldListCount 'get ' : 
+    Int16 SelectedFieldListIndex 'get set' : 
+    Int16 JoinLineCount 'get ' : 
+    Int16 ScrollBars 'get set' : 
+    Int16 PictureCols 'get set' : 
+    stdole.IPictureDisp Picture 'get set' : 
+    Int16 PictureRows 'get set' : 
+    Boolean PersistentHighlight 'get set' : 
+    Int32 HScrollPos 'get set' : 
+    Int32 VScrollPos 'get set' : 
+    System.Object FieldLists [Int16] 'get ' : 
+    System.Object JoinLines [Int16] 'get ' : 
+  Methods:
+    get_FieldListCount(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_SelectedFieldListIndex(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_SelectedFieldListIndex(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_JoinLineCount(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_ScrollBars(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_ScrollBars(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_PictureCols(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_PictureCols(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_Picture(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_Picture(IPictureDisp(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_PictureRows(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_PictureRows(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_PersistentHighlight(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_PersistentHighlight(Boolean(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_HScrollPos(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_HScrollPos(Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_VScrollPos(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_VScrollPos(Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_FieldLists(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_JoinLines(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    AddFieldList(String(In, HasFieldMarshal), Int16(In), Int16(In), Int16(In), Int16(In), Int16(In), Int16(In), Boolean(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    SetCursor(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    AddJoinLine(Int16(In), Int16(In), Int16(In), Int16(In), Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    DeleteJoinLine(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    DeleteFieldList(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+Interface AccWizObjects.DFieldListEvents: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract, Import
+  Methods:
+    AfterStartup(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    FldListGotFocus(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    FldListClick(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    FldListDblClick(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    FldListKeyPress(Int16(In), Int16&(In, Out)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    FldListMouseDown(Int16(In), Int16(In), Int16(In), Int32(In), Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    FldListMouseMove(Int16(In), Int16(In), Int16(In), Int32(In), Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    FldListMouseUp(Int16(In), Int16(In), Int16(In), Int32(In), Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    FldListKeyDown(Int16(In), Int16&(In, Out), Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    FldListKeyUp(Int16(In), Int16&(In, Out), Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    FldListHdrDblClick(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    FldListDragDrop(String(In, HasFieldMarshal), Int16(In), Int16(In), String(In, HasFieldMarshal), Int16(In), Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    FldListDragOver(String(In, HasFieldMarshal), Int16(In), Int16(In), String(In, HasFieldMarshal), Int16(In), Int16(In), Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    DragOver(String(In, HasFieldMarshal), Int16(In), Int16(In), Int16(In), Int16(In), Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    DragDrop(String(In, HasFieldMarshal), Int16(In), Int16(In), Int16(In), Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    FldListLostFocus(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    FldListCheckItem(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+Class AccWizObjects.FieldListClass: AutoLayout, AnsiClass, Class, Public, Import
+  :System.__ComObject
+    Void .ctor(): PrivateScope, Public, SpecialName, RTSpecialName
+  Interfaces:
+    AccWizObjects.IFieldList
+    AccWizObjects.FieldList
+    AccWizObjects.DFieldListEvents_Event
+  Properties:
+    Int16 FieldListCount 'get ' : 
+    Int16 SelectedFieldListIndex 'get set' : 
+    Int16 JoinLineCount 'get ' : 
+    Int16 ScrollBars 'get set' : 
+    Int16 PictureCols 'get set' : 
+    stdole.IPictureDisp Picture 'get set' : 
+    Int16 PictureRows 'get set' : 
+    Boolean PersistentHighlight 'get set' : 
+    Int32 HScrollPos 'get set' : 
+    Int32 VScrollPos 'get set' : 
+    System.Object FieldLists [Int16] 'get ' : 
+    System.Object JoinLines [Int16] 'get ' : 
+  Events:
+    AccWizObjects.DFieldListEvents_AfterStartupEventHandler AfterStartup: 
+    AccWizObjects.DFieldListEvents_FldListGotFocusEventHandler FldListGotFocus: 
+    AccWizObjects.DFieldListEvents_FldListClickEventHandler FldListClick: 
+    AccWizObjects.DFieldListEvents_FldListDblClickEventHandler FldListDblClick: 
+    AccWizObjects.DFieldListEvents_FldListKeyPressEventHandler FldListKeyPress: 
+    AccWizObjects.DFieldListEvents_FldListMouseDownEventHandler FldListMouseDown: 
+    AccWizObjects.DFieldListEvents_FldListMouseMoveEventHandler FldListMouseMove: 
+    AccWizObjects.DFieldListEvents_FldListMouseUpEventHandler FldListMouseUp: 
+    AccWizObjects.DFieldListEvents_FldListKeyDownEventHandler FldListKeyDown: 
+    AccWizObjects.DFieldListEvents_FldListKeyUpEventHandler FldListKeyUp: 
+    AccWizObjects.DFieldListEvents_FldListHdrDblClickEventHandler FldListHdrDblClick: 
+    AccWizObjects.DFieldListEvents_FldListDragDropEventHandler FldListDragDrop: 
+    AccWizObjects.DFieldListEvents_FldListDragOverEventHandler FldListDragOver: 
+    AccWizObjects.DFieldListEvents_DragOverEventHandler DragOver: 
+    AccWizObjects.DFieldListEvents_DragDropEventHandler DragDrop: 
+    AccWizObjects.DFieldListEvents_FldListLostFocusEventHandler FldListLostFocus: 
+    AccWizObjects.DFieldListEvents_FldListCheckItemEventHandler FldListCheckItem: 
+  Methods:
+    get_FieldListCount(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_SelectedFieldListIndex(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_SelectedFieldListIndex(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_JoinLineCount(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_ScrollBars(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_ScrollBars(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_PictureCols(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_PictureCols(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_Picture(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_Picture(IPictureDisp(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_PictureRows(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_PictureRows(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_PersistentHighlight(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_PersistentHighlight(Boolean(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_HScrollPos(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_HScrollPos(Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_VScrollPos(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_VScrollPos(Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_FieldLists(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_JoinLines(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    AddFieldList(String(In, HasFieldMarshal), Int16(In), Int16(In), Int16(In), Int16(In), Int16(In), Int16(In), Boolean(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    SetCursor(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    AddJoinLine(Int16(In), Int16(In), Int16(In), Int16(In), Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    DeleteJoinLine(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    DeleteFieldList(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    add_AfterStartup(DFieldListEvents_AfterStartupEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    remove_AfterStartup(DFieldListEvents_AfterStartupEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    add_FldListGotFocus(DFieldListEvents_FldListGotFocusEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    remove_FldListGotFocus(DFieldListEvents_FldListGotFocusEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    add_FldListClick(DFieldListEvents_FldListClickEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    remove_FldListClick(DFieldListEvents_FldListClickEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    add_FldListDblClick(DFieldListEvents_FldListDblClickEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    remove_FldListDblClick(DFieldListEvents_FldListDblClickEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    add_FldListKeyPress(DFieldListEvents_FldListKeyPressEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    remove_FldListKeyPress(DFieldListEvents_FldListKeyPressEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    add_FldListMouseDown(DFieldListEvents_FldListMouseDownEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    remove_FldListMouseDown(DFieldListEvents_FldListMouseDownEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    add_FldListMouseMove(DFieldListEvents_FldListMouseMoveEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    remove_FldListMouseMove(DFieldListEvents_FldListMouseMoveEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    add_FldListMouseUp(DFieldListEvents_FldListMouseUpEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    remove_FldListMouseUp(DFieldListEvents_FldListMouseUpEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    add_FldListKeyDown(DFieldListEvents_FldListKeyDownEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    remove_FldListKeyDown(DFieldListEvents_FldListKeyDownEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    add_FldListKeyUp(DFieldListEvents_FldListKeyUpEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    remove_FldListKeyUp(DFieldListEvents_FldListKeyUpEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    add_FldListHdrDblClick(DFieldListEvents_FldListHdrDblClickEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    remove_FldListHdrDblClick(DFieldListEvents_FldListHdrDblClickEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    add_FldListDragDrop(DFieldListEvents_FldListDragDropEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    remove_FldListDragDrop(DFieldListEvents_FldListDragDropEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    add_FldListDragOver(DFieldListEvents_FldListDragOverEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    remove_FldListDragOver(DFieldListEvents_FldListDragOverEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    add_DragOver(DFieldListEvents_DragOverEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    remove_DragOver(DFieldListEvents_DragOverEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    add_DragDrop(DFieldListEvents_DragDropEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    remove_DragDrop(DFieldListEvents_DragDropEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    add_FldListLostFocus(DFieldListEvents_FldListLostFocusEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    remove_FldListLostFocus(DFieldListEvents_FldListLostFocusEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    add_FldListCheckItem(DFieldListEvents_FldListCheckItemEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    remove_FldListCheckItem(DFieldListEvents_FldListCheckItemEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+Interface AccWizObjects.DFieldListEvents_Event: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract
+  Events:
+    AccWizObjects.DFieldListEvents_AfterStartupEventHandler AfterStartup: 
+    AccWizObjects.DFieldListEvents_FldListGotFocusEventHandler FldListGotFocus: 
+    AccWizObjects.DFieldListEvents_FldListClickEventHandler FldListClick: 
+    AccWizObjects.DFieldListEvents_FldListDblClickEventHandler FldListDblClick: 
+    AccWizObjects.DFieldListEvents_FldListKeyPressEventHandler FldListKeyPress: 
+    AccWizObjects.DFieldListEvents_FldListMouseDownEventHandler FldListMouseDown: 
+    AccWizObjects.DFieldListEvents_FldListMouseMoveEventHandler FldListMouseMove: 
+    AccWizObjects.DFieldListEvents_FldListMouseUpEventHandler FldListMouseUp: 
+    AccWizObjects.DFieldListEvents_FldListKeyDownEventHandler FldListKeyDown: 
+    AccWizObjects.DFieldListEvents_FldListKeyUpEventHandler FldListKeyUp: 
+    AccWizObjects.DFieldListEvents_FldListHdrDblClickEventHandler FldListHdrDblClick: 
+    AccWizObjects.DFieldListEvents_FldListDragDropEventHandler FldListDragDrop: 
+    AccWizObjects.DFieldListEvents_FldListDragOverEventHandler FldListDragOver: 
+    AccWizObjects.DFieldListEvents_DragOverEventHandler DragOver: 
+    AccWizObjects.DFieldListEvents_DragDropEventHandler DragDrop: 
+    AccWizObjects.DFieldListEvents_FldListLostFocusEventHandler FldListLostFocus: 
+    AccWizObjects.DFieldListEvents_FldListCheckItemEventHandler FldListCheckItem: 
+  Methods:
+    add_AfterStartup(DFieldListEvents_AfterStartupEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    remove_AfterStartup(DFieldListEvents_AfterStartupEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    add_FldListGotFocus(DFieldListEvents_FldListGotFocusEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    remove_FldListGotFocus(DFieldListEvents_FldListGotFocusEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    add_FldListClick(DFieldListEvents_FldListClickEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    remove_FldListClick(DFieldListEvents_FldListClickEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    add_FldListDblClick(DFieldListEvents_FldListDblClickEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    remove_FldListDblClick(DFieldListEvents_FldListDblClickEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    add_FldListKeyPress(DFieldListEvents_FldListKeyPressEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    remove_FldListKeyPress(DFieldListEvents_FldListKeyPressEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    add_FldListMouseDown(DFieldListEvents_FldListMouseDownEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    remove_FldListMouseDown(DFieldListEvents_FldListMouseDownEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    add_FldListMouseMove(DFieldListEvents_FldListMouseMoveEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    remove_FldListMouseMove(DFieldListEvents_FldListMouseMoveEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    add_FldListMouseUp(DFieldListEvents_FldListMouseUpEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    remove_FldListMouseUp(DFieldListEvents_FldListMouseUpEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    add_FldListKeyDown(DFieldListEvents_FldListKeyDownEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    remove_FldListKeyDown(DFieldListEvents_FldListKeyDownEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    add_FldListKeyUp(DFieldListEvents_FldListKeyUpEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    remove_FldListKeyUp(DFieldListEvents_FldListKeyUpEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    add_FldListHdrDblClick(DFieldListEvents_FldListHdrDblClickEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    remove_FldListHdrDblClick(DFieldListEvents_FldListHdrDblClickEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    add_FldListDragDrop(DFieldListEvents_FldListDragDropEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    remove_FldListDragDrop(DFieldListEvents_FldListDragDropEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    add_FldListDragOver(DFieldListEvents_FldListDragOverEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    remove_FldListDragOver(DFieldListEvents_FldListDragOverEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    add_DragOver(DFieldListEvents_DragOverEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    remove_DragOver(DFieldListEvents_DragOverEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    add_DragDrop(DFieldListEvents_DragDropEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    remove_DragDrop(DFieldListEvents_DragDropEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    add_FldListLostFocus(DFieldListEvents_FldListLostFocusEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    remove_FldListLostFocus(DFieldListEvents_FldListLostFocusEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    add_FldListCheckItem(DFieldListEvents_FldListCheckItemEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    remove_FldListCheckItem(DFieldListEvents_FldListCheckItemEventHandler): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+Class AccWizObjects.DFieldListEvents_AfterStartupEventHandler: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.MulticastDelegate
+    Void .ctor(System.Object, UIntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(): PrivateScope, Public, Virtual
+Class AccWizObjects.DFieldListEvents_FldListGotFocusEventHandler: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.MulticastDelegate
+    Void .ctor(System.Object, UIntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(Int16(In)): PrivateScope, Public, Virtual
+Class AccWizObjects.DFieldListEvents_FldListClickEventHandler: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.MulticastDelegate
+    Void .ctor(System.Object, UIntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(Int16(In)): PrivateScope, Public, Virtual
+Class AccWizObjects.DFieldListEvents_FldListDblClickEventHandler: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.MulticastDelegate
+    Void .ctor(System.Object, UIntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(Int16(In)): PrivateScope, Public, Virtual
+Class AccWizObjects.DFieldListEvents_FldListKeyPressEventHandler: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.MulticastDelegate
+    Void .ctor(System.Object, UIntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(Int16(In), Int16&(In, Out)): PrivateScope, Public, Virtual
+Class AccWizObjects.DFieldListEvents_FldListMouseDownEventHandler: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.MulticastDelegate
+    Void .ctor(System.Object, UIntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(Int16(In), Int16(In), Int16(In), Int32(In), Int32(In)): PrivateScope, Public, Virtual
+Class AccWizObjects.DFieldListEvents_FldListMouseMoveEventHandler: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.MulticastDelegate
+    Void .ctor(System.Object, UIntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(Int16(In), Int16(In), Int16(In), Int32(In), Int32(In)): PrivateScope, Public, Virtual
+Class AccWizObjects.DFieldListEvents_FldListMouseUpEventHandler: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.MulticastDelegate
+    Void .ctor(System.Object, UIntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(Int16(In), Int16(In), Int16(In), Int32(In), Int32(In)): PrivateScope, Public, Virtual
+Class AccWizObjects.DFieldListEvents_FldListKeyDownEventHandler: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.MulticastDelegate
+    Void .ctor(System.Object, UIntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(Int16(In), Int16&(In, Out), Int16(In)): PrivateScope, Public, Virtual
+Class AccWizObjects.DFieldListEvents_FldListKeyUpEventHandler: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.MulticastDelegate
+    Void .ctor(System.Object, UIntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(Int16(In), Int16&(In, Out), Int16(In)): PrivateScope, Public, Virtual
+Class AccWizObjects.DFieldListEvents_FldListHdrDblClickEventHandler: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.MulticastDelegate
+    Void .ctor(System.Object, UIntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(Int16(In)): PrivateScope, Public, Virtual
+Class AccWizObjects.DFieldListEvents_FldListDragDropEventHandler: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.MulticastDelegate
+    Void .ctor(System.Object, UIntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(String(In, HasFieldMarshal), Int16(In), Int16(In), String(In, HasFieldMarshal), Int16(In), Int16(In)): PrivateScope, Public, Virtual
+Class AccWizObjects.DFieldListEvents_FldListDragOverEventHandler: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.MulticastDelegate
+    Void .ctor(System.Object, UIntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(String(In, HasFieldMarshal), Int16(In), Int16(In), String(In, HasFieldMarshal), Int16(In), Int16(In), Int16(In)): PrivateScope, Public, Virtual
+Class AccWizObjects.DFieldListEvents_DragOverEventHandler: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.MulticastDelegate
+    Void .ctor(System.Object, UIntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(String(In, HasFieldMarshal), Int16(In), Int16(In), Int16(In), Int16(In), Int16(In)): PrivateScope, Public, Virtual
+Class AccWizObjects.DFieldListEvents_DragDropEventHandler: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.MulticastDelegate
+    Void .ctor(System.Object, UIntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(String(In, HasFieldMarshal), Int16(In), Int16(In), Int16(In), Int16(In)): PrivateScope, Public, Virtual
+Class AccWizObjects.DFieldListEvents_FldListLostFocusEventHandler: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.MulticastDelegate
+    Void .ctor(System.Object, UIntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(Int16(In)): PrivateScope, Public, Virtual
+Class AccWizObjects.DFieldListEvents_FldListCheckItemEventHandler: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.MulticastDelegate
+    Void .ctor(System.Object, UIntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(Int16(In)): PrivateScope, Public, Virtual
+Interface AccWizObjects.FieldList: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract, Import
+  Interfaces:
+    AccWizObjects.IFieldList
+    AccWizObjects.DFieldListEvents_Event
+Interface AccWizObjects.IFieldListWnd: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract, Import
+  Properties:
+    System.String _Text 'get ' : 
+    System.String Caption 'get set' : 
+    Boolean AllowMoveSize 'get set' : 
+    Boolean ShowCaption 'get set' : 
+    Boolean ListBoxInset 'get set' : 
+    Int16 Top  'get set' : 
+    Int16 Left 'get set' : 
+    Int16 Height 'get set' : 
+    Int16 Width 'get set' : 
+    Int16 ListIndex 'get set' : 
+    Int16 ListCount 'get ' : 
+    Int16 MultiSelect 'get ' : 
+    Boolean Sorted 'get set' : 
+    Int16 Columns 'get set' : 
+    Int16 TopIndex 'get set' : 
+    Int16 NewIndex 'get ' : 
+    System.String Text 'get ' : 
+    UInt32 BackColor 'get set' : 
+    UInt32 ForeColor 'get set' : 
+    Int32 hWnd 'get ' : 
+    Int16 RowHeight 'get ' : 
+    Int16 RowHeightTwips 'get ' : 
+    Int16 ListBoxPosition 'get set' : 
+    Int16 ListBoxTextStyle 'get set' : 
+    Int16 DropLocation 'get set' : 
+    Boolean Painting 'get set' : 
+    Boolean ShowPictures 'get set' : 
+    Int16 BorderStyle 'get set' : 
+    Boolean Selected [Int16] 'get set' : 
+    System.String List [Int16] 'get set' : 
+    Int32 ItemData [Int16] 'get set' : 
+    Int32 ItemAttributes [Int16] 'get set' : 
+    Int16 ItemPicture [Int16] 'get set' : 
+    Boolean AllowHScroll 'get set' : 
+  Methods:
+    get__Text(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_Caption(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_Caption(String(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_AllowMoveSize(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_AllowMoveSize(Boolean(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_ShowCaption(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_ShowCaption(Boolean(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_ListBoxInset(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_ListBoxInset(Boolean(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_Top(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_Top(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_Left(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_Left(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_Height(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_Height(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_Width(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_Width(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_ListIndex(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_ListIndex(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_ListCount(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_MultiSelect(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_Sorted(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_Sorted(Boolean(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_Columns(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_Columns(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_TopIndex(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_TopIndex(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_NewIndex(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_Text(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_BackColor(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_BackColor(UInt32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_ForeColor(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_ForeColor(UInt32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_hWnd(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_RowHeight(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_RowHeightTwips(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_ListBoxPosition(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_ListBoxPosition(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_ListBoxTextStyle(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_ListBoxTextStyle(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_DropLocation(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_DropLocation(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_Painting(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_Painting(Boolean(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_ShowPictures(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_ShowPictures(Boolean(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_BorderStyle(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_BorderStyle(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_Selected(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_Selected(Int16(In), Boolean(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_List(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_List(Int16(In), String(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_ItemData(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_ItemData(Int16(In), Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_ItemAttributes(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_ItemAttributes(Int16(In), Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_ItemPicture(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_ItemPicture(Int16(In), Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    AddItem(String(In, HasFieldMarshal), Object(In, Optional, HasFieldMarshal), Object(In, Optional, HasFieldMarshal), Object(In, Optional, HasFieldMarshal), Object(In, Optional, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    RemoveItem(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    Clear(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    SizeToFitParent(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    ShowHighlight(Boolean(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    get_AllowHScroll(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_AllowHScroll(Boolean(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+Interface AccWizObjects.IJoinLine: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract, Import
+  Properties:
+    Int16 FieldListIndex 'get set' : 
+    Int16 FieldIndex 'get set' : 
+    Int16 ForeignFieldListIndex 'get set' : 
+    Int16 ForeignFieldIndex 'get set' : 
+    Int32 Attributes 'get set' : 
+  Methods:
+    get_FieldListIndex(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_FieldListIndex(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_FieldIndex(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_FieldIndex(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_ForeignFieldListIndex(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_ForeignFieldListIndex(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_ForeignFieldIndex(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_ForeignFieldIndex(Int16(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_Attributes(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_Attributes(Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+Interface AccWizObjects.IWizPersistFile: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract, Import
+  Methods:
+    GetClassID(Int32&(In, Out)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    IsDirty(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    Load(String(In, HasFieldMarshal), Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    Save(String(In, HasFieldMarshal), Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    SaveCompleted(String(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    GetCurFile(String&(In, Out, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+Interface AccWizObjects.IWizShellLinkA: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract, Import
+  Methods:
+    GetPath(String(In, HasFieldMarshal), Int32(In), WIZ_WIN32_FIND_DATA&(In, Out), Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    GetIDList(WIZ_CSIDL_FLAGS&(In, Out)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    SetIDList(WIZ_CSIDL_FLAGS(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    GetDescription(String(In, HasFieldMarshal), Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    SetDescription(String(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    GetWorkingDirectory(String(In, HasFieldMarshal), Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    SetWorkingDirectory(String(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    GetArguments(String(In, HasFieldMarshal), Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    SetArguments(String(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    GetHotkey(Int32&(In, Out)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    SetHotkey(Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    GetShowCmd(WIZ_SW_FLAGS&(In, Out)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    SetShowCmd(WIZ_SW_FLAGS(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    GetIconLocation(String(In, HasFieldMarshal), Int32(In), Int32&(In, Out)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    SetIconLocation(String(In, HasFieldMarshal), Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    SetRelativePath(String(In, HasFieldMarshal), Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    Resolve(Int32(In), Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    SetPath(String(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+Class AccWizObjects.WizShellLinkAClass: AutoLayout, AnsiClass, Class, Public, Import
+  :System.__ComObject
+    Void .ctor(): PrivateScope, Public, SpecialName, RTSpecialName
+  Interfaces:
+    AccWizObjects.IWizShellLinkA
+    AccWizObjects.WizShellLinkA
+  Methods:
+    GetPath(String(In, HasFieldMarshal), Int32(In), WIZ_WIN32_FIND_DATA&(In, Out), Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    GetIDList(WIZ_CSIDL_FLAGS&(In, Out)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    SetIDList(WIZ_CSIDL_FLAGS(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    GetDescription(String(In, HasFieldMarshal), Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    SetDescription(String(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    GetWorkingDirectory(String(In, HasFieldMarshal), Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    SetWorkingDirectory(String(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    GetArguments(String(In, HasFieldMarshal), Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    SetArguments(String(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    GetHotkey(Int32&(In, Out)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    SetHotkey(Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    GetShowCmd(WIZ_SW_FLAGS&(In, Out)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    SetShowCmd(WIZ_SW_FLAGS(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    GetIconLocation(String(In, HasFieldMarshal), Int32(In), Int32&(In, Out)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    SetIconLocation(String(In, HasFieldMarshal), Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    SetRelativePath(String(In, HasFieldMarshal), Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    Resolve(Int32(In), Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    SetPath(String(In, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+Interface AccWizObjects.WizShellLinkA: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract, Import
+  Interfaces:
+    AccWizObjects.IWizShellLinkA
+Interface AccWizObjects.IWizEnumVARIANT: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract, Import
+  Methods:
+    Next(Int32(In), Object&(In, Out, HasFieldMarshal), Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    Skip(Int32(In)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    Reset(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    Clone(IEnumerator&(In, Out, HasFieldMarshal)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+Interface AccWizObjects.IWizPersist: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract, Import
+  Methods:
+    GetClassID(Int32&(In, Out)): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+Class AccWizObjects.DImexGridEvents_SinkHelper: AutoLayout, AnsiClass, Class, Public, Sealed
+  Interfaces:
+    AccWizObjects.DImexGridEvents
+  Fields:
+    AccWizObjects.DImexGridEvents_ColumnSelectedEventHandler m_ColumnSelectedDelegate : Public
+    AccWizObjects.DImexGridEvents_ColumnDeletedEventHandler m_ColumnDeletedDelegate : Public
+    AccWizObjects.DImexGridEvents_ColumnCreatedEventHandler m_ColumnCreatedDelegate : Public
+    AccWizObjects.DImexGridEvents_ColumnSizedEventHandler m_ColumnSizedDelegate : Public
+    Int32 m_dwCookie : Public
+  Methods:
+    ColumnSelected(Int16): PrivateScope, Public, Virtual
+    ColumnDeleted(Int16): PrivateScope, Public, Virtual
+    ColumnCreated(Int16): PrivateScope, Public, Virtual
+    ColumnSized(Int16): PrivateScope, Public, Virtual
+Class AccWizObjects.DFieldListEvents_SinkHelper: AutoLayout, AnsiClass, Class, Public, Sealed
+  Interfaces:
+    AccWizObjects.DFieldListEvents
+  Fields:
+    AccWizObjects.DFieldListEvents_AfterStartupEventHandler m_AfterStartupDelegate : Public
+    AccWizObjects.DFieldListEvents_FldListGotFocusEventHandler m_FldListGotFocusDelegate : Public
+    AccWizObjects.DFieldListEvents_FldListClickEventHandler m_FldListClickDelegate : Public
+    AccWizObjects.DFieldListEvents_FldListDblClickEventHandler m_FldListDblClickDelegate : Public
+    AccWizObjects.DFieldListEvents_FldListKeyPressEventHandler m_FldListKeyPressDelegate : Public
+    AccWizObjects.DFieldListEvents_FldListMouseDownEventHandler m_FldListMouseDownDelegate : Public
+    AccWizObjects.DFieldListEvents_FldListMouseMoveEventHandler m_FldListMouseMoveDelegate : Public
+    AccWizObjects.DFieldListEvents_FldListMouseUpEventHandler m_FldListMouseUpDelegate : Public
+    AccWizObjects.DFieldListEvents_FldListKeyDownEventHandler m_FldListKeyDownDelegate : Public
+    AccWizObjects.DFieldListEvents_FldListKeyUpEventHandler m_FldListKeyUpDelegate : Public
+    AccWizObjects.DFieldListEvents_FldListHdrDblClickEventHandler m_FldListHdrDblClickDelegate : Public
+    AccWizObjects.DFieldListEvents_FldListDragDropEventHandler m_FldListDragDropDelegate : Public
+    AccWizObjects.DFieldListEvents_FldListDragOverEventHandler m_FldListDragOverDelegate : Public
+    AccWizObjects.DFieldListEvents_DragOverEventHandler m_DragOverDelegate : Public
+    AccWizObjects.DFieldListEvents_DragDropEventHandler m_DragDropDelegate : Public
+    AccWizObjects.DFieldListEvents_FldListLostFocusEventHandler m_FldListLostFocusDelegate : Public
+    AccWizObjects.DFieldListEvents_FldListCheckItemEventHandler m_FldListCheckItemDelegate : Public
+    Int32 m_dwCookie : Public
+  Methods:
+    AfterStartup(): PrivateScope, Public, Virtual
+    FldListGotFocus(Int16): PrivateScope, Public, Virtual
+    FldListClick(Int16): PrivateScope, Public, Virtual
+    FldListDblClick(Int16): PrivateScope, Public, Virtual
+    FldListKeyPress(Int16, Int16&): PrivateScope, Public, Virtual
+    FldListMouseDown(Int16, Int16, Int16, Int32, Int32): PrivateScope, Public, Virtual
+    FldListMouseMove(Int16, Int16, Int16, Int32, Int32): PrivateScope, Public, Virtual
+    FldListMouseUp(Int16, Int16, Int16, Int32, Int32): PrivateScope, Public, Virtual
+    FldListKeyDown(Int16, Int16&, Int16): PrivateScope, Public, Virtual
+    FldListKeyUp(Int16, Int16&, Int16): PrivateScope, Public, Virtual
+    FldListHdrDblClick(Int16): PrivateScope, Public, Virtual
+    FldListDragDrop(String, Int16, Int16, String, Int16, Int16): PrivateScope, Public, Virtual
+    FldListDragOver(String, Int16, Int16, String, Int16, Int16, Int16): PrivateScope, Public, Virtual
+    DragOver(String, Int16, Int16, Int16, Int16, Int16): PrivateScope, Public, Virtual
+    DragDrop(String, Int16, Int16, Int16, Int16): PrivateScope, Public, Virtual
+    FldListLostFocus(Int16): PrivateScope, Public, Virtual
+    FldListCheckItem(Int16): PrivateScope, Public, Virtual

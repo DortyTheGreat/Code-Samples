@@ -1,0 +1,3 @@
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\3 сем\ТехПрога\dll_kuleshov_techprog_sem3_bei2202\dll_kuleshov_techprog_sem3_bei2202\Debug\dll_kuleshov_techprog_sem3_bei2202.vcxproj.AssemblyReference.cache
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\3 сем\ТехПрога\dll_kuleshov_techprog_sem3_bei2202\dll_kuleshov_techprog_sem3_bei2202\Debug\dll_kuleshov_techprog_sem3_bei2202.vcxproj.ResolveComReference.cache
+C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\3 сем\ТехПрога\dll_kuleshov_techprog_sem3_bei2202\dll_kuleshov_techprog_sem3_bei2202\Debug\dll_kuleshov_techprog_sem3_bei2202.vcxproj.CopyComplete
