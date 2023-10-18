@@ -104,6 +104,12 @@ struct BMP {
     }
 
 
+    template <typename custom_size_t>
+    inline RGBAColor operator[] (const custom_size_t& index) const{
+        return {data[index],data[index+1],data[index+2],data[index+3]};
+    }
+
+
 
 
     BMP(const char *fname) {
@@ -114,7 +120,7 @@ struct BMP {
         read(fname.c_str());
     }
 
-    int8_t get_channels(){
+    int8_t get_channels() const{
         return bmp_info_header.bit_count / 8;
     }
 
