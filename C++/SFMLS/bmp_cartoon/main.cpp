@@ -38,19 +38,36 @@ int main()
 
     BMP out("in/source.bmp");
 
+    /**
+    ppppp
+    ppppp
+    ppxpp
+    ppppp
+    ppppp
+    */
+
     uint32_t channels = mm.get_channels();
 
 
     int64_t min_dist_global = 1001 * 1001 * 1001;
     min_dist_global *= 1001 * 1001 * 1001;
 
-    for(int tries = 0; tries < 100; ++tries){
+    vector<RGBAColor> compressors_saved;
+    vector<RGBAColor> compressors_next;
 
-        vector<RGBAColor> compressors;
-        compressors.push_back({rnd(0,255),rnd(0,255),rnd(0,255)});
-        compressors.push_back({rnd(0,255),rnd(0,255),rnd(0,255)});
-        compressors.push_back({rnd(0,255),rnd(0,255),rnd(0,255)});
+    for(int tries = 0; tries <= 30 + 15*7; ++tries){
 
+        vector<RGBAColor> compressors = compressors_saved;
+        if (tries < 30){
+            compressors.push_back({rnd(0,255),rnd(0,255),rnd(0,255)});
+            compressors.push_back({rnd(0,255),rnd(0,255),rnd(0,255)});
+            compressors.push_back({rnd(0,255),rnd(0,255),rnd(0,255)});
+            compressors.push_back({rnd(0,255),rnd(0,255),rnd(0,255)});
+        }
+        if (tries >= 30 & tries % 15 == 0){
+            compressors_saved = compressors_next;
+        }
+        compressors.push_back({rnd(0,255),rnd(0,255),rnd(0,255)});
 
         int64_t total_dist = 0;
         for (int32_t y = 0; y < mm.bmp_info_header.height; ++y) {
@@ -67,14 +84,18 @@ int main()
                     }
                 }
                 total_dist += min_dist;
+
             }
         }
         if (total_dist < min_dist_global){
+            compressors_next = compressors;
             min_dist_global = total_dist;
             out.write( "out/" + to_str(tries)+  ".bmp" );
         }
 
+
     }
+    cout << "Hello world!" << endl;
     return 0;
 
 }
