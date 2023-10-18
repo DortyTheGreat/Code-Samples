@@ -1,0 +1,35 @@
+CREATE TABLE users (
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	name VARCHAR(50),
+	email VARCHAR(50)
+);
+
+CREATE TABLE jobs (
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	name VARCHAR(50),
+	salary integer
+);
+
+-- employee -> jobs[index]
+CREATE TABLE employees(
+	id INTEGER PRIMARY KEY AUTOINCREMENT, -- код сотрудника
+    name varchar(50), -- Имя
+	BirthDate date,
+    gender varchar(10),
+    phone varchar(15),
+    job_id integer
+);
+
+CREATE TABLE projects(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	name varchar(50), -- Имя
+	SignUpDate date, -- Дата подачи заявки
+	status varchar(50), -- pending(в ожидании рассмотрения компанией\\ оплаты\\ прочих бюрократических условностей),  in_action(в процессе строительства\\проектирования), finished(закончено)
+	FinishDate date -- Дата конца делания проекта (в случае ожидания - 1 Января 1970, в случае "в процессе", то предположительная дата, в случае законченного проекта - дата фактического завершения проекта)
+);
+
+CREATE TABLE project_to_employee_linker(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	project_id integer,
+	employee_id integer
+);
