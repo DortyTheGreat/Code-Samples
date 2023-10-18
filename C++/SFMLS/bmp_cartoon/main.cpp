@@ -37,6 +37,7 @@ int main()
     BMP mm("in/source.bmp");
 
     BMP out("in/source.bmp");
+    BMP glad("in/source.bmp");
 
     /**
     ppppp
@@ -87,15 +88,49 @@ int main()
 
             }
         }
+
+
+        /// —глаживание??
+
+        for (int32_t y = 0; y < mm.bmp_info_header.height; ++y) {
+            for (int32_t x = 0; x < mm.bmp_info_header.width; ++x) {
+                int n = channels * (y * mm.bmp_info_header.width + x);
+
+
+                int SummR = 0, SummG = 0, SummB = 0;
+
+                int cou = 0;
+                for(int dx = -1; dx <= 1; ++dx){
+                    for(int dy = -1; dy <= 1; ++dy){
+                        int n_x = x + dx;
+                        int n_y = y + dy;
+
+                        int n = channels * (n_y * mm.bmp_info_header.width + n_x);
+
+                        if (n_x >= 0 && n_x < mm.bmp_info_header.width && n_y >= 0 && n_y < mm.bmp_info_header.height ){
+                            cou++;
+                            SummR += out[n].R;
+                            SummG += out[n].G;
+                            SummB += out[n].B;
+                        }
+                    }
+                }
+
+                ///cout << cou << endl;
+                glad[n] = {SummR/cou, SummG/cou, SummB/cou};
+
+            }
+        }
+
         if (total_dist < min_dist_global){
             compressors_next = compressors;
             min_dist_global = total_dist;
-            out.write( "out/" + to_str(tries)+  ".bmp" );
+            out.write( "out/colors/" + to_str(tries)+  ".bmp" );
+            glad.write( "out/glad/" + to_str(tries)+  ".bmp" );
         }
 
 
     }
-    cout << "Hello world!" << endl;
     return 0;
 
 }
