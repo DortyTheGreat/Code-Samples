@@ -223,7 +223,7 @@ signed main()
         int max_ = 0;
         int ans_ = 0;
 
-        for(int pos = 0; pos <= st_sz; ++pos){
+        for(int pos = 0; pos < st_sz; ++pos){
 
             while(o_it != otkr.end()){
                 if ((*o_it).first <= pos){
