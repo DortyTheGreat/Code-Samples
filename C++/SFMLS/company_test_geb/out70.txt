@@ -1,0 +1,13 @@
+12
+check 0
+check 0
+add 19706 0 113
+check 19706
+check 19706
+check 0
+check 0
+add 3144 0 29
+check 19706
+add 14486 19706 49
+add 24160 3144 14
+check 3144

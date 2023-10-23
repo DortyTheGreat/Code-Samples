@@ -47,3 +47,5 @@ Class dll_kuleshov_techprog_sem3_bei2202.Functions_Class: AutoLayout, AnsiClass,
     CreateAccessDbFile(): PrivateScope, Public, Static, HideBySig
     FillAccessDb(Double*, Double*, Int32, Int32): PrivateScope, Public, Static, HideBySig
     FillWordDocument(Double*, Double*, Int32 IsConst, Int32 IsConst): PrivateScope, Public, Static, HideBySig
+    ProstViborSort(Double*, Int32): PrivateScope, Public, Static, HideBySig
+    ProstObmenSort(Double*, Int32): PrivateScope, Public, Static, HideBySig

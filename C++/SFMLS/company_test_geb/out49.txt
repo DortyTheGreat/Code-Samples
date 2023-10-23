@@ -1,0 +1,22 @@
+21
+add 579 0 29
+check 579
+check 0
+check 0
+add 672 579 25
+add 787 0 24
+check 579
+check 672
+check 672
+add 585 579 21
+check 787
+check 672
+check 0
+add 629 787 26
+check 629
+check 585
+check 787
+check 787
+check 585
+check 0
+check 787

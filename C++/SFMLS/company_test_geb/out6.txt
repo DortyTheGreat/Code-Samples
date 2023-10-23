@@ -1,0 +1,4 @@
+3
+check 0
+add 6 0 6
+add 1 6 4

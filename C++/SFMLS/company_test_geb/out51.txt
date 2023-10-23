@@ -1,0 +1,30 @@
+29
+add 221 0 26
+check 221
+add 1056 0 21
+add 26 0 12
+add 1097 0 29
+add 663 221 19
+add 788 26 36
+add 291 788 9
+add 57 291 30
+add 115 0 25
+add 848 788 16
+check 0
+add 343 26 4
+check 1097
+add 726 343 5
+add 1221 0 5
+add 1017 57 23
+add 845 1017 8
+add 900 845 3
+check 845
+check 0
+add 583 663 27
+check 845
+add 13 0 29
+add 651 343 4
+add 527 0 26
+add 328 1097 36
+add 1144 651 22
+add 604 788 21

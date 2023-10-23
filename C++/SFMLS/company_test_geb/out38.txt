@@ -1,0 +1,14 @@
+13
+add 253 0 3
+add 37 253 9
+add 185 253 9
+check 37
+add 286 37 11
+check 37
+check 185
+add 200 0 13
+add 162 185 11
+check 253
+check 200
+add 78 200 15
+check 200

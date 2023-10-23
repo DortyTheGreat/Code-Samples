@@ -1,0 +1,17 @@
+16
+check 0
+add 58 0 16
+add 75 58 7
+add 77 0 13
+check 0
+add 192 77 9
+add 142 58 11
+add 55 75 5
+check 0
+check 55
+add 51 75 9
+check 77
+add 176 192 4
+check 77
+check 0
+add 118 142 7

@@ -1,0 +1,8 @@
+7
+add 28 0 5
+add 18 0 8
+add 6 0 3
+check 0
+check 0
+check 28
+add 22 6 1

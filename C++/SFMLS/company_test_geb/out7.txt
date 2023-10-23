@@ -1,0 +1,4 @@
+3
+add 4 0 4
+check 4
+add 3 4 3

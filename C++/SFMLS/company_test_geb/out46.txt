@@ -1,0 +1,37 @@
+36
+check 0
+check 0
+check 0
+check 0
+add 437 0 17
+check 0
+check 0
+check 0
+add 623 437 1
+check 623
+check 0
+check 623
+check 623
+check 0
+check 437
+check 623
+check 623
+check 623
+check 623
+check 0
+check 623
+add 199 0 13
+add 525 437 24
+check 437
+check 623
+check 437
+check 525
+check 0
+add 337 525 22
+check 199
+check 0
+check 437
+check 0
+check 437
+check 437
+check 623

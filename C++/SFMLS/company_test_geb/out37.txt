@@ -1,0 +1,10 @@
+9
+check 0
+check 0
+check 0
+check 0
+add 53 0 14
+add 100 0 11
+check 100
+check 53
+check 0

@@ -1,0 +1,20 @@
+19
+check 0
+check 0
+check 0
+add 248 0 6
+add 123 0 19
+check 123
+add 320 123 6
+check 320
+add 177 248 5
+add 332 123 13
+add 41 320 18
+check 248
+add 217 332 14
+check 217
+add 305 320 13
+check 248
+add 84 305 16
+add 109 0 18
+add 22 41 16

@@ -1,0 +1,33 @@
+32
+check 0
+check 0
+add 978 0 25
+check 978
+add 616 978 27
+check 616
+add 182 978 32
+check 616
+check 978
+check 182
+check 0
+check 978
+check 0
+add 829 182 15
+check 829
+check 978
+check 829
+check 182
+check 978
+add 588 616 33
+check 616
+check 0
+check 616
+check 829
+check 0
+check 978
+check 0
+check 829
+check 978
+check 829
+add 695 978 32
+check 0

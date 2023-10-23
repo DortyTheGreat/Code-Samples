@@ -221,4 +221,38 @@ namespace dll_kuleshov_techprog_sem3_bei2202 {
 		}
 	}
 
+	void Functions_Class::ProstViborSort(double* a, int n) {
+		for (int i = 0; i < n - 1; ++i) {
+			int k = i;
+			double x = a[i];
+			for (int j = i + 1; j < n; ++j) {
+				if (a[j] < x) {
+					k = j;
+					x = a[j];
+				}
+			}
+			a[k] = a[i];
+			a[i] = x;
+		}
+	}
+
+	
+	void Functions_Class::ProstObmenSort(double* a, int n) {
+
+		bool Flag = 1;
+		int m = n - 1;
+
+		while (m > 0 && Flag == 1) {
+			Flag = 0;
+			for (int i = 0; i < m; ++i) {
+				if (a[i] > a[i + 1]) {
+					double x = a[i];
+					a[i] = a[i + 1];
+					a[i + 1] = x;
+					Flag = 1;
+				}
+			}
+			--m;
+		}
+	}
 }

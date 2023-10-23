@@ -1,0 +1,6 @@
+5
+check 0
+add 19 0 6
+check 19
+add 13 0 7
+check 0

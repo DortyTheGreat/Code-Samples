@@ -1,0 +1,40 @@
+39
+add 2157 0 17
+check 0
+add 109 0 31
+add 1657 0 7
+check 1657
+check 109
+add 1244 1657 24
+add 1199 2157 37
+add 1978 1657 38
+check 1978
+check 1978
+check 1199
+check 1978
+check 1657
+add 2159 1978 36
+check 2159
+add 121 1244 30
+add 302 109 38
+check 0
+add 1276 0 33
+check 2159
+check 1244
+add 1880 109 28
+add 1206 2159 30
+check 1276
+check 1206
+add 2243 1880 28
+add 774 1206 40
+check 1244
+check 1199
+check 1880
+check 1199
+check 774
+check 1276
+check 1978
+add 1990 2159 8
+check 1276
+check 1206
+check 1978

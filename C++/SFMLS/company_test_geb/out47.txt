@@ -1,0 +1,11 @@
+10
+check 0
+check 0
+add 655 0 20
+check 0
+check 655
+add 579 0 5
+add 707 579 24
+add 721 0 2
+add 273 721 25
+add 1 721 9

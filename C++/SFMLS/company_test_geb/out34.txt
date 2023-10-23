@@ -1,0 +1,9 @@
+8
+check 0
+check 0
+check 0
+check 0
+check 0
+add 103 0 12
+check 103
+check 0

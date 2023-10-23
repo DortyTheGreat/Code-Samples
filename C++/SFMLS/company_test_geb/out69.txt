@@ -1,0 +1,205 @@
+204
+add 1 0 77
+check 0
+check 1
+add 20373 0 89
+check 1
+check 1
+check 1
+check 20373
+check 0
+check 20373
+check 20373
+check 1
+check 1
+add 11056 20373 13
+check 0
+add 20516 1 61
+check 11056
+add 10509 20516 46
+check 10509
+check 1
+check 20373
+check 11056
+add 16035 1 63
+check 16035
+check 20373
+check 11056
+add 7528 20516 110
+check 0
+check 10509
+check 11056
+check 11056
+check 11056
+check 0
+add 19833 11056 91
+add 16533 10509 27
+check 10509
+add 16543 10509 50
+check 1
+add 9839 20516 41
+add 16186 16533 12
+add 1437 10509 19
+check 10509
+check 7528
+add 7853 7528 34
+check 20516
+add 15162 16035 54
+check 16035
+check 7528
+check 16543
+check 16543
+check 9839
+check 7528
+check 11056
+check 7528
+check 16543
+add 10806 1 24
+check 20373
+check 1437
+check 1437
+add 20176 20373 15
+add 14894 16543 42
+check 7853
+check 15162
+check 20516
+add 21510 7853 79
+check 16543
+check 0
+check 19833
+check 14894
+check 10806
+check 7528
+check 10509
+check 7528
+add 10602 16035 12
+add 2018 20373 105
+add 17998 7853 26
+add 4331 14894 49
+check 11056
+add 11415 10806 24
+check 0
+check 10602
+check 10806
+check 17998
+add 6742 1 35
+check 10509
+add 4162 20516 46
+check 4331
+check 10806
+check 16533
+check 7528
+check 19833
+check 0
+check 10509
+add 22271 16035 39
+add 8210 20516 50
+check 16035
+check 15162
+check 16533
+check 2018
+check 20516
+check 16543
+check 10602
+check 10509
+check 6742
+add 1799 22271 56
+add 9399 1799 103
+check 11415
+add 3752 0 65
+check 6742
+check 9399
+add 8466 10509 39
+add 17654 10602 52
+check 21510
+check 16035
+check 20176
+check 0
+check 22271
+add 21024 6742 43
+check 16533
+add 2831 8210 93
+check 15162
+check 22271
+add 8767 0 39
+add 19941 9399 64
+add 2262 11415 94
+check 16186
+add 8264 2831 82
+check 8466
+check 11056
+check 22271
+check 8264
+check 20176
+check 10509
+check 1799
+check 0
+check 16035
+check 7528
+check 0
+check 20516
+add 8571 3752 19
+check 10509
+add 1288 20373 71
+check 21024
+add 805 8767 107
+check 20176
+check 1437
+check 1288
+check 1
+check 8571
+check 2262
+add 13821 9839 66
+check 21510
+check 16543
+check 20373
+add 21250 1288 77
+check 11415
+check 22271
+check 14894
+add 12413 14894 25
+add 14352 11056 73
+check 22271
+add 18578 7853 3
+check 4162
+check 8466
+check 2262
+check 21510
+check 1437
+check 16186
+check 11415
+check 19941
+check 2831
+check 8264
+check 9399
+add 2396 2262 55
+check 2018
+add 5518 8210 45
+check 0
+add 247 8264 46
+check 11056
+check 16186
+check 16533
+check 20176
+check 11056
+check 11056
+check 7853
+check 8767
+check 1437
+check 10806
+check 247
+add 11933 11056 25
+check 9839
+check 14352
+check 19833
+add 14078 16543 84
+check 16035
+check 8767
+add 22023 10602 73
+add 21055 22271 19
+add 12679 3752 5
+check 5518
+check 18578
+check 4162
+check 4162
+check 21510

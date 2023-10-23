@@ -1,0 +1,16 @@
+15
+add 12 0 5
+add 177 0 6
+add 128 0 2
+check 12
+check 177
+check 0
+check 0
+add 95 0 9
+check 177
+check 128
+check 177
+check 0
+check 0
+check 12
+add 85 0 3

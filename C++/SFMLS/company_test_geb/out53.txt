@@ -1,0 +1,46 @@
+45
+check 0
+check 0
+check 0
+check 0
+check 0
+add 1953 0 40
+check 0
+check 1953
+check 0
+check 0
+check 1953
+check 1953
+check 0
+check 1953
+add 351 1953 39
+check 0
+check 351
+check 351
+check 0
+add 744 351 15
+check 0
+check 351
+check 744
+check 744
+check 744
+check 744
+check 351
+check 0
+check 351
+check 744
+check 0
+add 1431 0 7
+check 1953
+check 351
+add 1666 1431 9
+check 0
+check 1431
+check 1953
+check 1431
+check 1666
+check 1431
+add 528 0 5
+check 351
+check 351
+check 528

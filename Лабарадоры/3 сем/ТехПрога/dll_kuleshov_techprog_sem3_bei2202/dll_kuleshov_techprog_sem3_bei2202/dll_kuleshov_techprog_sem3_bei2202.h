@@ -35,6 +35,10 @@ namespace dll_kuleshov_techprog_sem3_bei2202 {
 			// ЛР #4
 			static void FillWordDocument(const double* sourceArray, const double* transformedArray, const int sourceArrayLength, const int transformedArrayLength);
 
+			// ЛР #5
+			static void ProstViborSort(double* a, int); /// 11 algo
+
+			static void ProstObmenSort(double* a, int n); /// 13 algo
 
 	};
 }

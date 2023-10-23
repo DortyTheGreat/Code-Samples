@@ -1,0 +1,7 @@
+6
+check 0
+check 0
+check 0
+add 28 0 6
+check 28
+add 26 0 4

@@ -1,0 +1,33 @@
+32
+add 448 0 15
+add 323 0 24
+add 249 448 22
+add 57 249 17
+check 0
+add 197 0 4
+add 407 249 14
+check 57
+check 448
+add 106 0 19
+check 448
+add 377 323 24
+add 521 0 12
+check 57
+check 197
+add 35 197 18
+add 168 249 6
+check 35
+check 323
+check 168
+check 377
+check 448
+check 521
+check 197
+check 106
+check 448
+check 35
+check 377
+add 292 35 15
+check 448
+check 249
+check 292

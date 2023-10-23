@@ -1,0 +1,6 @@
+5
+check 0
+add 24 0 7
+check 24
+check 0
+add 23 0 7

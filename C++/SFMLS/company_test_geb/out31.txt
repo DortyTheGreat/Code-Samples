@@ -1,0 +1,9 @@
+8
+add 106 0 10
+check 106
+add 75 106 9
+check 75
+check 0
+check 0
+check 75
+check 0

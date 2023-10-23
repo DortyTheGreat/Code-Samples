@@ -1,0 +1,11 @@
+10
+check 0
+add 25 0 17
+check 25
+check 0
+check 25
+check 0
+check 25
+check 0
+check 25
+check 25

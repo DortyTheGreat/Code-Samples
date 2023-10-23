@@ -1,0 +1,9 @@
+8
+check 0
+check 0
+add 14 0 8
+check 14
+add 41 0 6
+add 12 41 4
+add 28 12 3
+add 1 0 2
