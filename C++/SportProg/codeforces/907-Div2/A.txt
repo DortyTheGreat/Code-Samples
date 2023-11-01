@@ -1,0 +1,55 @@
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    int t;
+    cin >> t;
+    while(t--){
+        int n;
+        cin >> n;
+        int a[30];
+        for(int i = 0; i < n; ++i){
+            cin >> a[i];
+        }
+
+        bool flag = 1;
+
+
+        int prev = -1;
+        for(int i = 2; i < min(n,4); ++i ){
+            if (a[i] < prev) flag = 0;
+            prev = a[i];
+        }
+
+        prev = -1;
+        for(int i = 4; i < min(n,8); ++i ){
+            if (a[i] < prev) flag = 0;
+            prev = a[i];
+        }
+
+
+        prev = -1;
+        for(int i = 8; i < min(n,16); ++i ){
+            if (a[i] < prev) flag = 0;
+            prev = a[i];
+        }
+
+
+        prev = -1;
+        for(int i = 16; i < min(n,32); ++i ){
+            if (a[i] < prev) flag = 0;
+            prev = a[i];
+        }
+
+        if (flag){
+            cout << "YES\n";
+        }else{
+            cout << "NO\n";
+        }
+
+    }
+
+    return 0;
+}
