@@ -1,2 +1,0 @@
-C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\Алго\3 семестр\dll_kuleshov_projprac_sem3\dll_kuleshov_projprac_sem3\x64\Debug\dll_kuleshov_projprac_sem3.vcxproj.AssemblyReference.cache
-C:\Users\Saha2\Desktop\Code-Samples\Лабарадоры\Алго\3 семестр\dll_kuleshov_projprac_sem3\dll_kuleshov_projprac_sem3\x64\Debug\dll_kuleshov_projprac_sem3.vcxproj.ResolveComReference.cache

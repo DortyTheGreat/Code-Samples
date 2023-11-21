@@ -1,2 +1,0 @@
-﻿#define DLLKULESHOVSEM3LAB1_API __declspec(dllexport)
-#define DLLKULESHOVSEM3LAB1_API __declspec(dllimport)

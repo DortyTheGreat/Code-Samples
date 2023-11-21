@@ -1,1 +1,0 @@
-C:\Users\vasil\OneDrive\Документы\VSprojects\DLL_TechProg_Vasilyev_BEI2202\DLL_TechProg_Vasilyev_BEI2202\x64\Debug\DLL_TechProg_Vasilyev_BEI2202.vcxproj.AssemblyReference.cache
