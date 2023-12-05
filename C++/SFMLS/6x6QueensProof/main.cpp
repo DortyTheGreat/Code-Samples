@@ -85,20 +85,44 @@ vector<int64_t> combo(int64_t n, int64_t k)
 vector<vector<int>> int_to_board(int64_t b, int n){
     vector<vector<int>> ret(n, vector<int>(n));
 
-    for (int i = 0; i < n*n; ++i) {
-        ret[i/n][i%n] = ((b >> i) & 1);
+    for (int i = 0; i < 6; ++i) {
+        ret[0][i] = ((b >> i) & 1);
     }
+
+    for (int i = 0; i < 5; ++i) {
+        ret[1][i] = ((b >> (i+6)) & 1);
+    }
+    ret[1][5] = 0;
+
+    for (int i = 0; i < 5; ++i) {
+        ret[2][i] = ((b >> (i+11)) & 1);
+    }
+    ret[2][5] = 0;
+
+    for (int i = 0; i < 4; ++i) {
+        ret[3][i] = ((b >> (i+16)) & 1);
+    }
+    ret[3][5] = ret[3][4] = 0;
+
+    for (int i = 0; i < 3; ++i) {
+        ret[4][i] = ((b >> (i+20)) & 1);
+    }
+    ret[4][5] = ret[4][4] = ret[4][3] = 0;
+
+    ret[5][0] = ((b >> (23)) & 1);
+    ret[5][5] = ret[5][4] = ret[5][3] = ret[5][2] = ret[5][1] = 0;
+
     return ret;
 }
 
-int Q(int n){
+int Q(int n = 6){
     vector<vector<int>> board(n, vector<int>(n));
 
     int max_turns = 0;
 
     for(int queens = 1; queens <= 2*n - 1; ++queens){
         cout << "looking at " << queens << " queens" << endl;
-        vector<int64_t> boards = combo(n*n,queens);
+        vector<int64_t> boards = combo(36 - 12,queens);
         for(const int64_t& b : boards){
             board = int_to_board(b, n);
             ///print_board(board,n);
@@ -155,7 +179,7 @@ upper_bound from prog
 
 int main()
 {
-    cout << Q(6);
+    cout << Q();
 
     return 0;
 }
