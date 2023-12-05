@@ -1,3 +1,4 @@
+# pip install --upgrade opencv-python
 import cv2
 
 #python3 -m pip install --upgrade pytesseract
@@ -13,8 +14,8 @@ for image in res:
     image_path = 'content\\hero\\18\\' + image
     img = cv2.imread(image_path)
     print(image_path)
-    d = pytesseract.image_to_data(img, output_type=Output.DICT, lang="eng", config="hocr")
-    print(d)
+    d = pytesseract.image_to_data(img, output_type=Output.DICT, config="hocr")
+    print(d['text'])
     n_boxes = len(d['level'])
     for i in range(n_boxes):
         (x, y, w, h) = (d['left'][i], d['top'][i], d['width'][i], d['height'][i])
