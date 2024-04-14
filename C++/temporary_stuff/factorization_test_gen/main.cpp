@@ -27,12 +27,12 @@ int main()
 {
     for(int64_t tests = 1; tests < 200; ++tests){
         ofstream fout("out" + to_str(tests) + ".txt");
-        int numbers = min(10 * 10 * 10 * 9ll, tests * tests * 10);
+        int numbers = min(1000000ll, tests * tests * tests);
 
         fout << numbers << endl;
 
         for(int i = 0; i < numbers; ++i){
-            fout << rnd(3, int64_t(pow(1.22, tests)) + 1234) << " ";
+            fout << rnd(3, int64_t(pow(1.225, tests)) + 1234) << " ";
         }
 
     }

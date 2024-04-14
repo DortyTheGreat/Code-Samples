@@ -1,4 +1,21 @@
 #include <iostream>
+#include <cstdint>
+#include <map>
+
+#include <iostream>
+#include <set>
+#include <fstream>
+using namespace std;
+
+#include <chrono>
+#include <random>
+int64_t seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+std::mt19937_64 mt(seed);
+/// [a;b]
+int64_t rnd(int64_t a, int64_t b) {
+    return a + mt() % (b - a + 1);
+}
+
 
 using namespace std;
 
@@ -178,67 +195,128 @@ bool is_SPRP(uint32_t n, const uint64_t& a) {
 deterministic bases for int64 {2, 325, 9375, 28178, 450775, 9780504, 1795265022}
 */
 
+
+
+
+bool miller_rabin64(const uint64_t& n, uint64_t a, uint64_t r2, uint64_t inv, uint64_t d, uint64_t one, uint64_t minus_one){
+
+    if (n % a == 0) return n == a;
+    a %= n;
+
+    a = montmul64(a,r2,n,inv);
+
+    /// Montgomery stuff done
+
+
+    uint_fast8_t s = ctz(d);
+    d >>= s;
+
+    uint64_t x = montpow64(a, d, one, n, inv);
+
+    if (x == one) {
+        return 1;
+    }
+
+    while(s--){
+        if (x == minus_one) return true;
+        x = montmul64(x,x,n,inv);
+    }
+    return false;
+}
+
+
+/*
+uint64_t inv = v;
+                        for(int ii = 0;ii < 5; ++ii) inv *= 2 - v * inv;
+
+
+                        __uint128_t r = ((__uint128_t(1) << 127) % v) << 1;
+                        if (r > v) r-= v;
+                        uint64_t r2 = r;
+
+                        uint64_t one = montmul_1_by_some_64(r2,v,inv);
+                        uint64_t d = v-1;
+                        uint64_t minus_one = montmul64(d,r2,v,inv);
+
+                        ///if (v % 3 == 0 || v % 2 == 0) continue;
+
+                        if ( miller_rabin64(v, svid1, r2, inv, d, one, minus_one)
+*/
+
+
+
 /// this is probably correct, ig
 bool isPrime_det_mr_mont(uint64_t n){
+
     if (n % 2 == 0) return n == 2;
     if (n % 3 == 0) return n == 3;
     if (n % 5 == 0) return n == 5;
     if (n % 7 == 0) return n == 7;
+
     if (n % 11 == 0) return n == 11;
     if (n % 13 == 0) return n == 13;
     if (n % 17 == 0) return n == 17;
     if (n % 19 == 0) return n == 19;
-    return miller_rabin64(n, 2) && miller_rabin64(n, 3) && miller_rabin64(n, 5) &&
-        miller_rabin64(n, 7) && miller_rabin64(n, 11) && miller_rabin64(n, 13) && miller_rabin64(n, 17) && miller_rabin64(n, 19);
+
+    if (n % 23 == 0) return n == 23;
+    if (n % 29 == 0) return n == 29;
+    if (n % 31 == 0) return n == 31;
+    if (n % 37 == 0) return n == 37;
+
+    if (n % 41 == 0) return n == 41;
+    if (n % 43 == 0) return n == 43;
+    if (n % 47 == 0) return n == 47;
+    if (n % 53 == 0) return n == 53;
+
+
+    uint64_t inv = n;
+    for(int ii = 0;ii < 5; ++ii) inv *= 2 - n * inv;
+
+
+    __uint128_t r = ((__uint128_t(1) << 127) % n) << 1;
+    if (r > n) r-= n;
+    uint64_t r2 = r;
+
+    uint64_t one = montmul_1_by_some_64(r2,n,inv);
+    uint64_t d = n-1;
+    uint64_t minus_one = montmul64(d,r2,n,inv);
+
+    ///if (v % 3 == 0 || v % 2 == 0) continue;
+
+
+    return miller_rabin64(n, 2, r2, inv, d, one, minus_one) && miller_rabin64(n, 3, r2, inv, d, one, minus_one) && miller_rabin64(n, 5, r2, inv, d, one, minus_one) &&
+        miller_rabin64(n, 7, r2, inv, d, one, minus_one) && miller_rabin64(n, 11, r2, inv, d, one, minus_one) && miller_rabin64(n, 13, r2, inv, d, one, minus_one) &&
+         miller_rabin64(n, 17, r2, inv, d, one, minus_one) && miller_rabin64(n, 19, r2, inv, d, one, minus_one);
 }
 
 
-void finding_pseudos(int64_t start, int64_t end, int64_t base){
+unsigned int in_u32(void) { uint32_t c, x = 0; while (c = _getchar_nolock(), c < 48 || c > 57); while (47 < c && c < 58) { x = x * 10 + c - 48; c = _getchar_nolock(); } return x; }
 
-    int pseudo_primes = 0;
-    for(int64_t i = start; i < end; ++i){
-        if (miller_rabin64(i, base) != isPrime_det_mr_mont(i)){
-            ++pseudo_primes;
-            cout << "fp " << i << " " << base << endl;
-        }
-    }
 
-    cout << double(pseudo_primes) / (end - start) << " "<< pseudo_primes <<  endl;
-
-    ///return pseudo_primes;
-}
-
+uint64_t in_u64() { uint64_t c, x = 0; while (c = _getchar_nolock(), c < 48 || c > 57); while (47 < c && c < 58) { x = x * 10 + c - 48; c = _getchar_nolock(); } return x; }
 
 
 int main()
 {
+    ios::sync_with_stdio(0); cin.tie(0);
     int64_t million = 1001ll * 1001ll;
     int64_t billion = 1001ll * 1001ll * 1001ll;
     int64_t trillion = billion * 1001ll;
 
-    finding_pseudos(2, million * 40, 2);
+
+    uint64_t start, shift, mult, n;
+
+
+    cin >> start >> shift >> mult >> n;
 
     int ans = 0;
-    for(int i = 1000; i < million * 10; ++i){
-        ans += is_SPRP(i,2);
-    }
-    cout << ans << endl;
-
-    /*finding_pseudos(billion, billion + 40 * million, 2);
-
-
-    int pseudo_primes = 0;
-    for(int i = 2; i < 1001 * 1001 * 10; ++i){
-        if (i % (1000 * 1000) == 0){
-            cout << "p " << i << endl;
-        }
-        if (miller_rabin64(i, 5) != isPrime_det_mr_mont(i)){
-            ++pseudo_primes;
-            cout << i << " " << isPrimeSimple(i) << " " << isPrime_det_mr_mont(i) << " " << miller_rabin64(i, 2) << " " << miller_rabin64(i, 325) << " " << miller_rabin64(i, 9375) << endl;
-        }
+    for(int i = 0; i < n; ++i){
+        start = ((start >> shift) ^ start) * mult;
+        ///cout << start << endl;
+        ans += isPrime_det_mr_mont(start);
     }
 
-    */
+    cout << ans;
 
     return 0;
 }
